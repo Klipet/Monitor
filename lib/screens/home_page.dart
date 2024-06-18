@@ -10,6 +10,7 @@ import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:monitor_for_sales/providers/screen_setting_right.dart';
 import 'package:monitor_for_sales/screens/setting_ui.dart';
 import 'package:monitor_for_sales/screens/setting_url.dart';
+import 'package:monitor_for_sales/screens/settings_home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -78,6 +79,7 @@ class _HomePageState extends State<HomePage> {
     var settingsBox = Provider.of<ScreenSettingsBox>(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: settingsHeader.backgroundColor,
         centerTitle: true,
         title:  Text(settingsHeader.textTitle),
         automaticallyImplyLeading: false, // Hide back button on AppBar
@@ -97,17 +99,13 @@ class _HomePageState extends State<HomePage> {
             if (event.logicalKey == LogicalKeyboardKey.f10) {
               print('F10 pressed');
               // Open settings dialog
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return SettingUIDialog();
-                },
-              );
+              _showSettingsDialog(context);
             }
           }
         },
         child:  Row(
           children: [
+            //LEFT
             Expanded(
                child: Container(
                  decoration: BoxDecoration(
@@ -127,17 +125,34 @@ class _HomePageState extends State<HomePage> {
                             children: List.generate(ordersListLeft.length, (index) {
                               dynamic order = ordersListLeft[index];
                               return Container(
-                                margin: const EdgeInsets.all(4.0),
-                                child: Text(order.toString()), // Вывод текущего элемента
+                                margin: EdgeInsets.all(4.0),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                    width: settingsBox.sizeBox,
+                                    height: settingsBox.sizeBox,
+
+                                    decoration: BoxDecoration(
+                                      color: settingsBox.backgroundBoxColor,
+                                      border: Border.all(
+                                          width: settingsBox.sizeBorder
+                                      ),
+                                      borderRadius: BorderRadius.all(Radius.circular(settingsBox.radiusBox))
+                                    ),
+                                    child: Text(
+                                        order.toString(),
+                                      style: TextStyle(
+                                        color: settingsBox.textBoxColor
+                                      ),
+                                    )
+                                ), // Вывод текущего элемента
                               );
                             }),
                           ),
                         )
-                            : const Center(
-                          child: Text(
-                            'No orders available',
+                            :  Center(
+                          child: Text('No orders available',
                             style: TextStyle(
-                              fontSize: 50,
+                              fontSize: settingsLeft.leftSizeText,
                             ),
                           ),
                         ),
@@ -146,6 +161,7 @@ class _HomePageState extends State<HomePage> {
                  ),
                )
             ),
+            //RIGHT
             Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -166,14 +182,22 @@ class _HomePageState extends State<HomePage> {
                               dynamic order = ordersListRight[index];
                               return Container(
                                 margin: EdgeInsets.all(4.0),
-                                child: Text(order.toString()), // Вывод текущего элемента
+                                child: Container(
+                                  width: settingsBox.sizeBox,
+                                  height: settingsBox.sizeBox,
+                                  decoration: BoxDecoration(
+                                    color: settingsBox.backgroundBoxColor,
+                                    border: Border.all(
+                                        width: settingsBox.sizeBorder
+                                    ),
+                                  ),
+                                    child: Text(order.toString())), // Вывод текущего элемента
                               );
                             }),
                           ),
                         )
                             : Center(
-                          child: Text(
-                            'No orders available',
+                          child: Text('No orders available',
                             style: TextStyle(
                               fontSize: settingsRight.rightSizeText,
                             ),
@@ -187,6 +211,32 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+  void _showSettingsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Настройки'),
+          content: const SettingsDialogContent(),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Отмена'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Сохранить'),
+              onPressed: () {
+                // Добавьте код для сохранения настроек
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -263,3 +313,5 @@ class _HomePageState extends State<HomePage> {
   }
 
 }
+
+

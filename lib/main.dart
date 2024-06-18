@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
@@ -14,14 +15,10 @@ import 'package:window_manager/window_manager.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await WindowManager.instance.ensureInitialized();
-
   // Установка полноэкранного режима
   await WindowManager.instance.setFullScreen(true);
-
-//  // Скрытие системных элементов управления
-//  await WindowManager.instance.setHiddenSystemUIOverlay(
-//    [WindowManagerSystemUIOverlay.top, WindowManagerSystemUIOverlay.bottom],
-//  );
+  await Hive.initFlutter();
+  await Hive.openBox('settings');
   runApp(
       MultiProvider(
         providers: [
