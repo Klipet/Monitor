@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
+import '../providers/screen_setting_left.dart';
 
-import '../providers/screen_setting_right.dart';
 
-class SettingColumnRight extends StatefulWidget {
-  const SettingColumnRight({super.key});
+class SettingColumnLeft extends StatefulWidget {
+  const SettingColumnLeft({super.key});
 
   @override
-  State<SettingColumnRight> createState() => _SettingColumnRightState();
+  State<SettingColumnLeft> createState() => _SettingColumnLeft();
 }
 
-class _SettingColumnRightState extends State<SettingColumnRight> {
-  TextEditingController _rightTextController = TextEditingController();
-  TextEditingController _rightSizeController = TextEditingController();
 
-  void _openColorPicker(BuildContext context, Color currentColor,
-      Function(Color) onColorChanged) {
+class _SettingColumnLeft extends State<SettingColumnLeft> {
+  TextEditingController _leftTextController = TextEditingController();
+  TextEditingController _leftSizeController = TextEditingController();
+  TextEditingController _leftSizeBorder = TextEditingController();
+
+  void _openColorPicker(BuildContext context, Color currentColor, Function(Color) onColorChanged) {
     showDialog(
       context: context,
       builder: (context) {
@@ -41,17 +42,16 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
       },
     );
   }
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final settingsRight =
-            Provider.of<ScreenSettingsRight>(context, listen: false);
+        final settingsLeft = Provider.of<ScreenSettingsLeft>(context, listen: false);
         setState(() {
-          _rightTextController.text = settingsRight.textRightTitle;
-          _rightSizeController.text = settingsRight.rightSizeText.toString();
+          _leftTextController.text = settingsLeft.textLeftTitle;
+          _leftSizeController.text = settingsLeft.leftSizeText.toString();
+          _leftSizeBorder.text = settingsLeft.leftSizeBorder.toString();
         });
       }
     });
@@ -59,57 +59,77 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
 
   @override
   Widget build(BuildContext context) {
-    final settingsRight = Provider.of<ScreenSettingsRight>(context);
+    final settingsLeft = Provider.of<ScreenSettingsLeft>(context);
     return Column(
       children: [
+            TextField(
+              controller: _leftSizeController,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+                ),],
+              decoration: const InputDecoration(labelText: 'Enter size Left text'),
+              onChanged: (value) {
+                settingsLeft.updateLeftSizeText(double.parse(value));
+              },
+            ),
         TextField(
-          controller: _rightSizeController,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(
-              RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+              controller: _leftSizeBorder,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+                ),],
+              decoration: const InputDecoration(labelText: 'Enter size Left Border'),
+              onChanged: (value) {
+                settingsLeft.updateLeftSizeBorder(double.parse(value));
+              },
+            ),
+            TextField(
+              controller: _leftTextController,
+              decoration: const InputDecoration(labelText: 'Enter left column text'),
+              onChanged: (value) {
+                settingsLeft.updateLeftTitle(value);
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  _openColorPicker(context, settingsLeft.leftColumnColor, (color) {
+                    setState(() {
+                      settingsLeft.updateLeftColumnColor(color);
+                    });
+                  });
+                },
+                child: const Text('Change Left Column Color'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  _openColorPicker(context, settingsLeft.leftColorText, (color) {
+                    setState(() {
+                      settingsLeft.updateLeftColorText(color);
+                    });
+                  });
+                },
+                child: const Text('Change Left Column Text Color'),
+              ),
+            ),Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  _openColorPicker(context, settingsLeft.leftColorBorder, (color) {
+                    setState(() {
+                      settingsLeft.updateLeftColorBorder(color);
+                    });
+                  });
+                },
+                child: const Text('Change Left Column Border Color'),
+              ),
             ),
           ],
-          decoration: const InputDecoration(labelText: 'Enter size Right text'),
-          onChanged: (value) {
-            settingsRight.updateRightSizeText(double.parse(value));
-          },
-        ),
-        TextField(
-          controller: _rightTextController,
-          decoration:
-              const InputDecoration(labelText: 'Enter right column text'),
-          onChanged: (value) {
-            settingsRight.updateRightTitle(value);
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              _openColorPicker(context, settingsRight.rightColumnColor,
-                  (color) {
-                setState(() {
-                  settingsRight.updateRightColumnColor(color);
-                });
-              });
-            },
-            child: const Text('Change Right Column Color'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              _openColorPicker(context, settingsRight.rightColorText, (color) {
-                setState(() {
-                  settingsRight.updateRightColorText(color);
-                });
-              });
-            },
-            child: const Text('Change Right Column Text Color'),
-          ),
-        ),
-      ],
     );
   }
 }

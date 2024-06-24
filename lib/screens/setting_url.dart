@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class DialogSetting extends StatefulWidget {
   const DialogSetting({super.key});
@@ -48,7 +49,7 @@ class _DialogSettingState extends State<DialogSetting> {
                               const BorderSide(color: Colors.black, width: 2.0),
                           borderRadius: BorderRadius.circular(5.0),
                         ),
-                        hintText: 'http://192.168.0.0:5959',
+                        hintText: 'http://192.168.0.0:5959/OrderMonitor',
                       ),
                     ),
                   ),
@@ -62,6 +63,8 @@ class _DialogSettingState extends State<DialogSetting> {
                     ElevatedButton(
                       onPressed: () {
                         String url = controller.text;
+                        checkUrl(url);
+
                       },
                       style: ButtonStyle(
                         alignment: Alignment.center,
@@ -119,6 +122,7 @@ class _DialogSettingState extends State<DialogSetting> {
   }
 
   Future<void> checkUrl(String url) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     var client = http.Client();
     try {
       var response = await client.get(
@@ -127,7 +131,10 @@ class _DialogSettingState extends State<DialogSetting> {
       if (response.statusCode == 200) {
         setState(() {
           connectStatus = true;
+          prefs.setString('url', url);
+          print('set url $url');
         });
+        Navigator.pop(context);
       } else {
         setState(() {
           connectStatus = false;

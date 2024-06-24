@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
-import 'package:monitor_for_sales/providers/screen_setting_box.dart';
+import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
+import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:monitor_for_sales/providers/screen_setting_left.dart';
 import 'package:monitor_for_sales/providers/screen_setting_right.dart';
@@ -25,7 +26,8 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (context) => ScreenSettingsLeft()),
           ChangeNotifierProvider(create: (context) => ScreenSettingsRight()),
           ChangeNotifierProvider(create: (context) => ScreenSettingsHeader()),
-          ChangeNotifierProvider(create: (context) => ScreenSettingsBox()),
+          ChangeNotifierProvider(create: (context) => ScreenSettingsBoxLeft()),
+          ChangeNotifierProvider(create: (context) => ScreenSettingsBoxRight()),
           // Добавьте другие провайдеры здесь
         ],
         child: MyApp(),

@@ -3,29 +3,31 @@ import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/screen_setting_box.dart';
+import '../providers/screen_setting_box_left.dart';
 
-class SettingBox extends StatefulWidget {
-  const SettingBox({super.key});
+class SettingBoxLeft extends StatefulWidget {
+  const SettingBoxLeft({super.key});
 
   @override
-  State<SettingBox> createState() => _SettingBoxState();
+  State<SettingBoxLeft> createState() => _SettingBoxLeft();
 }
 
-class _SettingBoxState extends State<SettingBox> {
+class _SettingBoxLeft extends State<SettingBoxLeft> {
   TextEditingController _boxSize = TextEditingController();
   TextEditingController _boxBorderSize = TextEditingController();
+  TextEditingController _boxTextSize = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final settingsBox = Provider.of<ScreenSettingsBox>(
+        final settingsBox = Provider.of<ScreenSettingsBoxLeft>(
             context, listen: false);
         setState(() {
-          _boxSize.text = settingsBox.sizeBox.toString();
-          _boxBorderSize.text = settingsBox.sizeBorder.toString();
+          _boxSize.text = settingsBox.sizeBoxLeft.toString();
+          _boxBorderSize.text = settingsBox.sizeBorderLeft.toString();
+          _boxTextSize.text = settingsBox.sizeTextLeft.toString();
         });
       }
     });
@@ -57,7 +59,7 @@ class _SettingBoxState extends State<SettingBox> {
 
     @override
   Widget build(BuildContext context) {
-    final settingsBox = Provider.of<ScreenSettingsBox>(context);
+    final settingsBox = Provider.of<ScreenSettingsBoxLeft>(context);
     return Material(
       child: Column(
         children: [
@@ -70,6 +72,17 @@ class _SettingBoxState extends State<SettingBox> {
             decoration: const InputDecoration(labelText: 'Size Border'),
             onChanged: (value) {
               settingsBox.updateSizeBorder(double.parse(value));
+            },
+          ),
+          TextField(
+            controller: _boxTextSize,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+              ),],
+            decoration: const InputDecoration(labelText: 'Size Text'),
+            onChanged: (value) {
+              settingsBox.updateSizeText(double.parse(value));
             },
           ),
           TextField(
@@ -87,7 +100,7 @@ class _SettingBoxState extends State<SettingBox> {
             padding: const EdgeInsets.only(top: 8.0),
             child: ElevatedButton(
               onPressed: () {
-                _openColorPicker(context, settingsBox.backgroundBoxColor, (color) {
+                _openColorPicker(context, settingsBox.backgroundBoxColorLeft, (color) {
                   setState(() {
                     settingsBox.updateBackgroundBoxColor(color);
                   });
@@ -100,20 +113,20 @@ class _SettingBoxState extends State<SettingBox> {
             padding: const EdgeInsets.only(top: 8.0),
             child: ElevatedButton(
               onPressed: () {
-                _openColorPicker(context, settingsBox.backgroundBoxBorderColor, (color) {
+                _openColorPicker(context, settingsBox.boxBorderColorLeft, (color) {
                   setState(() {
                     settingsBox.updateBackgroundBoxBorderColor(color);
                   });
                 });
               },
-              child: const Text('Background Box Border Color'),
+              child: const Text('Box Border Color'),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: ElevatedButton(
               onPressed: () {
-                _openColorPicker(context, settingsBox.textBoxColor, (color) {
+                _openColorPicker(context, settingsBox.textBoxColorLeft, (color) {
                   setState(() {
                     settingsBox.updateTextBoxColor(color);
                   });

@@ -3,16 +3,18 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:monitor_for_sales/factory/Order.dart';
-import 'package:monitor_for_sales/providers/screen_setting_box.dart';
+import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
+import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:monitor_for_sales/providers/screen_setting_right.dart';
-import 'package:monitor_for_sales/screens/setting_ui.dart';
 import 'package:monitor_for_sales/screens/setting_url.dart';
 import 'package:monitor_for_sales/screens/settings_home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 import '../providers/screen_setting_left.dart';
 
@@ -59,7 +61,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       if (!_isFetching) {
         // Проверяем, выполняется ли уже метод getState
         getState();
@@ -76,143 +78,193 @@ class _HomePageState extends State<HomePage> {
     var settingsLeft = Provider.of<ScreenSettingsLeft>(context);
     var settingsRight = Provider.of<ScreenSettingsRight>(context);
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
-    var settingsBox = Provider.of<ScreenSettingsBox>(context);
+    var settingsBoxLeft = Provider.of<ScreenSettingsBoxLeft>(context);
+    var settingsBoxRight = Provider.of<ScreenSettingsBoxRight>(context);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: settingsHeader.backgroundColor,
-        centerTitle: true,
-        title:  Text(settingsHeader.textTitle),
-        automaticallyImplyLeading: false, // Hide back button on AppBar
-      ),
+      appBar: settingsHeader.textTitle.isEmpty
+          ? null
+          : AppBar(
+              backgroundColor: settingsHeader.backgroundColor,
+              centerTitle: true,
+              toolbarHeight: settingsHeader.sizeToolBar,
+              title: Text(
+                settingsHeader.textTitle,
+                style:  GoogleFonts.getFont(
+                    settingsHeader.styleTitle,
+                    fontSize: settingsHeader.sizeText,
+                    color: settingsHeader.textColor)
+              //  TextStyle(
+              //      fontSize: settingsHeader.sizeText,
+              //      color: settingsHeader.textColor
+              //  ),
+              ),
+              automaticallyImplyLeading: false, // Hide back button on AppBar
+            ),
       body: KeyboardListener(
-        autofocus: true,
-        focusNode: _focusNode,
-        onKeyEvent: (event) {
-          if (event is KeyDownEvent) {
-            if (event.logicalKey == LogicalKeyboardKey.escape) {
-              print('Escape pressed');
-              // Close the application
-              if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-                exit(0);
+          autofocus: true,
+          focusNode: _focusNode,
+          onKeyEvent: (event) {
+            if (event is KeyDownEvent) {
+              if (event.logicalKey == LogicalKeyboardKey.escape) {
+                print('Escape pressed');
+                // Close the application
+                if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+                  exit(0);
+                }
+              }
+              if (event.logicalKey == LogicalKeyboardKey.f10) {
+                print('F10 pressed');
+                // Open settings dialog
+                _showSettingsDialog(context);
+              }
+              if (event.logicalKey == LogicalKeyboardKey.f9) {
+                print('F9 pressed');
+                _stopTimer(); // Останавливаем таймер при открытии окна настройки
+                 Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const DialogSetting()),
+                );
               }
             }
-            if (event.logicalKey == LogicalKeyboardKey.f10) {
-              print('F10 pressed');
-              // Open settings dialog
-              _showSettingsDialog(context);
-            }
-          }
-        },
-        child:  Row(
-          children: [
-            //LEFT
-            Expanded(
-               child: Container(
-                 decoration: BoxDecoration(
-                   color: settingsLeft.leftColumnColor
-                 ),
-                 child: Column(
-                    children: [
-                      Text(settingsLeft.textLeftTitle.toString(),
-                        style: TextStyle(
-                            fontSize: settingsLeft.leftSizeText
-                        ),
+          },
+          child: Row(
+            children: [
+              //LEFT
+              Expanded(
+                  child: Container(
+                decoration: BoxDecoration(
+                    color: settingsLeft.leftColumnColor,
+                    border: Border.all(
+                      color: settingsLeft.leftColorBorder,
+                      width: settingsLeft.leftSizeBorder,
+                    )
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      settingsLeft.textLeftTitle.toString(),
+                      style: TextStyle(
+                          fontSize: settingsLeft.leftSizeText,
                       ),
-                      Expanded(
-                        child: ordersListLeft.isNotEmpty
-                            ? SingleChildScrollView(
-                          child: Wrap(
-                            children: List.generate(ordersListLeft.length, (index) {
-                              dynamic order = ordersListLeft[index];
-                              return Container(
-                                margin: EdgeInsets.all(4.0),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                    width: settingsBox.sizeBox,
-                                    height: settingsBox.sizeBox,
+                    ),
+                    Expanded(
+                      child: ordersListLeft.isNotEmpty
+                          ? SingleChildScrollView(
+                              child: Consumer<ScreenSettingsBoxLeft>(
+                                builder: (context, settingsBox, child) {
+                                  // Сортируем список перед отображением
+                                  ordersListLeft.sort((a, b) => a.compareTo(b));
 
-                                    decoration: BoxDecoration(
-                                      color: settingsBox.backgroundBoxColor,
-                                      border: Border.all(
-                                          width: settingsBox.sizeBorder
-                                      ),
-                                      borderRadius: BorderRadius.all(Radius.circular(settingsBox.radiusBox))
-                                    ),
-                                    child: Text(
-                                        order.toString(),
-                                      style: TextStyle(
-                                        color: settingsBox.textBoxColor
-                                      ),
-                                    )
-                                ), // Вывод текущего элемента
-                              );
-                            }),
-                          ),
-                        )
-                            :  Center(
-                          child: Text('No orders available',
-                            style: TextStyle(
-                              fontSize: settingsLeft.leftSizeText,
+                                  return Wrap(
+                                    children: List.generate(
+                                        ordersListLeft.length, (index) {
+                                      dynamic order = ordersListLeft[index];
+                                      return Container(
+                                        margin: EdgeInsets.all(4.0),
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          width: settingsBox.sizeBoxLeft,
+                                          height: settingsBox.sizeBoxLeft,
+                                          decoration: BoxDecoration(
+                                            color: settingsBoxLeft
+                                                .backgroundBoxColorLeft,
+                                            border: Border.all(
+                                              width: settingsBoxLeft
+                                                  .sizeBorderLeft,
+                                              color: settingsBoxLeft
+                                                  .boxBorderColorLeft,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(settingsBoxLeft
+                                                  .radiusBoxLeft),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            order.toString(),
+                                            style: TextStyle(
+                                                color: settingsBoxLeft
+                                                    .textBoxColorLeft,
+                                                fontSize: settingsBoxLeft
+                                                    .sizeTextLeft),
+                                          ),
+                                        ), // Вывод текущего элемента
+                                      );
+                                    }),
+                                  );
+                                },
+                              ),
+                            )
+                          : const Center(child: Text("No orders available")),
+                    )
+                  ],
+                ),
+              )),
+              //RIGHT
+              Expanded(
+                  child: Container(
+                decoration: BoxDecoration(
+                    color: settingsRight.rightColumnColor,
+                    border: Border.all(
+                      color: settingsRight.rightColorBorder,
+                      width: settingsRight.rightSizeBorder,
+                    )),
+                child: Column(
+                  children: [
+                    Text(
+                      settingsRight.textRightTitle.toString(),
+                      style: TextStyle(fontSize: settingsRight.rightSizeText),
+                    ),
+                    Expanded(
+                      child: ordersListRight.isNotEmpty
+                          ? SingleChildScrollView(
+                              child: Wrap(
+                                children: List.generate(ordersListRight.length,
+                                    (index) {
+                                  dynamic order = ordersListRight[index];
+                                  return Container(
+                                      margin: const EdgeInsets.all(4.0),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width: settingsBoxRight.sizeBoxRight,
+                                        height: settingsBoxRight.sizeBoxRight,
+                                        decoration: BoxDecoration(
+                                          color: settingsBoxRight
+                                              .backgroundBoxColorRight,
+                                          border: Border.all(
+                                              width: settingsBoxRight
+                                                  .sizeBorderRight,
+                                              color: settingsBoxRight
+                                                  .boxBorderColorRight),
+                                        ),
+                                        child: Text(
+                                          order.toString(),
+                                          style: TextStyle(
+                                              color: settingsBoxRight
+                                                  .textBoxColorRight,
+                                              fontSize: settingsBoxRight
+                                                  .sizeTextRight),
+                                        ),
+                                      ) // Вывод текущего элемента
+                                      );
+                                }),
+                              ),
+                            )
+                          : Center(
+                              child: Text(
+                                'No orders available',
+                                style: TextStyle(
+                                  fontSize: settingsRight.rightSizeText,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ],
-                 ),
-               )
-            ),
-            //RIGHT
-            Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: settingsRight.rightColumnColor
-                  ),
-                  child: Column(
-                    children: [
-                      Text(settingsRight.textRightTitle.toString(), 
-                        style: TextStyle(
-                            fontSize: settingsRight.rightSizeText
-                        ),
-                      ),
-                      Expanded(
-                        child: ordersListRight.isNotEmpty
-                            ? SingleChildScrollView(
-                          child: Wrap(
-                            children: List.generate(ordersListRight.length, (index) {
-                              dynamic order = ordersListRight[index];
-                              return Container(
-                                margin: EdgeInsets.all(4.0),
-                                child: Container(
-                                  width: settingsBox.sizeBox,
-                                  height: settingsBox.sizeBox,
-                                  decoration: BoxDecoration(
-                                    color: settingsBox.backgroundBoxColor,
-                                    border: Border.all(
-                                        width: settingsBox.sizeBorder
-                                    ),
-                                  ),
-                                    child: Text(order.toString())), // Вывод текущего элемента
-                              );
-                            }),
-                          ),
-                        )
-                            : Center(
-                          child: Text('No orders available',
-                            style: TextStyle(
-                              fontSize: settingsRight.rightSizeText,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-            )
-          ],
-        ),
-      ),
+                    ),
+                  ],
+                ),
+              ))
+            ],
+          )),
     );
   }
+
   void _showSettingsDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -258,13 +310,15 @@ class _HomePageState extends State<HomePage> {
       var client = http.Client();
       try {
         var response = await client.get(
-          Uri.parse(url + '/json/GetCurrentOrderLines'),
+          Uri.parse(url + '/json/GetOrdersList?hours=24'),
         );
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
           setState(() {
             commandState = responseData['OrdersList'];
-            ordersList = commandState.map((orderData) => Order.fromJson(orderData)).toList();
+            ordersList = commandState
+                .map((orderData) => Order.fromJson(orderData))
+                .toList();
             statusState();
           });
         } else {
@@ -286,32 +340,49 @@ class _HomePageState extends State<HomePage> {
     }
     _isFetching = false; // Устанавливаем флаг в false после выполнения
   }
+
   void statusState() {
+    // Создаем копии текущих списков для отслеживания изменений
+    List<int> currentOrdersListLeft = List.from(ordersListLeft);
+    List<int> currentOrdersListRight = List.from(ordersListRight);
 
-      for (var status in ordersList) {
-
-        //print('Order: ${status.number}, State: ${status.state}'); // Вывод состояния заказа
-        if (status.state == 2) {
-          // Проверяем, если значение уже существует в ordersListLeft
-          if (!ordersListLeft.contains(status.number)) {
-            ordersListLeft.add(status.number);
-            setState(() {});
-          }
-        } else if (status.state == 1) {
-          // Проверяем, если значение уже существует в ordersListRight
-          if (!ordersListRight.contains(status.number)) {
-            ordersListRight.add(status.number);
-            setState(() {});
-          }
+    for (var status in ordersList) {
+      if (status.state == 2) {
+        if (!currentOrdersListLeft.contains(status.number)) {
+          ordersListLeft.add(status.number);
         }
+        // Удаляем из правого списка, если статус изменился
+        ordersListRight.remove(status.number);
+      } else if (status.state == 6) {
+        if (!currentOrdersListRight.contains(status.number)) {
+        //  playTransitionSound();
+          ordersListRight.add(status.number);
+        }
+        // Удаляем из левого списка, если статус изменился
+        ordersListLeft.remove(status.number);
+      } else if (status.state == 4) {
+        if (currentOrdersListRight.contains(status.number)) {
+          ordersListRight.remove(status.number);
+          print("Removed ${status.number} from ordersListRight");
+        }
+        // Также проверяем и удаляем из левого списка, если статус изменился
+        ordersListLeft.remove(status.number);
       }
-      ordersLeft = ordersListLeft.isEmpty;
-      ordersRight = ordersListRight.isEmpty;
-    //  print("Orders List Left: $ordersListLeft"); // Debug: print left orders list
-    //  print("Orders List Right: $ordersListRight"); // Debug: print right orders list
+    }
+    // Удаляем из списков элементы, статусы которых изменились
+    ordersListLeft = ordersListLeft.where((number) {
+      return ordersList
+          .any((order) => order.number == number && order.state == 2);
+    }).toList();
 
+    ordersListRight = ordersListRight.where((number) {
+      return ordersList
+          .any((order) => order.number == number && order.state == 6);
+    }).toList();
+
+    ordersLeft = ordersListLeft.isEmpty;
+    ordersRight = ordersListRight.isEmpty;
+
+    setState(() {});
   }
-
 }
-
-
