@@ -14,9 +14,9 @@ import 'package:monitor_for_sales/screens/setting_url.dart';
 import 'package:monitor_for_sales/screens/settings_home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
+import 'package:overlay_support/overlay_support.dart';
 import '../providers/screen_setting_left.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,11 +34,11 @@ class _HomePageState extends State<HomePage> {
   late Timer _timer;
   bool ordersLeft = false;
   bool ordersRight = false;
-  late bool _isFetching; // Добавленный флаг для отслеживания состояния выполнения
+   bool _isFetching = false; // Добавленный флаг для отслеживания состояния выполнения
+
 
   @override
   void initState() {
-    _isFetching = false;
     super.initState();
     commandState = [];
     ordersListRight = [];
@@ -48,9 +48,11 @@ class _HomePageState extends State<HomePage> {
     // Ensure focus is set on startup
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
+      _notification();
     });
     _startTimer();
     getState();
+
   }
 
   @override
@@ -59,18 +61,27 @@ class _HomePageState extends State<HomePage> {
     _timer?.cancel();
     super.dispose();
   }
+  void _notification(){
+    showSimpleNotification(
+      const Text(
+          "F10 - Setting \n"
+          "ESC - Exit \n "
+          "F9 - URL", style: TextStyle(color: Colors.black),),
+      background: Colors.white10.withOpacity(0.9),
+      duration: const Duration(seconds: 3),
+    );
+  }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (!_isFetching) {
-        // Проверяем, выполняется ли уже метод getState
-        getState();
-      }
+      getState();
+      print("запрос в службу ${_timer.tick}");
     });
   }
 
   void _stopTimer() {
     _timer?.cancel();
+    print("Stop Tomer Windows ");
   }
 
   @override
@@ -100,7 +111,7 @@ class _HomePageState extends State<HomePage> {
               ),
               automaticallyImplyLeading: false, // Hide back button on AppBar
             ),
-      body: KeyboardListener(
+      body:  KeyboardListener(
           autofocus: true,
           focusNode: _focusNode,
           onKeyEvent: (event) {
@@ -126,7 +137,13 @@ class _HomePageState extends State<HomePage> {
               }
             }
           },
-          child: Row(
+          child: !_isFetching ?
+          Center(
+            child: Image.asset('assets/images/error_connect.jpg',
+            fit: BoxFit.fill,
+            alignment: Alignment.center,),
+          )
+          : Row(
             children: [
               //LEFT
               Expanded(
@@ -197,7 +214,8 @@ class _HomePageState extends State<HomePage> {
                     )
                   ],
                 ),
-              )),
+              )
+              ),
               //RIGHT
               Expanded(
                   child: Container(
@@ -261,7 +279,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ))
             ],
-          )),
+          )
+      ),
     );
   }
 
@@ -293,13 +312,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getState() async {
-    if (_isFetching) return; // Если метод уже выполняется, выходим
-
-    _isFetching = true; // Устанавливаем флаг в true перед выполнением
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var url = prefs.getString('url');
-
     if (url == '' || url == null) {
       _stopTimer(); // Останавливаем таймер при открытии окна настройки
       await Navigator.of(context).push(
@@ -320,25 +335,35 @@ class _HomePageState extends State<HomePage> {
                 .map((orderData) => Order.fromJson(orderData))
                 .toList();
             statusState();
+            setState(() {
+              _isFetching = true;
+            });
+
           });
         } else {
-          _stopTimer(); // Останавливаем таймер при открытии окна настройки
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const DialogSetting()),
-          );
-          _startTimer(); // Перезапускаем таймер после закрытия окна настройки
+          setState(() {
+            _isFetching = false;
+          });
+      //    _stopTimer(); // Останавливаем таймер при открытии окна настройки
+      //    await Navigator.of(context).push(
+      //      MaterialPageRoute(builder: (context) => const DialogSetting()),
+      //    );
+      //    _startTimer(); // Перезапускаем таймер после закрытия окна настройки
         }
       } catch (e) {
-        _stopTimer(); // Останавливаем таймер при открытии окна настройки
-        await Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const DialogSetting()),
-        );
-        _startTimer(); // Перезапускаем таймер после закрытия окна настройки
+        setState(() {
+          _isFetching = false;
+        });
+      //  _stopTimer(); // Останавливаем таймер при открытии окна настройки
+      //  await Navigator.of(context).push(
+      //    MaterialPageRoute(builder: (context) => const DialogSetting()),
+      //  );
+      //  _startTimer(); // Перезапускаем таймер после закрытия окна настройки
       } finally {
-        client.close();
+       // client.close();
       }
     }
-    _isFetching = false; // Устанавливаем флаг в false после выполнения
+   // _isFetching = false; // Устанавливаем флаг в false после выполнения
   }
 
   void statusState() {

@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   fullscreen_window
   hotkey_manager_windows
+  permission_handler_windows
   screen_retriever
   window_manager
 )
