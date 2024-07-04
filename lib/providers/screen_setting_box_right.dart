@@ -10,6 +10,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
   double _radiusBoxRight = 2.0;
   double _sizeBorderRight = 1.0;
   double _sizeBoxRight = 15.0;
+  String _styleBoxRight = 'Roboto';
 
 
   Color get backgroundBoxColorRight => _backgroundBoxColorRight;
@@ -19,6 +20,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
   double get radiusBoxRight => _radiusBoxRight;
   double get sizeBorderRight => _sizeBorderRight;
   double get sizeBoxRight => _sizeBoxRight;
+  String get styleBoxRight => _styleBoxRight;
 
   ScreenSettingsBoxRight() {
     _loadSettings();
@@ -32,6 +34,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
     _radiusBoxRight = box.get('radiusBoxRight', defaultValue: 2.0);
     _sizeBorderRight = box.get('sizeBorderRight', defaultValue: 1.0);
     _sizeBoxRight = box.get('sizeBoxRight', defaultValue: 15.0);
+    _styleBoxRight = box.get('styleBoxRight', defaultValue: 'Roboto');
     notifyListeners();
   }
   void _saveSettings() {
@@ -43,6 +46,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
     box.put('radiusBoxRight', _radiusBoxRight);
     box.put('sizeBorderRight', _sizeBorderRight);
     box.put('sizeBoxRight', _sizeBoxRight);
+    box.put('styleBoxRight', _styleBoxRight);
   }
 
   void updateBackgroundBoxColor(Color color) {
@@ -77,6 +81,11 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
   }
   void updateRadiusBox(double size) {
     _radiusBoxRight = size;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateStyleBoxRight(String value) {
+    _styleBoxRight = value;
     _saveSettings();
     notifyListeners();
   }

@@ -85,7 +85,8 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                 centerTitle: true,
                 toolbarHeight: settingsHeader.sizeToolBar,
                 title: Text(settingsHeader.textTitle,
-                    style: GoogleFonts.getFont(settingsHeader.styleTitle,
+                    style: GoogleFonts.getFont(
+                        settingsHeader.styleTitle,
                         fontSize: settingsHeader.sizeText,
                         color: settingsHeader.textColor)
                     //  TextStyle(
@@ -135,8 +136,10 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                           children: [
                             Text(
                               settingsLeft.textLeftTitle.toString(),
-                              style: TextStyle(
+                              style: GoogleFonts.getFont(
                                 fontSize: settingsLeft.leftSizeText,
+                                  settingsLeft.styleColumnLeft,
+                                  color: settingsLeft.leftColorText
                               ),
                             ),
                             Expanded(
@@ -152,8 +155,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                                                 ordersListLeft.length, (index) {
                                               dynamic order =
                                                   ordersListLeft[index];
-                                              return Container(
-                                                margin: EdgeInsets.all(4.0),
+                                              return Container(margin: EdgeInsets.all(4.0),
                                                 child: Container(
                                                   alignment: Alignment.center,
                                                   width:
@@ -169,8 +171,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                                                       color: settingsBoxLeft
                                                           .boxBorderColorLeft,
                                                     ),
-                                                    borderRadius:
-                                                        BorderRadius.all(
+                                                    borderRadius: BorderRadius.all(
                                                       Radius.circular(
                                                           settingsBoxLeft
                                                               .radiusBoxLeft),
@@ -178,12 +179,10 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                                                   ),
                                                   child: Text(
                                                     order.toString(),
-                                                    style: TextStyle(
-                                                        color: settingsBoxLeft
-                                                            .textBoxColorLeft,
-                                                        fontSize:
-                                                            settingsBoxLeft
-                                                                .sizeTextLeft),
+                                                    style: GoogleFonts.getFont(
+                                                      settingsBoxLeft.styleBoxLeft,
+                                                        color: settingsBoxLeft.textBoxColorLeft,
+                                                        fontSize: settingsBoxLeft.sizeTextLeft),
                                                   ),
                                                 ), // Вывод текущего элемента
                                               );
@@ -211,7 +210,9 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                           children: [
                             Text(
                               settingsRight.textRightTitle.toString(),
-                              style: TextStyle(
+                              style: GoogleFonts.getFont(
+                                  settingsRight.styleColumnRight,
+                                  color: settingsRight.rightColorText,
                                   fontSize: settingsRight.rightSizeText),
                             ),
                             Expanded(
@@ -241,11 +242,10 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                                                 ),
                                                 child: Text(
                                                   order.toString(),
-                                                  style: TextStyle(
-                                                      color: settingsBoxRight
-                                                          .textBoxColorRight,
-                                                      fontSize: settingsBoxRight
-                                                          .sizeTextRight),
+                                                  style: GoogleFonts.getFont(
+                                                      settingsBoxRight.styleBoxRight,
+                                                      color: settingsBoxRight.textBoxColorRight,
+                                                      fontSize: settingsBoxRight.sizeTextRight),
                                                 ),
                                               ) // Вывод текущего элемента
                                               );
@@ -274,17 +274,17 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Настройки'),
+            title: const Text('Настройки'),
             content: const SettingsDialogContent(),
             actions: <Widget>[
               TextButton(
-                child: Text('Отмена'),
+                child: const Text('Отмена'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
-                child: Text('Сохранить'),
+                child: const Text('Сохранить'),
                 onPressed: () {
                   // Добавьте код для сохранения настроек
                   Navigator.of(context).pop();

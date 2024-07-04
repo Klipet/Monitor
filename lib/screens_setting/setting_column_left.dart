@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/screen_setting_left.dart';
 
@@ -42,6 +43,17 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
       },
     );
   }
+
+  String _selectedFont = '';
+  final List<String> _fonts = [
+    'Roboto',
+    'Lobster',
+    'Pacifico',
+    'Oswald',
+    'Lato',
+    'Raleway',
+    'Merriweather'
+  ];
   @override
   void initState() {
     super.initState();
@@ -64,24 +76,27 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
       children: [
             TextField(
               controller: _leftSizeController,
+              keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(
                   RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
                 ),],
               decoration: const InputDecoration(labelText: 'Enter size Left text'),
+
               onChanged: (value) {
                 settingsLeft.updateLeftSizeText(double.parse(value));
               },
             ),
         TextField(
-              controller: _leftSizeBorder,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(
-                  RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-                ),],
-              decoration: const InputDecoration(labelText: 'Enter size Left Border'),
-              onChanged: (value) {
-                settingsLeft.updateLeftSizeBorder(double.parse(value));
+          controller: _leftSizeBorder,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(
+              RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+            ),],
+          decoration: const InputDecoration(labelText: 'Enter size Left Border'),
+          onChanged: (value) {
+            settingsLeft.updateLeftSizeBorder(double.parse(value));
               },
             ),
             TextField(
@@ -91,6 +106,25 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
                 settingsLeft.updateLeftTitle(value);
               },
             ),
+        Row(
+          children: [
+            DropdownButton<String>(
+              value: settingsLeft.styleColumnLeft,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedFont = newValue!;
+                  settingsLeft.updateStyleColumnLeft(newValue);
+                });
+              },
+              items: _fonts.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value, style: GoogleFonts.getFont(value)),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: ElevatedButton(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/screen_setting_box_left.dart';
@@ -17,6 +18,17 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
   TextEditingController _boxBorderSize = TextEditingController();
   TextEditingController _boxTextSize = TextEditingController();
 
+
+  String _selectedFont = '';
+  final List<String> _fonts = [
+    'Roboto',
+    'Lobster',
+    'Pacifico',
+    'Oswald',
+    'Lato',
+    'Raleway',
+    'Merriweather'
+  ];
   @override
   void initState() {
     super.initState();
@@ -65,6 +77,7 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
         children: [
           TextField(
             controller: _boxBorderSize,
+            keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
@@ -76,6 +89,7 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
           ),
           TextField(
             controller: _boxTextSize,
+            keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
@@ -87,6 +101,7 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
           ),
           TextField(
             controller: _boxSize,
+            keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
@@ -95,6 +110,25 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
             onChanged: (value) {
               settingsBox.updateSizeBox(double.parse(value));
             },
+          ),
+          Row(
+            children: [
+              DropdownButton<String>(
+                value: settingsBox.styleBoxLeft,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedFont = newValue!;
+                    settingsBox.updateStyleBoxLeft(newValue);
+                  });
+                },
+                items: _fonts.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value, style: GoogleFonts.getFont(value)),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),

@@ -6,6 +6,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   Color _backgroundBoxColorLeft = Colors.white;
   Color _boxBorderColorLeft = Colors.white;
   Color _textBoxColorLeft = Colors.black;
+  String _styleBoxLeft = 'Roboto';
   double _sizeTextLeft = 15.0;
   double _radiusBoxLeft = 2.0;
   double _sizeBorderLeft = 1.0;
@@ -15,6 +16,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   Color get backgroundBoxColorLeft => _backgroundBoxColorLeft;
   Color get boxBorderColorLeft => _boxBorderColorLeft;
   Color get textBoxColorLeft => _textBoxColorLeft;
+  String get styleBoxLeft => _styleBoxLeft;
   double get sizeTextLeft => _sizeTextLeft;
   double get radiusBoxLeft => _radiusBoxLeft;
   double get sizeBorderLeft => _sizeBorderLeft;
@@ -28,6 +30,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     _backgroundBoxColorLeft = Color(box.get('backgroundBoxColorLeft', defaultValue: Colors.white.value));
     _boxBorderColorLeft = Color(box.get('boxBorderColorLeft', defaultValue: Colors.white.value));
     _textBoxColorLeft = Color(box.get('textBoxColorLeft', defaultValue: Colors.black.value));
+    _styleBoxLeft = box.get('styleBoxLeft', defaultValue: 'Roboto');
     _sizeTextLeft = box.get('sizeTextLeft', defaultValue: 15.0);
     _radiusBoxLeft= box.get('radiusBoxLeft', defaultValue: 2.0);
     _sizeBorderLeft = box.get('sizeBorderLeft', defaultValue: 1.0);
@@ -39,6 +42,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     box.put('backgroundBoxColorLeft', _backgroundBoxColorLeft.value);
     box.put('boxBorderColorLeft', _boxBorderColorLeft.value);
     box.put('textBoxColorLeft', _textBoxColorLeft.value);
+    box.put('styleBoxLeft', _styleBoxLeft);
     box.put('sizeTextLeft', _sizeTextLeft);
     box.put('radiusBoxLeft', _radiusBoxLeft);
     box.put('sizeBorderLeft', _sizeBorderLeft);
@@ -77,6 +81,11 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   }
   void updateRadiusBox(double size) {
     _radiusBoxLeft = size;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateStyleBoxLeft(String value) {
+    _styleBoxLeft = value;
     _saveSettings();
     notifyListeners();
   }

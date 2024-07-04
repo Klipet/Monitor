@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/screen_setting_right.dart';
@@ -43,6 +44,17 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
     );
   }
 
+  String _selectedFont = '';
+  final List<String> _fonts = [
+    'Roboto',
+    'Lobster',
+    'Pacifico',
+    'Oswald',
+    'Lato',
+    'Raleway',
+    'Merriweather'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +85,7 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
       children: [
         TextField(
           controller: _rightSizeController,
+          keyboardType: TextInputType.number,
           inputFormatters: [
             FilteringTextInputFormatter.allow(
               RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
@@ -85,6 +98,7 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
         ),
         TextField(
           controller: _rightSizeBorder,
+          keyboardType: TextInputType.number,
           inputFormatters: [
             FilteringTextInputFormatter.allow(
               RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
@@ -102,6 +116,25 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
           onChanged: (value) {
             settingsRight.updateRightTitle(value);
           },
+        ),
+        Row(
+          children: [
+            DropdownButton<String>(
+              value: settingsRight.styleColumnRight,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedFont = newValue!;
+                  settingsRight.updateStyleColumnRight(newValue);
+                });
+              },
+              items: _fonts.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value, style: GoogleFonts.getFont(value)),
+                );
+              }).toList(),
+            ),
+          ],
         ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),

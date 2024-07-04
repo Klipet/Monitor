@@ -10,6 +10,7 @@ class ScreenSettingsRight extends ChangeNotifier {
   Color _rightColorBorder = Colors.black;
   double _rightSizeText = 15.0;
   double _rightSizeBorder = 0.0;
+  String _styleColumnRight = 'Roboto';
 
 
 
@@ -19,6 +20,7 @@ class ScreenSettingsRight extends ChangeNotifier {
   String get textRightTitle => _textRightTitle;
   double get rightSizeText => _rightSizeText;
   double get rightSizeBorder => _rightSizeBorder;
+  String get styleColumnRight => _styleColumnRight;
 
 
   ScreenSettingsRight() {
@@ -32,6 +34,7 @@ class ScreenSettingsRight extends ChangeNotifier {
     _rightSizeText = box.get('rightSizeText', defaultValue: 15.0);
     _rightSizeBorder = box.get('rightSizeBorder', defaultValue: 0.0);
     _textRightTitle = box.get('textRightTitle', defaultValue: 'Right Title');
+    _styleColumnRight = box.get('styleColumnRight', defaultValue: 'Roboto');
 
     notifyListeners();
   }
@@ -43,6 +46,7 @@ class ScreenSettingsRight extends ChangeNotifier {
     box.put('rightSizeText', _rightSizeText);
     box.put('textRightTitle', _textRightTitle);
     box.put('rightSizeBorder', _rightSizeBorder);
+    box.put('styleColumnRight', _styleColumnRight);
   }
 
   void updateRightSizeText(double size) {
@@ -74,6 +78,11 @@ class ScreenSettingsRight extends ChangeNotifier {
 
   void updateRightTitle(String text) {
     _textRightTitle = text;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateStyleColumnRight(String text) {
+    _styleColumnRight = text;
     _saveSettings();
     notifyListeners();
   }

@@ -9,6 +9,7 @@ class ScreenSettingsLeft extends ChangeNotifier {
   Color _leftColorBorder = Colors.black;
   double _leftSizeText = 15.0;
   double _leftSizeBorder = 0.0;
+  String _styleColumnLeft = 'Roboto';
 
 
 
@@ -18,6 +19,7 @@ class ScreenSettingsLeft extends ChangeNotifier {
   String get textLeftTitle => _textLeftTitle;
   double get leftSizeText => _leftSizeText;
   double get leftSizeBorder => _leftSizeBorder;
+  String get styleColumnLeft => _styleColumnLeft;
 
   ScreenSettingsLeft() {
     _loadSettings();
@@ -30,6 +32,7 @@ class ScreenSettingsLeft extends ChangeNotifier {
     _leftSizeText = box.get('leftSizeText', defaultValue: 15.0);
     _leftSizeBorder = box.get('leftSizeBorder', defaultValue: 0.0);
     _textLeftTitle = box.get('textLeftTitle', defaultValue: 'Left title');
+    _styleColumnLeft = box.get('styleColumnLeft', defaultValue: 'Roboto');
 
     notifyListeners();
   }
@@ -41,6 +44,7 @@ class ScreenSettingsLeft extends ChangeNotifier {
     box.put('textLeftTitle', _textLeftTitle);
     box.put('leftColorBorder', _leftColorBorder);
     box.put('leftSizeBorder', _leftSizeBorder);
+    box.put('styleColumnLeft', _styleColumnLeft);
   }
 
 
@@ -72,6 +76,10 @@ class ScreenSettingsLeft extends ChangeNotifier {
   }
   void updateLeftTitle(String text) {
     _textLeftTitle = text;
+    _saveSettings();
+    notifyListeners();
+  }  void updateStyleColumnLeft(String text) {
+    _styleColumnLeft = text;
     _saveSettings();
     notifyListeners();
   }

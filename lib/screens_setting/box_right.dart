@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,16 @@ class _SettingBoxRight extends State<SettingBoxRight> {
   TextEditingController _boxBorderSize = TextEditingController();
   TextEditingController _boxTextSize = TextEditingController();
 
+  String _selectedFont = '';
+  final List<String> _fonts = [
+    'Roboto',
+    'Lobster',
+    'Pacifico',
+    'Oswald',
+    'Lato',
+    'Raleway',
+    'Merriweather'
+  ];
   @override
   void initState() {
     super.initState();
@@ -66,6 +77,7 @@ class _SettingBoxRight extends State<SettingBoxRight> {
         children: [
           TextField(
             controller: _boxBorderSize,
+            keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
@@ -77,6 +89,7 @@ class _SettingBoxRight extends State<SettingBoxRight> {
           ),
           TextField(
             controller: _boxTextSize,
+            keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
@@ -88,6 +101,7 @@ class _SettingBoxRight extends State<SettingBoxRight> {
           ),
           TextField(
             controller: _boxSize,
+            keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
@@ -96,6 +110,25 @@ class _SettingBoxRight extends State<SettingBoxRight> {
             onChanged: (value) {
               settingsBox.updateSizeBox(double.parse(value));
             },
+          ),
+          Row(
+            children: [
+              DropdownButton<String>(
+                value: settingsBox.styleBoxRight,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedFont = newValue!;
+                    settingsBox.updateStyleBoxRight(newValue);
+                  });
+                },
+                items: _fonts.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value, style: GoogleFonts.getFont(value)),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),

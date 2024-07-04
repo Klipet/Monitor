@@ -77,6 +77,7 @@ class _SettingHeaderState extends State<SettingHeader> {
         children: [
           TextField(
             controller: _sizeController,
+            keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
@@ -89,6 +90,7 @@ class _SettingHeaderState extends State<SettingHeader> {
 
           TextField(
             controller: _sizeToolBar,
+            keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку

@@ -159,8 +159,10 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(
                       settingsLeft.textLeftTitle.toString(),
-                      style: TextStyle(
+                      style: GoogleFonts.getFont(
                           fontSize: settingsLeft.leftSizeText,
+                          settingsLeft.styleColumnLeft,
+                          color: settingsLeft.leftColorText
                       ),
                     ),
                     Expanded(
@@ -197,11 +199,10 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                           child: Text(
                                             order.toString(),
-                                            style: TextStyle(
-                                                color: settingsBoxLeft
-                                                    .textBoxColorLeft,
-                                                fontSize: settingsBoxLeft
-                                                    .sizeTextLeft),
+                                            style: GoogleFonts.getFont(
+                                              settingsBoxLeft.styleBoxLeft,
+                                                color: settingsBoxLeft.textBoxColorLeft,
+                                                fontSize: settingsBoxLeft.sizeTextLeft),
                                           ),
                                         ), // Вывод текущего элемента
                                       );
@@ -229,7 +230,11 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(
                       settingsRight.textRightTitle.toString(),
-                      style: TextStyle(fontSize: settingsRight.rightSizeText),
+                      style: GoogleFonts.getFont(
+                          settingsRight.styleColumnRight,
+                          fontSize: settingsRight.rightSizeText,
+                        color: settingsRight.rightColorText,
+                      ),
                     ),
                     Expanded(
                       child: ordersListRight.isNotEmpty
@@ -255,11 +260,10 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         child: Text(
                                           order.toString(),
-                                          style: TextStyle(
-                                              color: settingsBoxRight
-                                                  .textBoxColorRight,
-                                              fontSize: settingsBoxRight
-                                                  .sizeTextRight),
+                                          style: GoogleFonts.getFont(
+                                            settingsBoxRight.styleBoxRight,
+                                              color: settingsBoxRight.textBoxColorRight,
+                                              fontSize: settingsBoxRight.sizeTextRight),
                                         ),
                                       ) // Вывод текущего элемента
                                       );
