@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:filepicker_windows/filepicker_windows.dart';
+import 'dart:io';
+
 import '../providers/screen_setting_header.dart';
 
 
@@ -69,6 +72,18 @@ class _SettingHeaderState extends State<SettingHeader> {
   @override
   Widget build(BuildContext context) {
     final settingsHeader = Provider.of<ScreenSettingsHeader>(context);
+    Future<void> _pickImage() async {
+      final fileDialog = OpenFilePicker()
+      ..filterSpecification  = {
+       'image (*.jpg)' : '*.jpg'
+      };
+      final result = fileDialog.getFile();
+      if (result != null) {
+        final filePath = result.path;
+        final selectedFile = File(filePath);
+        await settingsHeader.updateSelectedImage(selectedFile);
+      }
+    }
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white
@@ -152,6 +167,15 @@ class _SettingHeaderState extends State<SettingHeader> {
               child: const Text('Background Color'),
             ),
           ),
+      //    Padding(
+      //      padding: const EdgeInsets.only(top: 8.0),
+      //      child: ElevatedButton(
+      //        onPressed: () {
+      //          _pickImage();
+      //        },
+      //        child: const Text('Select Image'),
+      //      ),
+      //    ),
         ],
       ),
     );

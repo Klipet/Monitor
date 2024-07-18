@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -138,12 +139,28 @@ class _DialogSettingState extends State<DialogSetting> {
       } else {
         setState(() {
           connectStatus = false;
+          Fluttertoast.showToast(
+            msg: response.body,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.white,
+            textColor: Colors.black,
+            fontSize: 16.0,
+          );
         });
         print('Error: ${response.statusCode}');
       }
     } catch (e) {
       setState(() {
         connectStatus = false;
+        Fluttertoast.showToast(
+          msg: e.toString(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.white,
+          textColor: Colors.black,
+          fontSize: 16.0,
+        );
       });
       print('Error: $e');
     } finally {

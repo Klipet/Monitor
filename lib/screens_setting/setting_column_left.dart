@@ -18,6 +18,7 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
   TextEditingController _leftTextController = TextEditingController();
   TextEditingController _leftSizeController = TextEditingController();
   TextEditingController _leftSizeBorder = TextEditingController();
+  late bool borderleft = true;
 
   void _openColorPicker(BuildContext context, Color currentColor, Function(Color) onColorChanged) {
     showDialog(
@@ -68,6 +69,12 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
       }
     });
   }
+  void dispose() {
+    _leftTextController.dispose();
+    _leftSizeBorder.dispose();
+    _leftSizeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +115,28 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
             ),
         Row(
           children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  settingsLeft.updateBorderLeft(!settingsLeft.borderLeft);
+                });
+              },
+              child: Icon(
+                settingsLeft.borderLeft ? Icons.check_box : Icons.check_box_outline_blank,
+                size: 35.0,
+                color: settingsLeft.borderLeft ? Colors.green : Colors.black,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(settingsLeft.borderLeft? 'Border is activate' : 'Border is dezactivate',
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
             DropdownButton<String>(
               value: settingsLeft.styleColumnLeft,
               onChanged: (String? newValue) {
@@ -129,7 +158,8 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
               padding: const EdgeInsets.only(top: 8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  _openColorPicker(context, settingsLeft.leftColumnColor, (color) {
+                  _openColorPicker(context, settingsLeft.leftColumnColor,
+                          (color) {
                     setState(() {
                       settingsLeft.updateLeftColumnColor(color);
                     });

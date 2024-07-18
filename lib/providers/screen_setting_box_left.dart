@@ -1,4 +1,6 @@
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -11,6 +13,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   double _radiusBoxLeft = 2.0;
   double _sizeBorderLeft = 1.0;
   double _sizeBoxLeft = 15.0;
+  bool _borderBoxLeft = false;
 
 
   Color get backgroundBoxColorLeft => _backgroundBoxColorLeft;
@@ -21,6 +24,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   double get radiusBoxLeft => _radiusBoxLeft;
   double get sizeBorderLeft => _sizeBorderLeft;
   double get sizeBoxLeft => _sizeBoxLeft;
+  bool get borderBoxLeft => _borderBoxLeft;
 
   ScreenSettingsBoxLeft() {
     _loadSettings();
@@ -35,6 +39,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     _radiusBoxLeft= box.get('radiusBoxLeft', defaultValue: 2.0);
     _sizeBorderLeft = box.get('sizeBorderLeft', defaultValue: 1.0);
     _sizeBoxLeft = box.get('sizeBoxLeft', defaultValue: 15.0);
+    _borderBoxLeft = box.get('borderBoxLeft', defaultValue: false);
     notifyListeners();
   }
   void _saveSettings() {
@@ -47,9 +52,15 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     box.put('radiusBoxLeft', _radiusBoxLeft);
     box.put('sizeBorderLeft', _sizeBorderLeft);
     box.put('sizeBoxLeft', _sizeBoxLeft);
+    box.put('borderLeft', _borderBoxLeft);
   }
 
-  void updateBackgroundBoxColor(Color color) {
+  void updateBorderBoxLeft(bool value) {
+    _borderBoxLeft = value;
+    _saveSettings();
+    notifyListeners();
+  }
+   void updateBackgroundBoxColor(Color color) {
     _backgroundBoxColorLeft = color;
     _saveSettings();
     notifyListeners();

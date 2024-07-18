@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,12 +33,13 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
   late Timer _timer;
   bool ordersLeft = false;
   bool ordersRight = false;
-  bool _isFetching = false;
+  late bool _isFetching;
   bool _showSettings = false;
   late bool _statusConect;
 
   @override
   void initState() {
+    _isFetching = false;
     _statusConect = false;
     super.initState();
     commandState = [];
@@ -78,195 +80,215 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
     var settingsBoxLeft = Provider.of<ScreenSettingsBoxLeft>(context);
     var settingsBoxRight = Provider.of<ScreenSettingsBoxRight>(context);
     return Scaffold(
-        appBar: settingsHeader.textTitle.isEmpty
-            ? null
-            : AppBar(
-                backgroundColor: settingsHeader.backgroundColor,
-                centerTitle: true,
-                toolbarHeight: settingsHeader.sizeToolBar,
-                title: Text(settingsHeader.textTitle,
-                    style: GoogleFonts.getFont(
-                        settingsHeader.styleTitle,
-                        fontSize: settingsHeader.sizeText,
-                        color: settingsHeader.textColor)
-                    //  TextStyle(
-                    //      fontSize: settingsHeader.sizeText,
-                    //      color: settingsHeader.textColor
-                    //  ),
+      appBar: settingsHeader.textTitle.isEmpty
+          ? null
+          : AppBar(
+        backgroundColor: settingsHeader.backgroundColor,
+        centerTitle: true,
+        toolbarHeight: settingsHeader.sizeToolBar,
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 30.0),
+          child: Text(settingsHeader.textTitle,
+              style: GoogleFonts.getFont(
+                  settingsHeader.styleTitle,
+                  fontSize: settingsHeader.sizeText,
+                  color: settingsHeader.textColor)
+            //  TextStyle(
+            //      fontSize: settingsHeader.sizeText,
+            //      color: settingsHeader.textColor
+            //  ),
+          ),
+        ),
+        automaticallyImplyLeading: false, // Hide back button on AppBar
+      ),
+      body: Stack(
+        children: [
+         !_isFetching
+              ? Center(
+            child: Image.asset(
+              'assets/images/error_connect.jpg',
+              fit: BoxFit.fill,
+              alignment: Alignment.center,
+            ),
+          )
+              : Row(
+            children: [
+              //LEFT
+              Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: settingsLeft.leftColumnColor,
+                        border: settingsLeft.borderLeft ? Border.all(
+                          color: settingsLeft.leftColorBorder,
+                          width: settingsLeft.leftSizeBorder,
+                        ) : null
                     ),
-                automaticallyImplyLeading: false, // Hide back button on AppBar
-              ),
-        body: GestureDetector(
-            onDoubleTap: () {
-              setState(() {
-                _showSettings = !_showSettings;
-                _showSettingsDialog(
-                    context); // Переключаем состояние отображения настроек
-              });
-            },
-            onTap: () {
-              setState(() {
-                _showSettings = !_showSettings;
-                _stopTimer(); // Останавливаем таймер при открытии окна настройки
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const DialogSetting()),
-                );
-              });
-            },
-            child: !_isFetching
-                ? Center(
-                    child: Image.asset(
-                      'assets/images/error_connect.jpg',
-                      fit: BoxFit.fill,
-                      alignment: Alignment.center,
-                    ),
-                  )
-                : Row(
-                    children: [
-                      //LEFT
-                      Expanded(
-                          child: Container(
-                        decoration: BoxDecoration(
-                            color: settingsLeft.leftColumnColor,
-                            border: Border.all(
-                              color: settingsLeft.leftColorBorder,
-                              width: settingsLeft.leftSizeBorder,
-                            )),
-                        child: Column(
-                          children: [
-                            Text(
-                              settingsLeft.textLeftTitle.toString(),
-                              style: GoogleFonts.getFont(
-                                fontSize: settingsLeft.leftSizeText,
-                                  settingsLeft.styleColumnLeft,
-                                  color: settingsLeft.leftColorText
-                              ),
-                            ),
-                            Expanded(
-                              child: ordersListLeft.isNotEmpty
-                                  ? SingleChildScrollView(
-                                      child: Consumer<ScreenSettingsBoxLeft>(
-                                        builder: (context, settingsBox, child) {
-                                          // Сортируем список перед отображением
-                                          ordersListLeft
-                                              .sort((a, b) => a.compareTo(b));
-                                          return Wrap(
-                                            children: List.generate(
-                                                ordersListLeft.length, (index) {
-                                              dynamic order =
-                                                  ordersListLeft[index];
-                                              return Container(margin: EdgeInsets.all(4.0),
-                                                child: Container(
-                                                  alignment: Alignment.center,
-                                                  width:
-                                                      settingsBox.sizeBoxLeft,
-                                                  height:
-                                                      settingsBox.sizeBoxLeft,
-                                                  decoration: BoxDecoration(
-                                                    color: settingsBoxLeft
-                                                        .backgroundBoxColorLeft,
-                                                    border: Border.all(
-                                                      width: settingsBoxLeft
-                                                          .sizeBorderLeft,
-                                                      color: settingsBoxLeft
-                                                          .boxBorderColorLeft,
-                                                    ),
-                                                    borderRadius: BorderRadius.all(
-                                                      Radius.circular(
-                                                          settingsBoxLeft
-                                                              .radiusBoxLeft),
-                                                    ),
-                                                  ),
-                                                  child: Text(
-                                                    order.toString(),
-                                                    style: GoogleFonts.getFont(
-                                                      settingsBoxLeft.styleBoxLeft,
-                                                        color: settingsBoxLeft.textBoxColorLeft,
-                                                        fontSize: settingsBoxLeft.sizeTextLeft),
-                                                  ),
-                                                ), // Вывод текущего элемента
-                                              );
-                                            }),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  : const Center(
-                                      child: Text("No orders available")),
-                            )
-                          ],
+                    child: Column(
+                      children: [
+                        Text(
+                          settingsLeft.textLeftTitle.toString(),
+                          style: GoogleFonts.getFont(
+                              fontSize: settingsLeft.leftSizeText,
+                              settingsLeft.styleColumnLeft,
+                              color: settingsLeft.leftColorText
+                          ),
                         ),
-                      )),
-                      //RIGHT
-                      Expanded(
-                          child: Container(
-                        decoration: BoxDecoration(
-                            color: settingsRight.rightColumnColor,
-                            border: Border.all(
-                              color: settingsRight.rightColorBorder,
-                              width: settingsRight.rightSizeBorder,
-                            )),
-                        child: Column(
-                          children: [
-                            Text(
-                              settingsRight.textRightTitle.toString(),
-                              style: GoogleFonts.getFont(
-                                  settingsRight.styleColumnRight,
-                                  color: settingsRight.rightColorText,
-                                  fontSize: settingsRight.rightSizeText),
-                            ),
-                            Expanded(
-                              child: ordersListRight.isNotEmpty
-                                  ? SingleChildScrollView(
-                                      child: Wrap(
-                                        children: List.generate(
-                                            ordersListRight.length, (index) {
-                                          dynamic order =
-                                              ordersListRight[index];
-                                          return Container(
-                                              margin: const EdgeInsets.all(4.0),
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                width: settingsBoxRight
-                                                    .sizeBoxRight,
-                                                height: settingsBoxRight
-                                                    .sizeBoxRight,
-                                                decoration: BoxDecoration(
-                                                  color: settingsBoxRight
-                                                      .backgroundBoxColorRight,
-                                                  border: Border.all(
-                                                      width: settingsBoxRight
-                                                          .sizeBorderRight,
-                                                      color: settingsBoxRight
-                                                          .boxBorderColorRight),
-                                                ),
-                                                child: Text(
-                                                  order.toString(),
-                                                  style: GoogleFonts.getFont(
-                                                      settingsBoxRight.styleBoxRight,
-                                                      color: settingsBoxRight.textBoxColorRight,
-                                                      fontSize: settingsBoxRight.sizeTextRight),
-                                                ),
-                                              ) // Вывод текущего элемента
-                                              );
-                                        }),
-                                      ),
-                                    )
-                                  : Center(
-                                      child: Text(
-                                        'No orders available',
-                                        style: TextStyle(
-                                          fontSize: settingsRight.rightSizeText,
+                        Expanded(
+                          child: ordersListLeft.isNotEmpty
+                              ? SingleChildScrollView(
+                            child: Consumer<ScreenSettingsBoxLeft>(
+                              builder: (context, settingsBox, child) {
+                                // Сортируем список перед отображением
+                                ordersListLeft
+                                    .sort((a, b) => a.compareTo(b));
+                                return Wrap(
+                                  children: List.generate(
+                                      ordersListLeft.length, (index) {
+                                    dynamic order =
+                                    ordersListLeft[index];
+                                    return Container(margin: EdgeInsets.all(4.0),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width:
+                                        settingsBox.sizeBoxLeft,
+                                        height:
+                                        settingsBox.sizeBoxLeft,
+                                        decoration: BoxDecoration(
+                                          color: settingsBoxLeft
+                                              .backgroundBoxColorLeft,
+                                          border: Border.all(
+                                            width: settingsBoxLeft
+                                                .sizeBorderLeft,
+                                            color: settingsBoxLeft
+                                                .boxBorderColorLeft,
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(
+                                                settingsBoxLeft
+                                                    .radiusBoxLeft),
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                        child: Text(
+                                          order.toString(),
+                                          style: GoogleFonts.getFont(
+                                              settingsBoxLeft.styleBoxLeft,
+                                              color: settingsBoxLeft.textBoxColorLeft,
+                                              fontSize: settingsBoxLeft.sizeTextLeft),
+                                        ),
+                                      ), // Вывод текущего элемента
+                                    );
+                                  }),
+                                );
+                              },
                             ),
-                          ],
+                          )
+                              : const Center(
+                              child: Text("No orders available")),
+                        )
+                      ],
+                    ),
+                  )),
+              //RIGHT
+              Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: settingsRight.rightColumnColor,
+                        border: settingsRight.borderRight ? Border.all(
+                          color: settingsRight.rightColorBorder,
+                          width: settingsRight.rightSizeBorder,
+                        ): null
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          settingsRight.textRightTitle.toString(),
+                          style: GoogleFonts.getFont(
+                              settingsRight.styleColumnRight,
+                              color: settingsRight.rightColorText,
+                              fontSize: settingsRight.rightSizeText),
                         ),
-                      ))
-                    ],
-                  )));
+                        Expanded(
+                          child: ordersListRight.isNotEmpty
+                              ? SingleChildScrollView(
+                            child: Wrap(
+                              children: List.generate(
+                                  ordersListRight.length, (index) {
+                                dynamic order =
+                                ordersListRight[index];
+                                return Container(
+                                    margin: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      width: settingsBoxRight
+                                          .sizeBoxRight,
+                                      height: settingsBoxRight
+                                          .sizeBoxRight,
+                                      decoration: BoxDecoration(
+                                        color: settingsBoxRight
+                                            .backgroundBoxColorRight,
+                                        border: Border.all(
+                                            width: settingsBoxRight
+                                                .sizeBorderRight,
+                                            color: settingsBoxRight
+                                                .boxBorderColorRight),
+                                      ),
+                                      child: Text(
+                                        order.toString(),
+                                        style: GoogleFonts.getFont(
+                                            settingsBoxRight.styleBoxRight,
+                                            color: settingsBoxRight.textBoxColorRight,
+                                            fontSize: settingsBoxRight.sizeTextRight),
+                                      ),
+                                    ) // Вывод текущего элемента
+                                );
+                              }),
+                            ),
+                          )
+                              : const Center(
+                            child: Text(
+                              'No orders available',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+            ]
+            ,
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child:
+            GestureDetector(
+              onDoubleTap: () {
+                setState(() {
+                  _showSettings = !_showSettings;
+                  _showSettingsDialog(
+                      context); // Переключаем состояние отображения настроек
+                });
+              },
+              onTap: () {
+                setState(() {
+                  _showSettings = !_showSettings;
+                  _stopTimer(); // Останавливаем таймер при открытии окна настройки
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const DialogSetting()),
+                  );
+                });
+              },
+              child: Container(
+                width: 150,  // Укажите ширину
+                height: 150, // Укажите высоту
+                color: Colors.transparent,
+              ),
+            ),
+          ),
+        ],
+      )
+    );
   }
+
 
   void _showSettingsDialog(BuildContext context) {
     if (_showSettings) {
@@ -319,15 +341,39 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                 .toList();
             statusState();
             _isFetching = true;
+            Fluttertoast.showToast(
+              msg: response.toString(),
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.white,
+              textColor: Colors.black,
+              fontSize: 16.0,
+            );
           });
         } else {
           setState(() {
             _isFetching = false;
+            Fluttertoast.showToast(
+              msg: response.toString(),
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.white,
+              textColor: Colors.black,
+              fontSize: 16.0,
+            );
           });
         }
       } catch (e) {
         setState(() {
           _isFetching = false;
+          Fluttertoast.showToast(
+            msg: e.toString(),
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.white,
+            textColor: Colors.black,
+            fontSize: 16.0,
+          );
         });
       } finally {
         client.close();

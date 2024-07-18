@@ -119,6 +119,28 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
         ),
         Row(
           children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  settingsRight.updateBorderRight(!settingsRight.borderRight);
+                });
+              },
+              child: Icon(
+                settingsRight.borderRight ? Icons.check_box : Icons.check_box_outline_blank,
+                size: 35.0,
+                color: settingsRight.borderRight ? Colors.green : Colors.black,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(settingsRight.borderRight? 'Border is activate' : 'Border is dezactivate',
+              style: const TextStyle(
+                  fontSize: 20
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
             DropdownButton<String>(
               value: settingsRight.styleColumnRight,
               onChanged: (String? newValue) {

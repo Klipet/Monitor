@@ -10,6 +10,7 @@ class ScreenSettingsLeft extends ChangeNotifier {
   double _leftSizeText = 15.0;
   double _leftSizeBorder = 0.0;
   String _styleColumnLeft = 'Roboto';
+  late bool _borderLeft;
 
 
 
@@ -20,6 +21,7 @@ class ScreenSettingsLeft extends ChangeNotifier {
   double get leftSizeText => _leftSizeText;
   double get leftSizeBorder => _leftSizeBorder;
   String get styleColumnLeft => _styleColumnLeft;
+  bool get borderLeft => _borderLeft;
 
   ScreenSettingsLeft() {
     _loadSettings();
@@ -33,7 +35,7 @@ class ScreenSettingsLeft extends ChangeNotifier {
     _leftSizeBorder = box.get('leftSizeBorder', defaultValue: 0.0);
     _textLeftTitle = box.get('textLeftTitle', defaultValue: 'Left title');
     _styleColumnLeft = box.get('styleColumnLeft', defaultValue: 'Roboto');
-
+    _borderLeft = box.get('borderLeft', defaultValue: false);
     notifyListeners();
   }
   void _saveSettings() {
@@ -45,10 +47,16 @@ class ScreenSettingsLeft extends ChangeNotifier {
     box.put('leftColorBorder', _leftColorBorder);
     box.put('leftSizeBorder', _leftSizeBorder);
     box.put('styleColumnLeft', _styleColumnLeft);
+    box.put('borderLeft', _borderLeft);
   }
 
 
 
+  void updateBorderLeft(bool value) {
+    _borderLeft = value;
+    _saveSettings();
+    notifyListeners();
+  }
   void updateLeftSizeText(double size) {
     _leftSizeText = size;
     _saveSettings();

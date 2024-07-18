@@ -11,6 +11,7 @@ class ScreenSettingsRight extends ChangeNotifier {
   double _rightSizeText = 15.0;
   double _rightSizeBorder = 0.0;
   String _styleColumnRight = 'Roboto';
+  late bool _borderRight;
 
 
 
@@ -21,6 +22,7 @@ class ScreenSettingsRight extends ChangeNotifier {
   double get rightSizeText => _rightSizeText;
   double get rightSizeBorder => _rightSizeBorder;
   String get styleColumnRight => _styleColumnRight;
+  bool get borderRight => _borderRight;
 
 
   ScreenSettingsRight() {
@@ -35,6 +37,7 @@ class ScreenSettingsRight extends ChangeNotifier {
     _rightSizeBorder = box.get('rightSizeBorder', defaultValue: 0.0);
     _textRightTitle = box.get('textRightTitle', defaultValue: 'Right Title');
     _styleColumnRight = box.get('styleColumnRight', defaultValue: 'Roboto');
+    _borderRight = box.get('borderRight', defaultValue: false);
 
     notifyListeners();
   }
@@ -47,8 +50,14 @@ class ScreenSettingsRight extends ChangeNotifier {
     box.put('textRightTitle', _textRightTitle);
     box.put('rightSizeBorder', _rightSizeBorder);
     box.put('styleColumnRight', _styleColumnRight);
+    box.put('borderRight', _borderRight);
   }
 
+  void updateBorderRight(bool size) {
+    _borderRight = size;
+    _saveSettings();
+    notifyListeners();
+  }
   void updateRightSizeText(double size) {
     _rightSizeText = size;
     _saveSettings();
