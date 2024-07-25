@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:monitor_for_sales/animation/animated_left.dart';
+import 'package:monitor_for_sales/animation/animated_order_container%20.dart';
+import 'package:monitor_for_sales/animation/default_animation.dart';
 import 'package:monitor_for_sales/factory/Order.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
@@ -15,10 +18,12 @@ import 'package:monitor_for_sales/screens/settings_home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:sound_library/sound_library.dart';
 import 'package:synchronized_keyboard_listener/synchronized_keyboard_listener.dart';
+import '../animation/order_screen.dart';
 import '../providers/screen_setting_left.dart';
-import 'package:file_picker/file_picker.dart';
-
+import 'package:lottie/lottie.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,19 +43,9 @@ class _HomePageState extends State<HomePage> {
   bool ordersRight = false;
   bool _isFetching = false; // Добавленный флаг для отслеживания состояния выполнения
   File? _image;
-
-  Future<void> _pickImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-    );
-
-    if (result != null) {
-      setState(() {
-        _image = File(result.files.single.path!);
-      });
-    }
-  }
-
+  Control control = Control.play;
+  Map<int, double> opacityMap = {};
+  double _opacity = 1.0;
 
   @override
   void initState() {
@@ -67,7 +62,6 @@ class _HomePageState extends State<HomePage> {
     });
     _startTimer();
     getState();
-
   }
 
   @override
@@ -76,12 +70,15 @@ class _HomePageState extends State<HomePage> {
     _timer?.cancel();
     super.dispose();
   }
-  void _notification(){
+
+  void _notification() {
     showSimpleNotification(
       const Text(
-          "F10 - Setting \n"
-          "ESC - Exit \n "
-          "F9 - URL", style: TextStyle(color: Colors.black),),
+        "F10 - Setting \n"
+        "ESC - Exit \n "
+        "F9 - URL",
+        style: TextStyle(color: Colors.black),
+      ),
       background: Colors.white10.withOpacity(0.9),
       duration: const Duration(seconds: 3),
     );
@@ -99,6 +96,12 @@ class _HomePageState extends State<HomePage> {
     print("Stop Tomer Windows ");
   }
 
+  void _toggleOpacity() {
+    setState(() {
+      _opacity = _opacity == 1.0 ? 0.0 : 1.0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var settingsLeft = Provider.of<ScreenSettingsLeft>(context);
@@ -107,251 +110,125 @@ class _HomePageState extends State<HomePage> {
     var settingsBoxLeft = Provider.of<ScreenSettingsBoxLeft>(context);
     var settingsBoxRight = Provider.of<ScreenSettingsBoxRight>(context);
     return Scaffold(
-      appBar: settingsHeader.textTitle.isEmpty
-          ? null
-          : AppBar(
-              backgroundColor: settingsHeader.backgroundColor,
-              centerTitle: true,
-              toolbarHeight: settingsHeader.sizeToolBar,
-              title: Padding(
-                padding: const EdgeInsets.only(bottom: 30.0),
-                child: Text(
-                  textAlign: TextAlign.start,
-                  settingsHeader.textTitle,
-                  style:  GoogleFonts.getFont(
-                      settingsHeader.styleTitle,
-                      fontSize: settingsHeader.sizeText,
-                      color: settingsHeader.textColor)
+        appBar: settingsHeader.textTitle.isEmpty
+            ? null
+            : AppBar(
+                backgroundColor: settingsHeader.backgroundColor,
+                centerTitle: true,
+                toolbarHeight: settingsHeader.sizeToolBar,
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 30.0),
+                  child: Text(
+                      textAlign: TextAlign.start,
+                      settingsHeader.textTitle,
+                      style: GoogleFonts.getFont(settingsHeader.styleTitle,
+                          fontSize: settingsHeader.sizeText,
+                          color: settingsHeader.textColor)),
                 ),
+                automaticallyImplyLeading: false, // Hide back button on AppBar
               ),
-              automaticallyImplyLeading: false, // Hide back button on AppBar
-            ),
-      body:
-      SynchronizedKeyboardListener(
-        keyEvents:<LogicalKeyboardKey, Function()> {
-          LogicalKeyboardKey.escape:(){ _handleEscapeKey();},
-          LogicalKeyboardKey.f10:(){ _handleF10Key();},
-          LogicalKeyboardKey.f9:(){ _handleF9Key();},
-        },
-  //            KeyboardListener(
-  //        autofocus: true,
-  //        focusNode: _focusNode,
-  //        onKeyEvent: _handleKeyEvent,
-  //          try{
-  //            if (event is KeyDownEvent) {
-  //              if (event.logicalKey == LogicalKeyboardKey.escape) {
-  //                print('Escape pressed');
-  //                // Close the application
-  //                if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-  //                  exit(0);
-  //                }
-  //              }
-  //              if (event.logicalKey == LogicalKeyboardKey.f10) {
-  //                print('F10 pressed');
-  //                // Open settings dialog
-  //                _showSettingsDialog(context);
-  //              }
-  //              if (event.logicalKey == LogicalKeyboardKey.f9) {
-  //                print('F9 pressed');
-  //                _stopTimer(); // Останавливаем таймер при открытии окна настройки
-  //                Navigator.of(context).push(
-  //                  MaterialPageRoute(builder: (context) => const DialogSetting()),
-  //                );
-  //              }
-  //            }else{
-  //              print('Ignored key press: ${event.logicalKey.debugName}');
-  //            }
-  //
-  //          }catch(e){
-  //            print(e.toString());
-  //          }
-  //          },
-          child: !_isFetching ?
-          Center(
-            child: Image.asset('assets/images/error_connect.jpg',
-            fit: BoxFit.fill,
-            alignment: Alignment.center,),
-          )
-          : Container(
-          //  decoration: BoxDecoration(image: settingsHeader.selectedImage != null
-          //      ? DecorationImage(
-          //    image: FileImage(settingsHeader.selectedImage!),
-          //    fit: BoxFit.fill,
-          //  )
-          //      : null,
-          //  ),
-            child: Row(
-              children: [
-                //LEFT
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      color: settingsLeft.leftColumnColor,
-                      border: settingsLeft.borderLeft ? Border.all(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      ) : null
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        settingsLeft.textLeftTitle.toString(),
-                        style: GoogleFonts.getFont(
-                            fontSize: settingsLeft.leftSizeText,
-                            settingsLeft.styleColumnLeft,
-                            color: settingsLeft.leftColorText
-                        ),
-                      ),
-                      Expanded(
-                        child: ordersListLeft.isNotEmpty
-                            ? SingleChildScrollView(
-                                child: Consumer<ScreenSettingsBoxLeft>(
-                                  builder: (context, settingsBox, child) {
-                                    // Сортируем список перед отображением
-                                    ordersListLeft.sort((a, b) => a.compareTo(b));
-
-                                    return Wrap(
-                                      children: List.generate(
-                                          ordersListLeft.length, (index) {
-                                        dynamic order = ordersListLeft[index];
-                                        return Container(
-                                          margin: EdgeInsets.all(4.0),
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            width: settingsBox.sizeBoxLeft,
-                                            height: settingsBox.sizeBoxLeft,
-                                            decoration: BoxDecoration(
-                                              color: settingsBoxLeft
-                                                  .backgroundBoxColorLeft,
-                                              border: Border.all(
-                                                width: settingsBoxLeft
-                                                    .sizeBorderLeft,
-                                                color: settingsBoxLeft
-                                                    .boxBorderColorLeft,
-                                              ),
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(settingsBoxLeft
-                                                    .radiusBoxLeft),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              order.toString(),
-                                              style: GoogleFonts.getFont(
-                                                settingsBoxLeft.styleBoxLeft,
-                                                  color: settingsBoxLeft.textBoxColorLeft,
-                                                  fontSize: settingsBoxLeft.sizeTextLeft),
-                                            ),
-                                          ), // Вывод текущего элемента
-                                        );
-                                      }),
-                                    );
-                                  },
+        body: Stack(
+          children: [
+            SynchronizedKeyboardListener(
+                keyEvents: <LogicalKeyboardKey, Function()>{
+                  LogicalKeyboardKey.escape: () {
+                    _handleEscapeKey();
+                  },
+                  LogicalKeyboardKey.f10: () {
+                    _handleF10Key();
+                  },
+                  LogicalKeyboardKey.f9: () {
+                    _handleF9Key();
+                  },
+                  //  LogicalKeyboardKey.f8:(){ _handleF8Key();},
+                },
+                child: Stack(
+                  children: [
+                    _animation(context),
+                    !_isFetching
+                        ? Stack(
+                            children: [
+                              Container(
+                                alignment: Alignment.topRight,
+                                width: MediaQuery.of(context).size.width,
+                                color: Colors.black12.withOpacity(0.2),
+                                // Полупрозрачный цвет
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 50.0),
+                                          child: Lottie.asset(
+                                            'assets/errorWifi.json',
+                                            width: 200,
+                                            height: 200,
+                                            reverse: true,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               )
-                            : const Center(child: Text("No orders available")),
-                      )
-                    ],
-                  ),
+                            ],
+                          )
+                        : Container(),
+                  ],
                 )
-                ),
-                //RIGHT
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      color: settingsRight.rightColumnColor,
-                      border: settingsRight.borderRight ? Border.all(
-                        color: settingsRight.rightColorBorder,
-                        width: settingsRight.rightSizeBorder,
-                      ): null
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        settingsRight.textRightTitle.toString(),
-                        style: GoogleFonts.getFont(
-                            settingsRight.styleColumnRight,
-                            fontSize: settingsRight.rightSizeText,
-                          color: settingsRight.rightColorText,
-                        ),
-                      ),
-                      Expanded(
-                        child: ordersListRight.isNotEmpty
-                            ? SingleChildScrollView(
-                                child: Wrap(
-                                  children: List.generate(ordersListRight.length,
-                                      (index) {
-                                    dynamic order = ordersListRight[index];
-                                    return Container(
-                                        margin: const EdgeInsets.all(4.0),
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          width: settingsBoxRight.sizeBoxRight,
-                                          height: settingsBoxRight.sizeBoxRight,
-                                          decoration: BoxDecoration(
-                                            color: settingsBoxRight
-                                                .backgroundBoxColorRight,
-                                            border: Border.all(
-                                                width: settingsBoxRight
-                                                    .sizeBorderRight,
-                                                color: settingsBoxRight
-                                                    .boxBorderColorRight),
-                                          ),
-                                          child: Text(
-                                            order.toString(),
-                                            style: GoogleFonts.getFont(
-                                              settingsBoxRight.styleBoxRight,
-                                                color: settingsBoxRight.textBoxColorRight,
-                                                fontSize: settingsBoxRight.sizeTextRight),
-                                          ),
-                                        ) // Вывод текущего элемента
-                                        );
-                                  }),
-                                ),
-                              )
-                            : Center(
-                                child: Text(
-                                  'No orders available',
-                                  style: TextStyle(
-                                    fontSize: settingsRight.rightSizeText,
-                                  ),
-                                ),
-                              ),
-                      ),
-                    ],
-                  ),
-                ))
-              ],
-            ),
-          )
-      ),
-    );
+            )
+          ],
+        ));
   }
-  void _handleKeyEvent(KeyEvent event) {
-//    try {
-//      if (event is KeyDownEvent) {
-//        switch (event.logicalKey) {
-//          case LogicalKeyboardKey.escape:
-//            _handleEscapeKey();
-//            break;
-//          case LogicalKeyboardKey.f10:
-//            _handleF10Key();
-//            break;
-//          case LogicalKeyboardKey.f9:
-//            _handleF9Key();
-//            break;
-//          case LogicalKeyboardKey.f11:
-//            print('Ignored key press: ${event.logicalKey.debugName}');
-//            break;
-//          case LogicalKeyboardKey.f12:
-//            print('Ignored key press: ${event.logicalKey.debugName}');
-//            break;
-//          default:
-//            print('Ignored key press: ${event.logicalKey.debugName}');
-//        }
-//      }
-//    } catch (e) {
-//      print(e.toString());
-//    }
+  Widget _animation(BuildContext){
+    var settingsLeft = Provider.of<ScreenSettingsLeft>(context);
+    var settingsRight = Provider.of<ScreenSettingsRight>(context);
+    var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
+    var settingsBoxLeft = Provider.of<ScreenSettingsBoxLeft>(context);
+    var settingsBoxRight = Provider.of<ScreenSettingsBoxRight>(context);
+    if(settingsHeader.animatie == "Default"){
+    return  DefaultAnimation(
+          ordersListLeft: ordersListLeft,
+          ordersListRight: ordersListRight,
+          settingsLeft: settingsLeft,
+          settingsRight: settingsRight,
+          settingsBoxLeft: settingsBoxLeft,
+          settingsBoxRight: settingsBoxRight);
+    }else if (settingsHeader.animatie == "Top Dawn"){
+    return  OrderScreen(
+        ordersListLeft: ordersListLeft,
+        ordersListRight: ordersListRight,
+        settingsLeft: settingsLeft,
+        settingsRight: settingsRight,
+        settingsBoxLeft: settingsBoxLeft,
+        settingsBoxRight: settingsBoxRight,
+        control: AnimatedOrderContainer(
+          sizeBox: settingsBoxRight.sizeBoxRight,
+          sizeBorder: settingsBoxRight.sizeBorderRight,
+          boxBorderColor: settingsBoxRight.boxBorderColorRight,
+          backgroundColor: settingsBoxRight.textBoxColorRight,
+          textColor: settingsBoxRight.textBoxColorRight,
+          textSize: settingsBoxRight.sizeTextRight,
+          font: settingsBoxRight.styleBoxRight,
+          order: null,
+        ),
+      );
+    }else if(settingsHeader.animatie == "Left Right"){
+    return  AnimatedLeft(
+        ordersListLeft: ordersListLeft,
+        ordersListRight: ordersListRight,
+        settingsLeft: settingsLeft,
+        settingsRight: settingsRight,
+        settingsBoxLeft: settingsBoxLeft,
+        settingsBoxRight: settingsBoxRight,
+        control: control,
+      );
+    }
+    return Container();
   }
 
   void _handleEscapeKey() {
@@ -405,7 +282,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getState() async {
-
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var url = prefs.getString('url');
     if (url == '' || url == null) {
@@ -417,9 +293,8 @@ class _HomePageState extends State<HomePage> {
     } else {
       var client = http.Client();
       try {
-        var response = await client.get(
-          Uri.parse(url + '/json/GetOrdersList?hours=24'),
-        );
+        var response =
+            await client.get(Uri.parse(url + '/json/GetOrdersList?hours=24'));
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
           setState(() {
@@ -431,38 +306,38 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               _isFetching = true;
             });
-
           });
         } else {
           setState(() {
             _isFetching = false;
           });
-      //    _stopTimer(); // Останавливаем таймер при открытии окна настройки
-      //    await Navigator.of(context).push(
-      //      MaterialPageRoute(builder: (context) => const DialogSetting()),
-      //    );
-      //    _startTimer(); // Перезапускаем таймер после закрытия окна настройки
+          //    _stopTimer(); // Останавливаем таймер при открытии окна настройки
+          //    await Navigator.of(context).push(
+          //      MaterialPageRoute(builder: (context) => const DialogSetting()),
+          //    );
+          //    _startTimer(); // Перезапускаем таймер после закрытия окна настройки
         }
       } catch (e) {
         setState(() {
           _isFetching = false;
         });
-      //  _stopTimer(); // Останавливаем таймер при открытии окна настройки
-      //  await Navigator.of(context).push(
-      //    MaterialPageRoute(builder: (context) => const DialogSetting()),
-      //  );
-      //  _startTimer(); // Перезапускаем таймер после закрытия окна настройки
+        //  _stopTimer(); // Останавливаем таймер при открытии окна настройки
+        //  await Navigator.of(context).push(
+        //    MaterialPageRoute(builder: (context) => const DialogSetting()),
+        //  );
+        //  _startTimer(); // Перезапускаем таймер после закрытия окна настройки
       } finally {
-       // client.close();
+        // client.close();
       }
     }
-   // _isFetching = false; // Устанавливаем флаг в false после выполнения
+    // _isFetching = false; // Устанавливаем флаг в false после выполнения
   }
 
   void statusState() {
     // Создаем копии текущих списков для отслеживания изменений
     List<int> currentOrdersListLeft = List.from(ordersListLeft);
     List<int> currentOrdersListRight = List.from(ordersListRight);
+//    var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
 
     for (var status in ordersList) {
       if (status.state == 2) {
@@ -473,14 +348,16 @@ class _HomePageState extends State<HomePage> {
         ordersListRight.remove(status.number);
       } else if (status.state == 6) {
         if (!currentOrdersListRight.contains(status.number)) {
-        //  playTransitionSound();
+          //  playTransitionSound();
           ordersListRight.add(status.number);
+          _playSound();
         }
         // Удаляем из левого списка, если статус изменился
         ordersListLeft.remove(status.number);
       } else if (status.state == 4) {
         if (currentOrdersListRight.contains(status.number)) {
           ordersListRight.remove(status.number);
+          updateOpacity();
           print("Removed ${status.number} from ordersListRight");
         }
         // Также проверяем и удаляем из левого списка, если статус изменился
@@ -501,6 +378,37 @@ class _HomePageState extends State<HomePage> {
     ordersLeft = ordersListLeft.isEmpty;
     ordersRight = ordersListRight.isEmpty;
 
-    setState(() {});
+    setState(() {
+      // Обновление непрозрачности
+      updateOpacity();
+    });
+  }
+
+  void updateOpacity() {
+    // Обновляем непрозрачность для новых элементов
+    ordersListLeft.forEach((number) {
+      if (!opacityMap.containsKey(number)) {
+        opacityMap[number] = 1.0;
+      }
+    });
+
+    // Убираем элементы, которых больше нет
+    opacityMap.keys.toList().forEach((number) {
+      if (!ordersListLeft.contains(number)) {
+        opacityMap[number] = 0.0;
+      }
+    });
+  }
+
+  void _playSound() {
+    var settingsHeader =
+        Provider.of<ScreenSettingsHeader>(context, listen: false);
+    if (settingsHeader.soundActive == true) {
+      Sounds? sound = settingsHeader.sounds;
+      SoundPlayer.play(sound!,
+          volume: 3, position: const Duration(microseconds: 500));
+    } else {
+      null;
+    }
   }
 }

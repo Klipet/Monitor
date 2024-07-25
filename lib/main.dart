@@ -13,6 +13,7 @@ import 'package:monitor_for_sales/wigets_home_pages/widget_andriod.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:sound_library/sound_library.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_autostart/flutter_autostart.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
@@ -43,6 +44,7 @@ Future<void> main() async {
   }
   await Hive.initFlutter();
   await Hive.openBox('settings');
+
   runApp(
       MultiProvider(
         providers: [
