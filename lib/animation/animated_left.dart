@@ -80,8 +80,8 @@ class AnimatedLeft extends StatelessWidget {
                                   },
                                   child: Container(
                                   alignment: Alignment.center,
-                                  width: settingsBox.sizeBoxLeft,
-                                  height: settingsBox.sizeBoxLeft,
+                                  width: settingsBox.widthBoxLeft,
+                                  height: settingsBox.heightBoxLeft,
                                   decoration: BoxDecoration(
                                     color: settingsBoxLeft
                                         .backgroundBoxColorLeft,
@@ -97,6 +97,7 @@ class AnimatedLeft extends StatelessWidget {
                                     ),
                                   ),
                               child: Text(
+                                textAlign: TextAlign.center,
                                   order.toString(),
                                     style: GoogleFonts.getFont(
                                         settingsBoxLeft.styleBoxLeft,
@@ -112,7 +113,7 @@ class AnimatedLeft extends StatelessWidget {
                         },
                       ),
                     )
-                        : const Center(child: Text("No orders available")),
+                        : const Center(),
                   )
                 ],
               ),
@@ -160,8 +161,8 @@ class AnimatedLeft extends StatelessWidget {
                                   margin: const EdgeInsets.all(4.0),
                                   child: Container(
                                     alignment: Alignment.center,
-                                    width: settingsBoxRight.sizeBoxRight,
-                                    height: settingsBoxRight.sizeBoxRight,
+                                    width: settingsBoxRight.wightBoxRight,
+                                    height: settingsBoxRight.heightBoxRight,
                                     decoration: BoxDecoration(
                                       color: settingsBoxRight
                                           .backgroundBoxColorRight,
@@ -172,6 +173,7 @@ class AnimatedLeft extends StatelessWidget {
                                               .boxBorderColorRight),
                                     ),
                                     child:  Text(
+                                      textAlign: TextAlign.center,
                                       order.toString(),
                                       style: GoogleFonts.getFont(
                                           settingsBoxRight.styleBoxRight,
@@ -184,13 +186,7 @@ class AnimatedLeft extends StatelessWidget {
                             }),
                       ),
                     )
-                        : const Center(
-                      child: Text(
-                        'No orders available',
-                        style: TextStyle(
-                        ),
-                      ),
-                    ),
+                        : const Center(),
                   ),
                 ],
               ),

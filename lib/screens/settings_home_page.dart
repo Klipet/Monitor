@@ -55,17 +55,16 @@ class _SettingsDialogContentState extends State<SettingsDialogContent>
                 children: [
                   SettingColumnRight(),
                 ],
+              ), ExpansionTile(
+                title: Text('Box Left Settings'),
+                children: [
+                  SettingBoxLeft(),
+                ],
               ),
               ExpansionTile(
                 title: Text('Box Right Settings'),
                 children: [
                   SettingBoxRight(),
-                ],
-              ),
-              ExpansionTile(
-                title: Text('Box Left Settings'),
-                children: [
-                  SettingBoxLeft(),
                 ],
               ),
             ],

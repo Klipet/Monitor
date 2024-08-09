@@ -13,6 +13,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
   File? _selectedImage;
   Color _textColor = Colors.black;
   double _sizeText = 15.0;
+  double _paddingHeader = 10.0;
   double _sizeToolBar = 50.0;
   late Sounds _sounds;
   late bool _soundActive;
@@ -24,6 +25,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
   String get styleTitle => _styleTitle;
   Color get textColor => _textColor;
   double get sizeText => _sizeText;
+  double get paddingHeader => _paddingHeader;
   double get sizeToolBar => _sizeToolBar;
   File? get selectedImage => _selectedImage;
   Sounds? get sounds => _sounds;
@@ -44,6 +46,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
     _textTitle = box.get('textTitle', defaultValue: '');
     _styleTitle = box.get('styleTitle', defaultValue: 'Roboto');
     _sizeText = box.get('sizeText', defaultValue: 0.0);
+    _paddingHeader = box.get('paddingHeader', defaultValue: 10.0);
     _sizeToolBar = box.get('sizeToolBar', defaultValue: 0.0);
     _sounds = box.get('sounds', defaultValue: Sounds.action);
     _soundActive = box.get('soundActive', defaultValue: false);
@@ -65,6 +68,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
     box.put('sizeText', _sizeText);
     box.put('sizeToolBar', _sizeToolBar);
     box.put('sounds', _sounds);
+    box.put('paddingHeader', _paddingHeader);
     box.put('soundActiv', _soundActive);
     box.put('animatie', _animatie);
     if (_selectedImage != null) {
@@ -99,6 +103,11 @@ class ScreenSettingsHeader extends ChangeNotifier {
     }
     void updateSizeText(double value) {
       _sizeText = value;
+      _saveSettings();
+      notifyListeners();
+    }
+    void updatePaddingText(double value) {
+      _paddingHeader = value;
       _saveSettings();
       notifyListeners();
     }

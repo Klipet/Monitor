@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 
 class ScreenSettingsBoxLeft extends ChangeNotifier {
   Color _backgroundBoxColorLeft = Colors.white;
@@ -12,7 +13,8 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   double _sizeTextLeft = 15.0;
   double _radiusBoxLeft = 2.0;
   double _sizeBorderLeft = 1.0;
-  double _sizeBoxLeft = 15.0;
+  double _heightBoxLeft = 15.0;
+  double _widthBoxLeft = 15.0;
   bool _borderBoxLeft = false;
 
 
@@ -23,7 +25,8 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   double get sizeTextLeft => _sizeTextLeft;
   double get radiusBoxLeft => _radiusBoxLeft;
   double get sizeBorderLeft => _sizeBorderLeft;
-  double get sizeBoxLeft => _sizeBoxLeft;
+  double get heightBoxLeft => _heightBoxLeft;
+  double get widthBoxLeft => _widthBoxLeft;
   bool get borderBoxLeft => _borderBoxLeft;
 
   ScreenSettingsBoxLeft() {
@@ -38,7 +41,8 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     _sizeTextLeft = box.get('sizeTextLeft', defaultValue: 15.0);
     _radiusBoxLeft= box.get('radiusBoxLeft', defaultValue: 2.0);
     _sizeBorderLeft = box.get('sizeBorderLeft', defaultValue: 1.0);
-    _sizeBoxLeft = box.get('sizeBoxLeft', defaultValue: 15.0);
+    _widthBoxLeft = box.get('widthBoxLeft', defaultValue: 15.0);
+    _heightBoxLeft = box.get('heightBoxLeft', defaultValue: 15.0);
     _borderBoxLeft = box.get('borderBoxLeft', defaultValue: false);
     notifyListeners();
   }
@@ -51,7 +55,8 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     box.put('sizeTextLeft', _sizeTextLeft);
     box.put('radiusBoxLeft', _radiusBoxLeft);
     box.put('sizeBorderLeft', _sizeBorderLeft);
-    box.put('sizeBoxLeft', _sizeBoxLeft);
+    box.put('heightBoxLeft', _heightBoxLeft);
+    box.put('widthBoxLeft', _widthBoxLeft);
     box.put('borderLeft', _borderBoxLeft);
   }
 
@@ -85,8 +90,13 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
-  void updateSizeBox(double size) {
-    _sizeBoxLeft = size;
+  void updateHeightBox(double size) {
+    _heightBoxLeft = size;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateWidthBox(double size) {
+    _widthBoxLeft = size;
     _saveSettings();
     notifyListeners();
   }
@@ -97,6 +107,19 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   }
   void updateStyleBoxLeft(String value) {
     _styleBoxLeft = value;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateFromRight(ScreenSettingsBoxRight leftSettings) {
+    _backgroundBoxColorLeft = leftSettings.backgroundBoxColorRight;
+    _boxBorderColorLeft = leftSettings.boxBorderColorRight;
+    _textBoxColorLeft = leftSettings.textBoxColorRight;
+    _sizeTextLeft = leftSettings.sizeTextRight;
+    _radiusBoxLeft = leftSettings.radiusBoxRight;
+    _sizeBorderLeft = leftSettings.sizeBorderRight;
+    _heightBoxLeft = leftSettings.heightBoxRight;
+    _widthBoxLeft = leftSettings.wightBoxRight;
+    _styleBoxLeft = leftSettings.styleBoxRight;
     _saveSettings();
     notifyListeners();
   }

@@ -5,8 +5,9 @@ import 'package:simple_animations/animation_builder/custom_animation_builder.dar
 class AnimatedOrderContainer  extends StatelessWidget{
 
   late final dynamic order;
-  late final double sizeBox;
   late final double sizeBorder;
+  late final double wightSizeBox;
+  late final double heightSizeBox;
   late final Color boxBorderColor;
   late final Color backgroundColor;
   late final Color textColor;
@@ -18,8 +19,9 @@ class AnimatedOrderContainer  extends StatelessWidget{
 
   AnimatedOrderContainer({
     required this.order,
-    required this.sizeBox,
     required this.sizeBorder,
+    required this.wightSizeBox,
+    required this.heightSizeBox,
     required this.boxBorderColor,
     required this.backgroundColor,
     required this.textColor,
@@ -34,13 +36,14 @@ class AnimatedOrderContainer  extends StatelessWidget{
       duration: const Duration(seconds: 2),
       control: control,
       tween: TweenSequence([
-        TweenSequenceItem(tween: Tween(begin: 0.0, end: 100.0), weight: 1),  // Падение вниз
-        TweenSequenceItem(tween: Tween(begin: 0.0, end: 100.0), weight: 1),  // Перекатывание вправо
+        TweenSequenceItem(tween: Tween(begin: 10.0, end: 100.0), weight: 1),  // Падение вниз
+      //  TweenSequenceItem(tween: Tween(begin: 0.0, end: 100.0), weight: 1),  // Перекатывание вправо
         TweenSequenceItem(tween: Tween(begin: 100.0, end: 0.0), weight: 1),  // Подъем наверх
       ]),
       builder: (context, value, child) {
         double dx = value <= 100 ? 0 : value - 100;  // Смещение по X
         double dy = value <= 100 ? value : 100;  // Смещение по Y
+
         return Transform.translate(
           offset: Offset(dx, dy),
           child: child,
@@ -48,9 +51,9 @@ class AnimatedOrderContainer  extends StatelessWidget{
       },
       child: Container(
         margin: EdgeInsets.all(4.0),
-        alignment: Alignment.center,
-        width: sizeBox,
-        height: sizeBox,
+        alignment: Alignment.topLeft,
+        width: wightSizeBox,
+        height: heightSizeBox,
         decoration: BoxDecoration(
           color: backgroundColor,
           border: Border.all(
@@ -59,6 +62,8 @@ class AnimatedOrderContainer  extends StatelessWidget{
           ),
         ),
         child: Text(
+
+          textAlign: TextAlign.center,
           order.toString(),
           style: GoogleFonts.getFont(
             font,

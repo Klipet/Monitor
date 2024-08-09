@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:monitor_for_sales/providers/screen_setting_right.dart';
 import 'package:provider/provider.dart';
 import '../providers/screen_setting_left.dart';
 
@@ -79,6 +80,7 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
   @override
   Widget build(BuildContext context) {
     final settingsLeft = Provider.of<ScreenSettingsLeft>(context);
+    final settingsRight = Provider.of<ScreenSettingsRight>(context);
     return Column(
       children: [
             TextField(
@@ -193,6 +195,15 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
                 child: const Text('Change Left Column Border Color'),
               ),
             ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
+          child: ElevatedButton(
+            onPressed: () {
+              settingsRight.updateFromLeft(settingsLeft);
+            },
+            child: const Text('Update to left'),
+          ),
+        ),
           ],
     );
   }

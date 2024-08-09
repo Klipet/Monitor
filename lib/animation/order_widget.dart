@@ -26,8 +26,8 @@ class OrderWidget extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.all(4.0),
         alignment: Alignment.center,
-        width: isLeft ? settingsBox.sizeBoxLeft : settingsBoxRight.sizeBoxRight,
-        height: isLeft ? settingsBox.sizeBoxLeft : settingsBoxRight.sizeBoxRight,
+        width: isLeft ? settingsBox.widthBoxLeft : settingsBoxRight.wightBoxRight,
+        height: isLeft ? settingsBox.widthBoxLeft : settingsBoxRight.heightBoxRight,
         decoration: BoxDecoration(
           color: isLeft
               ? settingsBox.backgroundBoxColorLeft
@@ -41,6 +41,7 @@ class OrderWidget extends StatelessWidget {
           ),
         ),
         child: Text(
+          textAlign: TextAlign.center,
           number.toString(),
           style: TextStyle(
             color: isLeft ? settingsBox.textBoxColorLeft : settingsBoxRight.textBoxColorRight,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/screen_setting_box_left.dart';
@@ -14,7 +15,8 @@ class SettingBoxLeft extends StatefulWidget {
 }
 
 class _SettingBoxLeft extends State<SettingBoxLeft> {
-  TextEditingController _boxSize = TextEditingController();
+  TextEditingController _boxHeightSize = TextEditingController();
+  TextEditingController _boxWidthSize = TextEditingController();
   TextEditingController _boxBorderSize = TextEditingController();
   TextEditingController _boxTextSize = TextEditingController();
 
@@ -37,7 +39,8 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
         final settingsBox = Provider.of<ScreenSettingsBoxLeft>(
             context, listen: false);
         setState(() {
-          _boxSize.text = settingsBox.sizeBoxLeft.toString();
+          _boxHeightSize.text = settingsBox.heightBoxLeft.toString();
+          _boxWidthSize.text = settingsBox.widthBoxLeft.toString();
           _boxBorderSize.text = settingsBox.sizeBorderLeft.toString();
           _boxTextSize.text = settingsBox.sizeTextLeft.toString();
         });
@@ -72,6 +75,7 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
     @override
   Widget build(BuildContext context) {
     final settingsBox = Provider.of<ScreenSettingsBoxLeft>(context);
+    final settingsBoxRight = Provider.of<ScreenSettingsBoxRight>(context);
     return Material(
       child: Column(
         children: [
@@ -100,15 +104,27 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
             },
           ),
           TextField(
-            controller: _boxSize,
+            controller: _boxHeightSize,
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
               ),],
-            decoration: const InputDecoration(labelText: 'Size Box'),
+            decoration: const InputDecoration(labelText: 'Height Box Left '),
             onChanged: (value) {
-              settingsBox.updateSizeBox(double.parse(value));
+              settingsBox.updateHeightBox(double.parse(value));
+            },
+          ),
+          TextField(
+            controller: _boxWidthSize,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+              ),],
+            decoration: const InputDecoration(labelText: 'Width Box Left '),
+            onChanged: (value) {
+              settingsBox.updateWidthBox(double.parse(value));
             },
           ),
           Row(
@@ -167,6 +183,17 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
                 });
               },
               child: const Text('Text Box Color'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
+            child: ElevatedButton(
+              onPressed: () {
+                  setState(() {
+                    settingsBoxRight.updateFromLeft(settingsBox);
+                  });
+              },
+              child: const Text('Copy to Right'),
             ),
           ),
         ],

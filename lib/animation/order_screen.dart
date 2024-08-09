@@ -66,7 +66,8 @@ class OrderScreen extends StatelessWidget {
                               dynamic order = ordersListLeft[index];
                               return AnimatedOrderContainer(
                                 order: order,
-                                sizeBox: settingsBox.sizeBoxLeft,
+                                wightSizeBox: settingsBox.widthBoxLeft,
+                                heightSizeBox: settingsBox.heightBoxLeft,
                                 sizeBorder: settingsBox.sizeBorderLeft,
                                 boxBorderColor: settingsBox.boxBorderColorLeft,
                                 backgroundColor: settingsBox.backgroundBoxColorLeft,
@@ -79,7 +80,7 @@ class OrderScreen extends StatelessWidget {
                         },
                       ),
                     )
-                        : const Center(child: Text("No orders available")),
+                        : const Center(),
                   ),
                 ],
               ),
@@ -115,7 +116,8 @@ class OrderScreen extends StatelessWidget {
                           dynamic order = ordersListRight[index];
                           return AnimatedOrderContainer(
                             order: order,
-                            sizeBox: settingsBoxRight.sizeBoxRight,
+                            heightSizeBox: settingsBoxRight.heightBoxRight,
+                            wightSizeBox: settingsBoxRight.wightBoxRight,
                             sizeBorder: settingsBoxRight.sizeBorderRight,
                             boxBorderColor: settingsBoxRight.boxBorderColorRight,
                             backgroundColor: settingsBoxRight.backgroundBoxColorRight,
@@ -126,7 +128,7 @@ class OrderScreen extends StatelessWidget {
                         }),
                       ),
                     )
-                        : const Center(child: Text("No orders available")),
+                        : const Center(),
                   ),
                 ],
               ),

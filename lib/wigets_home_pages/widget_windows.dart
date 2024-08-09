@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:monitor_for_sales/animation/animated_left.dart';
 import 'package:monitor_for_sales/animation/animated_order_container%20.dart';
 import 'package:monitor_for_sales/animation/default_animation.dart';
+import 'package:monitor_for_sales/broker/const.dart';
 import 'package:monitor_for_sales/factory/Order.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
@@ -15,15 +16,21 @@ import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:monitor_for_sales/providers/screen_setting_right.dart';
 import 'package:monitor_for_sales/screens/setting_url.dart';
 import 'package:monitor_for_sales/screens/settings_home_page.dart';
+import 'package:monitor_for_sales/wigets_home_pages/spash_license.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:sound_library/sound_library.dart';
 import 'package:synchronized_keyboard_listener/synchronized_keyboard_listener.dart';
+import 'package:system_info2/system_info2.dart';
 import '../animation/order_screen.dart';
+import '../factory/post_get_url.dart';
+import '../factory/response_registr_app.dart';
 import '../providers/screen_setting_left.dart';
 import 'package:lottie/lottie.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:intranet_ip/intranet_ip.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,6 +46,7 @@ class _HomePageState extends State<HomePage> {
   late List<dynamic> ordersListRight;
   late List<dynamic> ordersListLeft;
   late Timer _timer;
+  late Timer _timerServer;
   bool ordersLeft = false;
   bool ordersRight = false;
   bool _isFetching = false; // Добавленный флаг для отслеживания состояния выполнения
@@ -62,12 +70,14 @@ class _HomePageState extends State<HomePage> {
     });
     _startTimer();
     getState();
+    _startTimerApyServer();
   }
 
   @override
   void dispose() {
     _focusNode.dispose();
     _timer?.cancel();
+    _timerServer?.cancel();
     super.dispose();
   }
 
@@ -75,8 +85,7 @@ class _HomePageState extends State<HomePage> {
     showSimpleNotification(
       const Text(
         "F10 - Setting \n"
-        "ESC - Exit \n "
-        "F9 - URL",
+            "ESC - Exit \n ",
         style: TextStyle(color: Colors.black),
       ),
       background: Colors.white10.withOpacity(0.9),
@@ -88,6 +97,12 @@ class _HomePageState extends State<HomePage> {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       getState();
       print("запрос в службу ${_timer.tick}");
+    });
+  }
+  void _startTimerApyServer() {
+    _timerServer = Timer.periodic(const Duration(hours: 1), (timer) {
+      getApyKeyInfo();
+      print("запрос в службу Сервера ${_timerServer.tick}");
     });
   }
 
@@ -104,29 +119,25 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var settingsLeft = Provider.of<ScreenSettingsLeft>(context);
-    var settingsRight = Provider.of<ScreenSettingsRight>(context);
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
-    var settingsBoxLeft = Provider.of<ScreenSettingsBoxLeft>(context);
-    var settingsBoxRight = Provider.of<ScreenSettingsBoxRight>(context);
     return Scaffold(
         appBar: settingsHeader.textTitle.isEmpty
             ? null
             : AppBar(
-                backgroundColor: settingsHeader.backgroundColor,
-                centerTitle: true,
-                toolbarHeight: settingsHeader.sizeToolBar,
-                title: Padding(
-                  padding: const EdgeInsets.only(bottom: 30.0),
-                  child: Text(
-                      textAlign: TextAlign.start,
-                      settingsHeader.textTitle,
-                      style: GoogleFonts.getFont(settingsHeader.styleTitle,
-                          fontSize: settingsHeader.sizeText,
-                          color: settingsHeader.textColor)),
-                ),
-                automaticallyImplyLeading: false, // Hide back button on AppBar
-              ),
+          backgroundColor: settingsHeader.backgroundColor,
+          centerTitle: true,
+          toolbarHeight: settingsHeader.sizeToolBar,
+          title: Padding(
+            padding: EdgeInsets.only(bottom: settingsHeader.paddingHeader),
+            child: Text(
+                textAlign: TextAlign.center,
+                settingsHeader.textTitle,
+                style: GoogleFonts.getFont(settingsHeader.styleTitle,
+                    fontSize: settingsHeader.sizeText,
+                    color: settingsHeader.textColor)),
+          ),
+          automaticallyImplyLeading: false, // Hide back button on AppBar
+        ),
         body: Stack(
           children: [
             SynchronizedKeyboardListener(
@@ -137,9 +148,9 @@ class _HomePageState extends State<HomePage> {
                   LogicalKeyboardKey.f10: () {
                     _handleF10Key();
                   },
-                  LogicalKeyboardKey.f9: () {
-                    _handleF9Key();
-                  },
+                //  LogicalKeyboardKey.f9: () {
+                //    _handleF9Key();
+                //  },
                   //  LogicalKeyboardKey.f8:(){ _handleF8Key();},
                 },
                 child: Stack(
@@ -147,36 +158,39 @@ class _HomePageState extends State<HomePage> {
                     _animation(context),
                     !_isFetching
                         ? Stack(
+                      children: [
+                        Container(
+                          alignment: Alignment.topRight,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          color: Colors.black12.withOpacity(0.2),
+                          // Полупрозрачный цвет
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Container(
-                                alignment: Alignment.topRight,
-                                width: MediaQuery.of(context).size.width,
-                                color: Colors.black12.withOpacity(0.2),
-                                // Полупрозрачный цвет
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 50.0),
-                                          child: Lottie.asset(
-                                            'assets/errorWifi.json',
-                                            width: 200,
-                                            height: 200,
-                                            reverse: true,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        )
-                                      ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 50.0),
+                                    child: Lottie.asset(
+                                      'assets/errorWifi.json',
+                                      width: 200,
+                                      height: 200,
+                                      reverse: true,
+                                      fit: BoxFit.fill,
                                     ),
-                                  ],
-                                ),
-                              )
+                                  )
+                                ],
+                              ),
                             ],
-                          )
+                          ),
+                        )
+                      ],
+                    )
                         : Container(),
                   ],
                 )
@@ -184,22 +198,23 @@ class _HomePageState extends State<HomePage> {
           ],
         ));
   }
-  Widget _animation(BuildContext){
+
+  Widget _animation(BuildContext) {
     var settingsLeft = Provider.of<ScreenSettingsLeft>(context);
     var settingsRight = Provider.of<ScreenSettingsRight>(context);
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
     var settingsBoxLeft = Provider.of<ScreenSettingsBoxLeft>(context);
     var settingsBoxRight = Provider.of<ScreenSettingsBoxRight>(context);
-    if(settingsHeader.animatie == "Default"){
-    return  DefaultAnimation(
+    if (settingsHeader.animatie == "Default") {
+      return DefaultAnimation(
           ordersListLeft: ordersListLeft,
           ordersListRight: ordersListRight,
           settingsLeft: settingsLeft,
           settingsRight: settingsRight,
           settingsBoxLeft: settingsBoxLeft,
           settingsBoxRight: settingsBoxRight);
-    }else if (settingsHeader.animatie == "Top Dawn"){
-    return  OrderScreen(
+    } else if (settingsHeader.animatie == "Top Dawn") {
+      return OrderScreen(
         ordersListLeft: ordersListLeft,
         ordersListRight: ordersListRight,
         settingsLeft: settingsLeft,
@@ -207,7 +222,8 @@ class _HomePageState extends State<HomePage> {
         settingsBoxLeft: settingsBoxLeft,
         settingsBoxRight: settingsBoxRight,
         control: AnimatedOrderContainer(
-          sizeBox: settingsBoxRight.sizeBoxRight,
+          wightSizeBox: settingsBoxRight.wightBoxRight,
+          heightSizeBox: settingsBoxRight.heightBoxRight,
           sizeBorder: settingsBoxRight.sizeBorderRight,
           boxBorderColor: settingsBoxRight.boxBorderColorRight,
           backgroundColor: settingsBoxRight.textBoxColorRight,
@@ -217,8 +233,8 @@ class _HomePageState extends State<HomePage> {
           order: null,
         ),
       );
-    }else if(settingsHeader.animatie == "Left Right"){
-    return  AnimatedLeft(
+    } else if (settingsHeader.animatie == "Left Right") {
+      return AnimatedLeft(
         ordersListLeft: ordersListLeft,
         ordersListRight: ordersListRight,
         settingsLeft: settingsLeft,
@@ -245,14 +261,14 @@ class _HomePageState extends State<HomePage> {
     _showSettingsDialog(context);
   }
 
-  void _handleF9Key() {
-    print('F9 pressed');
-    _stopTimer(); // Останавливаем таймер при открытии окна настройки
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const DialogSetting()),
-    );
-    _startTimer();
-  }
+  //void _handleF9Key() {
+  //  print('F9 pressed');
+  //  _stopTimer(); // Останавливаем таймер при открытии окна настройки
+  //  Navigator.of(context).push(
+  //    MaterialPageRoute(builder: (context) => const DialogSetting()),
+  //  );
+  //  _startTimer();
+  //}
 
   void _showSettingsDialog(BuildContext context) {
     showDialog(
@@ -283,18 +299,23 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getState() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var url = prefs.getString('url');
+    var url = prefs.getString('uri');
     if (url == '' || url == null) {
-      _stopTimer(); // Останавливаем таймер при открытии окна настройки
-      await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const DialogSetting()),
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const License()),
+            (Route<dynamic> route) => false,
       );
-      _startTimer(); // Перезапускаем таймер после закрытия окна настройки
+  //    _stopTimer(); // Останавливаем таймер при открытии окна настройки
+  //    await Navigator.of(context).push(
+  //      MaterialPageRoute(builder: (context) => const DialogSetting()),
+  //    );
+  //    _startTimer(); // Перезапускаем таймер после закрытия окна настройки
     } else {
       var client = http.Client();
       try {
         var response =
-            await client.get(Uri.parse(url + '/json/GetOrdersList?hours=24'));
+        await client.get(Uri.parse(url + '/json/GetOrdersList?hours=24'));
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
           setState(() {
@@ -402,7 +423,7 @@ class _HomePageState extends State<HomePage> {
 
   void _playSound() {
     var settingsHeader =
-        Provider.of<ScreenSettingsHeader>(context, listen: false);
+    Provider.of<ScreenSettingsHeader>(context, listen: false);
     if (settingsHeader.soundActive == true) {
       Sounds? sound = settingsHeader.sounds;
       SoundPlayer.play(sound!,
@@ -411,4 +432,111 @@ class _HomePageState extends State<HomePage> {
       null;
     }
   }
+
+  Future<void> getApyKeyInfo() async {
+    Constants constants = Constants();
+    var pref = await SharedPreferences.getInstance();
+    final ip = await intranetIpv4();
+
+    const String applicationVersion = '1.0.0';
+    final String deviceID = SysInfo.kernelArchitecture.name ;
+    final String deviceModel = SysInfo.kernelArchitecture.name;
+    final String deviceName = SysInfo.kernelName;
+    final String osVersion = '${SysInfo.operatingSystemName} ${SysInfo.operatingSystemVersion}';
+    final int osType = constants.WaiterAssistant;
+
+    final info = NetworkInfo();
+    final String privateIP = ip.address;
+    final String publicIP = await getPublicIP();
+
+    const String salePointAddress = '123 Main St';
+    final String serialNumber = SysInfo.kernelArchitecture.name;
+    const String workplace = 'Office';
+    const String licenseActivationCode = '';
+    final String? licenseID = pref.getString('apiKey');
+
+    // Создаем объект класса PostRegisterApp
+
+    final deviceInfoToPost = PostGetUrl(
+      applicationVersion: applicationVersion,
+      deviceID: deviceID,
+      deviceModel: deviceModel,
+      deviceName: deviceName,
+      licenseActivationCode: licenseActivationCode,
+      osType: osType,
+      osVersion: osVersion,
+      privateIP: privateIP ?? 'Unknown',
+      publicIP: publicIP,
+      salePointAddress: salePointAddress,
+      serialNumber: serialNumber,
+      workplace: workplace,
+      lastAuthorizedUser: '',
+      licenseID: licenseID ?? '' ,
+    );
+    // Отправляем POST-запрос
+    try{
+      final url = Uri.parse('${constants.API_LICENSE}GetURI');
+      final String basicAuth = 'Basic ${base64Encode(utf8.encode('${constants.USERNAME}:${constants.PASSWORD}'))}';
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': basicAuth,
+        },
+        body: jsonEncode(deviceInfoToPost.toJson()),
+      );
+      if(response.statusCode == 200){
+        final responseJson = jsonDecode(response.body);
+        print(responseJson.toString());
+        final urlResponse = ResponseRegistrApp.fromJson(responseJson);
+        if(urlResponse.errorCode == 0){
+          pref.setString('uri', urlResponse.appData.uri);
+        }else if(response.statusCode == 134){
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const License()),
+                (Route<dynamic> route) => false,
+          );
+        }
+        else{
+          print('urlResponse.errorCode ${urlResponse.errorCode}');
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const License()),
+                (Route<dynamic> route) => false,
+          );
+        }
+      }else{
+        print('error response.statusCode ${response.statusCode}');
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const License()),
+              (Route<dynamic> route) => false,
+        );
+      }
+
+    }catch(e){
+      print('error Catch ${e.toString()}');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const License()),
+            (Route<dynamic> route) => false,
+      );
+    }
+
+  }
+  Future<String> getPublicIP() async {
+    try {
+      final response = await http.get(Uri.parse('https://api.ipify.org?format=json'));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body)['ip'];
+      } else {
+        throw Exception('Failed to get public IP');
+      }
+    } catch (e) {
+      print('Error fetching public IP: $e');
+      return 'Unknown';
+    }
+  }
+
 }

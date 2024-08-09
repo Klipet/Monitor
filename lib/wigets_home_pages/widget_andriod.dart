@@ -4,16 +4,22 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:monitor_for_sales/wigets_home_pages/spash_license.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_animations/animation_builder/custom_animation_builder.dart';
 import 'package:sound_library/sound_library.dart';
+import 'package:system_info2/system_info2.dart';
 import '../animation/animated_left.dart';
 import '../animation/animated_order_container .dart';
 import '../animation/default_animation.dart';
 import '../animation/order_screen.dart';
+import '../broker/const.dart';
 import '../factory/Order.dart';
+import '../factory/post_get_url.dart';
+import '../factory/response_registr_app.dart';
 import '../providers/screen_setting_box_left.dart';
 import '../providers/screen_setting_box_right.dart';
 import '../providers/screen_setting_header.dart';
@@ -21,6 +27,7 @@ import '../providers/screen_setting_left.dart';
 import '../providers/screen_setting_right.dart';
 import '../screens/setting_url.dart';
 import '../screens/settings_home_page.dart';
+import 'package:intranet_ip/intranet_ip.dart';
 
 class HomePagesAndroid extends StatefulWidget {
   const HomePagesAndroid({super.key});
@@ -36,6 +43,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
   late List<dynamic> ordersListRight;
   late List<dynamic> ordersListLeft;
   late Timer _timer;
+  late Timer _timerServer;
   bool ordersLeft = false;
   bool ordersRight = false;
   late bool _isFetching;
@@ -59,12 +67,14 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
     });
     _startTimer();
     getStateAndroid();
+    _startTimerApyServer();
   }
 
   @override
   void dispose() {
     _focusNode.dispose();
     _timer.cancel();
+    _timerServer?.cancel();
     super.dispose();
   }
 
@@ -78,13 +88,16 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
     _timer.cancel();
   }
 
+  void _startTimerApyServer() {
+    _timerServer = Timer.periodic(const Duration(hours: 1), (timer) {
+      getApyKeyInfo();
+      print("запрос в службу Сервера ${_timerServer.tick}");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var settingsLeft = Provider.of<ScreenSettingsLeft>(context);
-    var settingsRight = Provider.of<ScreenSettingsRight>(context);
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
-    var settingsBoxLeft = Provider.of<ScreenSettingsBoxLeft>(context);
-    var settingsBoxRight = Provider.of<ScreenSettingsBoxRight>(context);
     return Scaffold(
         appBar: settingsHeader.textTitle.isEmpty
             ? null
@@ -193,7 +206,8 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
         settingsBoxLeft: settingsBoxLeft,
         settingsBoxRight: settingsBoxRight,
         control: AnimatedOrderContainer(
-          sizeBox: settingsBoxRight.sizeBoxRight,
+          wightSizeBox: settingsBoxRight.wightBoxRight,
+          heightSizeBox: settingsBoxRight.heightBoxRight,
           sizeBorder: settingsBoxRight.sizeBorderRight,
           boxBorderColor: settingsBoxRight.boxBorderColorRight,
           backgroundColor: settingsBoxRight.textBoxColorRight,
@@ -248,7 +262,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
 
   Future<void> getStateAndroid() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var url = prefs.getString('url');
+    var url = prefs.getString('uri');
     if (url == '' || url == null) {
       _stopTimer(); // Останавливаем таймер при открытии окна настройки
       //  _startTimer(); // Перезапускаем таймер после закрытия окна настройки
@@ -364,6 +378,110 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
           volume: 3, position: const Duration(microseconds: 500));
     } else {
       null;
+    }
+  }
+  Future<void> getApyKeyInfo() async {
+    Constants constants = Constants();
+    final ip = await intranetIpv4();
+    var pref = await SharedPreferences.getInstance();
+    const String applicationVersion = '1.0.0';
+    final String deviceID = SysInfo.kernelArchitecture.name ;
+    final String deviceModel = SysInfo.kernelArchitecture.name;
+    final String deviceName = SysInfo.kernelName;
+    final String osVersion = '${SysInfo.operatingSystemName} ${SysInfo.operatingSystemVersion}';
+    final int osType = constants.WaiterAssistant;
+
+  //  final info = NetworkInfo();
+    final String privateIP = ip.address;
+    final String publicIP = await getPublicIP();
+
+    const String salePointAddress = '123 Main St';
+    final String serialNumber = SysInfo.kernelArchitecture.name;
+    const String workplace = 'Office';
+    const String licenseActivationCode = '';
+    final String? licenseID = pref.getString('apiKey');
+
+    // Создаем объект класса PostRegisterApp
+
+    final deviceInfoToPost = PostGetUrl(
+      applicationVersion: applicationVersion,
+      deviceID: deviceID,
+      deviceModel: deviceModel,
+      deviceName: deviceName,
+      licenseActivationCode: licenseActivationCode,
+      osType: osType,
+      osVersion: osVersion,
+      privateIP: privateIP ?? 'Unknown',
+      publicIP: publicIP,
+      salePointAddress: salePointAddress,
+      serialNumber: serialNumber,
+      workplace: workplace,
+      lastAuthorizedUser: '',
+      licenseID: licenseID ?? '' ,
+    );
+    // Отправляем POST-запрос
+    try{
+      final url = Uri.parse('${constants.API_LICENSE}GetURI');
+      final String basicAuth = 'Basic ${base64Encode(utf8.encode('${constants.USERNAME}:${constants.PASSWORD}'))}';
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': basicAuth,
+        },
+        body: jsonEncode(deviceInfoToPost.toJson()),
+      );
+      if(response.statusCode == 200){
+        final responseJson = jsonDecode(response.body);
+        print(responseJson.toString());
+        final urlResponse = ResponseRegistrApp.fromJson(responseJson);
+        if(urlResponse.errorCode == 0){
+          pref.setString('uri', urlResponse.appData.uri);
+        }else if(response.statusCode == 134){
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const License()),
+                (Route<dynamic> route) => false,
+          );
+        }
+        else{
+          print('urlResponse.errorCode ${urlResponse.errorCode}');
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const License()),
+                (Route<dynamic> route) => false,
+          );
+        }
+      }else{
+        print('error response.statusCode ${response.statusCode}');
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const License()),
+              (Route<dynamic> route) => false,
+        );
+      }
+
+    }catch(e){
+      print('error Catch ${e.toString()}');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const License()),
+            (Route<dynamic> route) => false,
+      );
+    }
+
+  }
+  Future<String> getPublicIP() async {
+    try {
+      final response = await http.get(Uri.parse('https://api.ipify.org?format=json'));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body)['ip'];
+      } else {
+        throw Exception('Failed to get public IP');
+      }
+    } catch (e) {
+      print('Error fetching public IP: $e');
+      return 'Unknown';
     }
   }
 }

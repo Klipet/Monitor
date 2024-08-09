@@ -21,6 +21,7 @@ class _SettingHeaderState extends State<SettingHeader> {
   TextEditingController _textController = TextEditingController();
   TextEditingController _sizeController = TextEditingController();
   TextEditingController _sizeToolBar = TextEditingController();
+  TextEditingController _paddingHeader = TextEditingController();
   Sounds _selectedSound = Sounds.success;
   String _defaultValue =  "Default";
 
@@ -33,6 +34,7 @@ class _SettingHeaderState extends State<SettingHeader> {
         setState(() {
           _textController.text = settingsHeader.textTitle;
           _sizeController.text = settingsHeader.sizeText.toString();
+          _paddingHeader.text = settingsHeader.paddingHeader.toString();
           _sizeToolBar.text = settingsHeader.sizeToolBar.toString();
         });
       }
@@ -143,6 +145,18 @@ class _SettingHeaderState extends State<SettingHeader> {
             decoration: const InputDecoration(labelText: 'Size Tool Bar'),
             onChanged: (value) {
               settingsHeader.updateSizeToolBar(double.parse(value));
+            },
+          ),TextField(
+            controller: _paddingHeader,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+              ),
+            ],
+            decoration: const InputDecoration(labelText: 'Size Padding Header'),
+            onChanged: (value) {
+              settingsHeader.updatePaddingText(double.parse(value));
             },
           ),
           TextField(

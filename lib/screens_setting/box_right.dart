@@ -15,7 +15,8 @@ class SettingBoxRight extends StatefulWidget {
 }
 
 class _SettingBoxRight extends State<SettingBoxRight> {
-  TextEditingController _boxSize = TextEditingController();
+  TextEditingController _wightBoxRight = TextEditingController();
+  TextEditingController _heightBoxRight = TextEditingController();
   TextEditingController _boxBorderSize = TextEditingController();
   TextEditingController _boxTextSize = TextEditingController();
 
@@ -37,7 +38,8 @@ class _SettingBoxRight extends State<SettingBoxRight> {
         final settingsBox = Provider.of<ScreenSettingsBoxRight>(
             context, listen: false);
         setState(() {
-          _boxSize.text = settingsBox.sizeBoxRight.toString();
+          _wightBoxRight.text = settingsBox.wightBoxRight.toString();
+          _heightBoxRight.text = settingsBox.heightBoxRight.toString();
           _boxBorderSize.text = settingsBox.sizeBorderRight.toString();
           _boxTextSize.text = settingsBox.sizeTextRight.toString();
         });
@@ -72,6 +74,7 @@ class _SettingBoxRight extends State<SettingBoxRight> {
     @override
   Widget build(BuildContext context) {
     final settingsBox = Provider.of<ScreenSettingsBoxRight>(context);
+    final settingsBoxLeft = Provider.of<ScreenSettingsBoxLeft>(context);
     return Material(
       child: Column(
         children: [
@@ -100,17 +103,30 @@ class _SettingBoxRight extends State<SettingBoxRight> {
             },
           ),
           TextField(
-            controller: _boxSize,
+            controller: _heightBoxRight,
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.allow(
                 RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
               ),],
-            decoration: const InputDecoration(labelText: 'Size Box'),
+            decoration: const InputDecoration(labelText: ' Height Box Right'),
             onChanged: (value) {
-              settingsBox.updateSizeBox(double.parse(value));
+              settingsBox.updateHeightBox(double.parse(value));
             },
           ),
+          TextField(
+            controller: _wightBoxRight,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+              ),],
+            decoration: const InputDecoration(labelText: 'Width Box Right'),
+            onChanged: (value) {
+              settingsBox.updateWightBox(double.parse(value));
+            },
+          ),
+
           Row(
             children: [
               DropdownButton<String>(
@@ -167,6 +183,15 @@ class _SettingBoxRight extends State<SettingBoxRight> {
                 });
               },
               child: const Text('Text Box Color'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
+            child: ElevatedButton(
+              onPressed: () {
+                settingsBoxLeft.updateFromRight(settingsBox);
+              },
+              child: const Text('Update to left'),
             ),
           ),
         ],

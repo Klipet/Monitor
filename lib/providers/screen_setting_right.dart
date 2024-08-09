@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:monitor_for_sales/providers/screen_setting_left.dart';
 
 class ScreenSettingsRight extends ChangeNotifier {
 
@@ -92,6 +93,18 @@ class ScreenSettingsRight extends ChangeNotifier {
   }
   void updateStyleColumnRight(String text) {
     _styleColumnRight = text;
+    _saveSettings();
+    notifyListeners();
+  }
+
+  void updateFromLeft(ScreenSettingsLeft leftSettings) {
+    _rightColumnColor = leftSettings.leftColumnColor;
+    _rightColorText = leftSettings.leftColorText;
+    _rightColorBorder = leftSettings.leftColorBorder;
+    _rightSizeText = leftSettings.leftSizeText;
+    _rightSizeBorder = leftSettings.leftSizeBorder;
+    _styleColumnRight = leftSettings.styleColumnLeft;
+    _borderRight = leftSettings.borderLeft;
     _saveSettings();
     notifyListeners();
   }

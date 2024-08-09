@@ -53,6 +53,14 @@ dependencies:
   sound_library: ^1.0.0
   lottie: ^2.1.0
   simple_animations: ^5.0.2
+  pinput: ^5.0.0
+  uuid: ^4.3.0
+  system_info2: ^4.0.0
+  network_info_plus: ^6.0.0
+  numpad: ^0.0.2
+  device_info_plus: ^10.1.1
+  animated_text_kit: ^4.2.2
+  intranet_ip: ^1.0.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -92,10 +100,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+     - family: RobotoBolt
+       fonts:
+         - asset: assets/fonts/Roboto-Bold.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
