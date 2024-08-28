@@ -38,12 +38,24 @@ class OrderScreen extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: settingsLeft.leftColumnColor,
-                border: settingsLeft.borderLeft
-                    ? Border.all(
-                  color: settingsLeft.leftColorBorder,
-                  width: settingsLeft.leftSizeBorder,
-                )
-                    : null,
+                border: Border(
+                        top: settingsLeft.borderIsActiveTopLeft ? BorderSide(
+                          color: settingsLeft.leftColorBorder,
+                          width: settingsLeft.leftSizeBorder,
+                        ): BorderSide.none,
+                        left: settingsLeft.borderIsActiveLeftLeft ? BorderSide(
+                          color: settingsLeft.leftColorBorder,
+                          width: settingsLeft.leftSizeBorder,
+                        ): BorderSide.none,
+                        right: settingsLeft.borderIsActiveRightLeft ? BorderSide(
+                          color: settingsLeft.leftColorBorder,
+                          width: settingsLeft.leftSizeBorder / 2,
+                        ): BorderSide.none,
+                        bottom: settingsLeft.borderIsActiveBottomLeft ? BorderSide(
+                          color: settingsLeft.leftColorBorder,
+                          width: settingsLeft.leftSizeBorder,
+                        ): BorderSide.none
+                    )
               ),
               child: Column(
                 children: [
@@ -91,12 +103,31 @@ class OrderScreen extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: settingsRight.rightColumnColor,
-                border: settingsRight.borderRight
-                    ? Border.all(
-                  color: settingsRight.rightColorBorder,
-                  width: settingsRight.rightSizeBorder,
-                )
-                    : null,
+                  border: Border(
+                      top: settingsRight.borderIsActiveTopRight
+                          ? BorderSide(
+                        color: settingsRight.rightColorBorder,
+                        width: settingsRight.rightSizeBorder,
+                      )
+                          : BorderSide.none,
+                      left: settingsRight.borderIsActiveLeftRight
+                          ? BorderSide(
+                        color: settingsRight.rightColorBorder,
+                        width: settingsRight.rightSizeBorder,
+                      )
+                          : BorderSide.none,
+                      right: settingsRight.borderIsActiveRightRight
+                          ? BorderSide(
+                        color: settingsRight.rightColorBorder,
+                        width: settingsRight.rightSizeBorder,
+                      )
+                          : BorderSide.none,
+                      bottom: settingsRight.borderIsActiveBottomRight
+                          ? BorderSide(
+                        color: settingsRight.rightColorBorder,
+                        width: settingsRight.rightSizeBorder,
+                      )
+                          : BorderSide.none)
               ),
               child: Column(
                 children: [

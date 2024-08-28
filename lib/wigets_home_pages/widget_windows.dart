@@ -24,6 +24,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:sound_library/sound_library.dart';
 import 'package:synchronized_keyboard_listener/synchronized_keyboard_listener.dart';
 import 'package:system_info2/system_info2.dart';
+import '../animation/columns_animated.dart';
 import '../animation/order_screen.dart';
 import '../factory/post_get_url.dart';
 import '../factory/response_registr_app.dart';
@@ -221,7 +222,8 @@ class _HomePageState extends State<HomePage> {
         settingsRight: settingsRight,
         settingsBoxLeft: settingsBoxLeft,
         settingsBoxRight: settingsBoxRight,
-        control: AnimatedOrderContainer(
+        control:
+        AnimatedOrderContainer(
           wightSizeBox: settingsBoxRight.wightBoxRight,
           heightSizeBox: settingsBoxRight.heightBoxRight,
           sizeBorder: settingsBoxRight.sizeBorderRight,
@@ -244,6 +246,16 @@ class _HomePageState extends State<HomePage> {
         control: control,
       );
     }
+    // else if (settingsHeader.animatie == "Columns"){
+    //  return ColumnsAnimated(
+    //      ordersListLeft: ordersListLeft,
+    //      ordersListRight: ordersListRight,
+    //      ordersList: ordersList,
+    //      settingsLeft: settingsLeft,
+    //      settingsRight: settingsRight,
+    //      settingsBoxLeft: settingsBoxLeft,
+    //      settingsBoxRight: settingsBoxRight);
+    //}
     return Container();
   }
 

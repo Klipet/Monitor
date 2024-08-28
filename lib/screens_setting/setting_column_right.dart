@@ -121,24 +121,70 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
         ),
         Row(
           children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  settingsRight.updateBorderRight(!settingsRight.borderRight);
-                });
-              },
-              child: Icon(
-                settingsRight.borderRight ? Icons.check_box : Icons.check_box_outline_blank,
-                size: 35.0,
-                color: settingsRight.borderRight ? Colors.green : Colors.black,
-              ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+              child: GestureDetector(
+                child:  Icon(Icons.border_bottom,
+                  size: 50,
+                  color: settingsRight.borderIsActiveBottomRight ? Colors.black : Colors.grey ,
+                ),
+                onTap: (){
+                  setState(() {
+                    settingsRight.updateBorderIsActiveBottomRight(!settingsRight.borderIsActiveBottomRight);
+                  });
+                },),
             ),
-            const SizedBox(width: 10),
-            Text(settingsRight.borderRight? 'Border is activate' : 'Border is dezactivate',
-              style: const TextStyle(
-                  fontSize: 20
-              ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+              child: GestureDetector(child: Icon(Icons.border_top,
+                size: 50,
+                color:  settingsRight.borderIsActiveTopRight ? Colors.black : Colors.grey ,),
+                onTap: (){
+                  setState(() {
+                    settingsRight.updateBorderIsActiveTopRight(!settingsRight.borderIsActiveTopRight);
+                  });
+                },),
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+              child: GestureDetector(child: Icon(Icons.border_left,
+                size: 50,
+                color:  settingsRight.borderIsActiveLeftRight ? Colors.black : Colors.grey ,),
+                onTap: (){
+                  setState(() {
+                    settingsRight.updateBorderIsActiveLeftRight(!settingsRight.borderIsActiveLeftRight);
+                  });
+                },),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+              child: GestureDetector(child: Icon(Icons.border_right,
+                size: 50,
+                color:  settingsRight.borderIsActiveRightRight ? Colors.black : Colors.grey ,),
+                onTap: (){
+                  setState(() {
+                    settingsRight.updateBorderIsActiveRightRight(!settingsRight.borderIsActiveRightRight);
+                  });
+                },),
+            ),
+        //    GestureDetector(
+        //      onTap: () {
+        //        setState(() {
+        //          settingsRight.updateBorderRight(!settingsRight.borderRight);
+        //        });
+        //      },
+        //      child: Icon(
+        //        settingsRight.borderRight ? Icons.check_box : Icons.check_box_outline_blank,
+        //        size: 35.0,
+        //        color: settingsRight.borderRight ? Colors.green : Colors.black,
+        //      ),
+        //    ),
+        //    const SizedBox(width: 10),
+        //    Text(settingsRight.borderRight? 'Border is activate' : 'Border is dezactivate',
+        //      style: const TextStyle(
+        //          fontSize: 20
+        //      ),
+        //    ),
           ],
         ),
         Row(

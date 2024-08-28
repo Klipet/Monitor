@@ -57,9 +57,9 @@ class _SettingHeaderState extends State<SettingHeader> {
   ];
 
    final List<String> _animation = [
-    "Left Right",
-    "Top Dawn",
-    "Default"
+     "Left Right",
+     "Top Dawn",
+     "Default"
   ];
 
   void _playSound(Sounds sound) {

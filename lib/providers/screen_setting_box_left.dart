@@ -28,7 +28,6 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   double get heightBoxLeft => _heightBoxLeft;
   double get widthBoxLeft => _widthBoxLeft;
   bool get borderBoxLeft => _borderBoxLeft;
-
   ScreenSettingsBoxLeft() {
     _loadSettings();
   }
@@ -43,7 +42,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     _sizeBorderLeft = box.get('sizeBorderLeft', defaultValue: 1.0);
     _widthBoxLeft = box.get('widthBoxLeft', defaultValue: 15.0);
     _heightBoxLeft = box.get('heightBoxLeft', defaultValue: 15.0);
-    _borderBoxLeft = box.get('borderBoxLeft', defaultValue: false);
+
     notifyListeners();
   }
   void _saveSettings() {
@@ -58,7 +57,9 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     box.put('heightBoxLeft', _heightBoxLeft);
     box.put('widthBoxLeft', _widthBoxLeft);
     box.put('borderLeft', _borderBoxLeft);
+
   }
+
 
   void updateBorderBoxLeft(bool value) {
     _borderBoxLeft = value;

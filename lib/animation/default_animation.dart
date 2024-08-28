@@ -34,14 +34,33 @@ class DefaultAnimation extends StatelessWidget {
           //LEFT
           Expanded(
               child: Container(
-            decoration: BoxDecoration(
+                decoration: BoxDecoration(
                 color: settingsLeft.leftColumnColor,
-                border: settingsLeft.borderLeft
-                    ? Border.all(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      )
-                    : null),
+                border: Border(
+                    top: settingsLeft.borderIsActiveTopLeft
+                        ? BorderSide(
+                            color: settingsLeft.leftColorBorder,
+                            width: settingsLeft.leftSizeBorder,
+                          )
+                        : BorderSide.none,
+                    left: settingsLeft.borderIsActiveLeftLeft
+                        ? BorderSide(
+                            color: settingsLeft.leftColorBorder,
+                            width: settingsLeft.leftSizeBorder,
+                          )
+                        : BorderSide.none,
+                    right: settingsLeft.borderIsActiveRightLeft
+                        ? BorderSide(
+                            color: settingsLeft.leftColorBorder,
+                            width: settingsLeft.leftSizeBorder,
+                          )
+                        : BorderSide.none,
+                    bottom: settingsLeft.borderIsActiveBottomLeft
+                        ? BorderSide(
+                            color: settingsLeft.leftColorBorder,
+                            width: settingsLeft.leftSizeBorder,
+                          )
+                        : BorderSide.none)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -63,8 +82,7 @@ class DefaultAnimation extends StatelessWidget {
                                 children: List.generate(ordersListLeft.length,
                                     (index) {
                                   dynamic order = ordersListLeft[index];
-                                  return
-                                    Container(
+                                  return Container(
                                     margin: const EdgeInsets.all(4.0),
                                     alignment: Alignment.center,
                                     width: settingsBox.widthBoxLeft,
@@ -93,7 +111,6 @@ class DefaultAnimation extends StatelessWidget {
                                           fontSize:
                                               settingsBoxLeft.sizeTextLeft),
                                     ),
-
                                   );
                                 }),
                               );
@@ -110,12 +127,32 @@ class DefaultAnimation extends StatelessWidget {
               child: Container(
             decoration: BoxDecoration(
                 color: settingsRight.rightColumnColor,
-                border: settingsRight.borderRight
-                    ? Border.all(
-                        color: settingsRight.rightColorBorder,
-                        width: settingsRight.rightSizeBorder,
-                      )
-                    : null),
+                border: Border(
+                    top: settingsRight.borderIsActiveTopRight
+                        ? BorderSide(
+                            color: settingsRight.rightColorBorder,
+                            width: settingsRight.rightSizeBorder,
+                          )
+                        : BorderSide.none,
+                    left: settingsRight.borderIsActiveLeftRight
+                        ? BorderSide(
+                      color: settingsRight.rightColorBorder,
+                      width: settingsRight.rightSizeBorder,
+                          )
+                        : BorderSide.none,
+                    right: settingsRight.borderIsActiveRightRight
+                        ? BorderSide(
+                      color: settingsRight.rightColorBorder,
+                      width: settingsRight.rightSizeBorder,
+                          )
+                        : BorderSide.none,
+                    bottom: settingsRight.borderIsActiveBottomRight
+                        ? BorderSide(
+                      color: settingsRight.rightColorBorder,
+                      width: settingsRight.rightSizeBorder,
+                          )
+                        : BorderSide.none)
+            ),
             child: Column(
               children: [
                 Text(
@@ -154,7 +191,6 @@ class DefaultAnimation extends StatelessWidget {
                                     fontSize: settingsBoxRight.sizeTextRight,
                                   ),
                                 ),
-
                               );
                             }),
                           ),

@@ -13,6 +13,10 @@ class ScreenSettingsRight extends ChangeNotifier {
   double _rightSizeBorder = 0.0;
   String _styleColumnRight = 'Roboto';
   late bool _borderRight;
+  late bool _borderIsActiveBottomRight;
+  late bool _borderIsActiveTopLeftRight;
+  late bool _borderIsActiveLeftRight;
+  late bool _borderIsActiveRightRight;
 
 
 
@@ -24,6 +28,10 @@ class ScreenSettingsRight extends ChangeNotifier {
   double get rightSizeBorder => _rightSizeBorder;
   String get styleColumnRight => _styleColumnRight;
   bool get borderRight => _borderRight;
+  bool get borderIsActiveBottomRight => _borderIsActiveBottomRight;
+  bool get borderIsActiveTopRight => _borderIsActiveTopLeftRight;
+  bool get borderIsActiveLeftRight => _borderIsActiveLeftRight;
+  bool get borderIsActiveRightRight => _borderIsActiveRightRight;
 
 
   ScreenSettingsRight() {
@@ -39,6 +47,10 @@ class ScreenSettingsRight extends ChangeNotifier {
     _textRightTitle = box.get('textRightTitle', defaultValue: 'Right Title');
     _styleColumnRight = box.get('styleColumnRight', defaultValue: 'Roboto');
     _borderRight = box.get('borderRight', defaultValue: false);
+    _borderIsActiveBottomRight = box.get('borderIsActiveBottomRight', defaultValue: false);
+    _borderIsActiveTopLeftRight = box.get('borderIsActiveTopRight', defaultValue: false);
+    _borderIsActiveLeftRight = box.get('borderIsActiveLeftRight', defaultValue: false);
+    _borderIsActiveRightRight = box.get('borderIsActiveRightRight', defaultValue: false);
 
     notifyListeners();
   }
@@ -52,8 +64,32 @@ class ScreenSettingsRight extends ChangeNotifier {
     box.put('rightSizeBorder', _rightSizeBorder);
     box.put('styleColumnRight', _styleColumnRight);
     box.put('borderRight', _borderRight);
+    box.put('borderIsActiveBottomRight', _borderIsActiveBottomRight);
+    box.put('borderIsActiveTopRight', _borderIsActiveTopLeftRight);
+    box.put('borderIsActiveLeftRight', _borderIsActiveLeftRight);
+    box.put('borderIsActiveRightRight', _borderIsActiveRightRight);
   }
 
+  void updateBorderIsActiveRightRight(bool value) {
+    _borderIsActiveRightRight = value;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateBorderIsActiveLeftRight(bool value) {
+    _borderIsActiveLeftRight = value;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateBorderIsActiveTopRight(bool value) {
+    _borderIsActiveTopLeftRight = value;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateBorderIsActiveBottomRight(bool value) {
+    _borderIsActiveBottomRight = value;
+    _saveSettings();
+    notifyListeners();
+  }
   void updateBorderRight(bool size) {
     _borderRight = size;
     _saveSettings();
@@ -105,6 +141,11 @@ class ScreenSettingsRight extends ChangeNotifier {
     _rightSizeBorder = leftSettings.leftSizeBorder;
     _styleColumnRight = leftSettings.styleColumnLeft;
     _borderRight = leftSettings.borderLeft;
+    _borderIsActiveBottomRight = leftSettings.borderIsActiveBottomLeft;
+    _borderIsActiveLeftRight = leftSettings.borderIsActiveLeftLeft;
+    _borderIsActiveRightRight = leftSettings.borderIsActiveRightLeft;
+    _borderIsActiveTopLeftRight = leftSettings.borderIsActiveTopLeft;
+
     _saveSettings();
     notifyListeners();
   }

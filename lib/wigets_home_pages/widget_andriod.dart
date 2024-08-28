@@ -395,7 +395,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
     final String privateIP = ip.address;
     final String publicIP = await getPublicIP();
 
-    const String salePointAddress = '123 Main St';
+    const String salePointAddress = '';
     final String serialNumber = SysInfo.kernelArchitecture.name;
     const String workplace = 'Office';
     const String licenseActivationCode = '';
@@ -484,4 +484,5 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
       return 'Unknown';
     }
   }
+
 }

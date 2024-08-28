@@ -19,7 +19,8 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
   TextEditingController _leftTextController = TextEditingController();
   TextEditingController _leftSizeController = TextEditingController();
   TextEditingController _leftSizeBorder = TextEditingController();
-  late bool borderleft = true;
+
+
 
   void _openColorPicker(BuildContext context, Color currentColor, Function(Color) onColorChanged) {
     showDialog(
@@ -81,6 +82,7 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
   Widget build(BuildContext context) {
     final settingsLeft = Provider.of<ScreenSettingsLeft>(context);
     final settingsRight = Provider.of<ScreenSettingsRight>(context);
+
     return Column(
       children: [
             TextField(
@@ -117,24 +119,73 @@ class _SettingColumnLeft extends State<SettingColumnLeft> {
             ),
         Row(
           children: [
-            GestureDetector(
-              onTap: () {
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+              child: GestureDetector(
+                child:  Icon(Icons.border_bottom,
+                size: 50,
+                color: settingsLeft.borderIsActiveBottomLeft ? Colors.black : Colors.grey ,
+                  ),
+              onTap: (){
                 setState(() {
-                  settingsLeft.updateBorderLeft(!settingsLeft.borderLeft);
+                  settingsLeft.updateBorderIsActiveBottomLeft(!settingsLeft.borderIsActiveBottomLeft);
                 });
-              },
-              child: Icon(
-                settingsLeft.borderLeft ? Icons.check_box : Icons.check_box_outline_blank,
-                size: 35.0,
-                color: settingsLeft.borderLeft ? Colors.green : Colors.black,
-              ),
+              },),
             ),
-            const SizedBox(width: 10),
-            Text(settingsLeft.borderLeft? 'Border is activate' : 'Border is dezactivate',
-              style: const TextStyle(
-                fontSize: 20
-              ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+              child: GestureDetector(child: Icon(Icons.border_top,
+                size: 50,
+                color:  settingsLeft.borderIsActiveTopLeft ? Colors.black : Colors.grey ,),
+                onTap: (){
+                  setState(() {
+                    settingsLeft.updateBorderIsActiveTopLeft(!settingsLeft.borderIsActiveTopLeft);
+                  });
+                },),
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+              child: GestureDetector(child: Icon(Icons.border_left,
+                size: 50,
+                color:  settingsLeft.borderIsActiveLeftLeft ? Colors.black : Colors.grey ,),
+                onTap: (){
+                  setState(() {
+                    settingsLeft.updateBorderIsActiveLeftLeft(!settingsLeft.borderIsActiveLeftLeft);
+                  });
+                },),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+              child: GestureDetector(child: Icon(Icons.border_right,
+                size: 50,
+                color:  settingsLeft.borderIsActiveRightLeft ? Colors.black : Colors.grey ,),
+                onTap: (){
+                  setState(() {
+                    settingsLeft.updateBorderIsActiveRightLeft(!settingsLeft.borderIsActiveRightLeft);
+                  });
+                },),
+            ),
+        //    Padding(
+        //      padding: const EdgeInsets.all(8.0),
+        //      child: GestureDetector(
+        //        onTap: () {
+        //          setState(() {
+        //            settingsLeft.updateBorderLeft(!settingsLeft.borderLeft);
+        //          });
+        //        },
+        //        child: Icon(
+        //          settingsLeft.borderLeft ? Icons.check_box : Icons.check_box_outline_blank,
+        //          size: 35.0,
+        //          color: settingsLeft.borderLeft ? Colors.green : Colors.black,
+        //        ),
+        //      ),
+        //    ),
+        //    const SizedBox(width: 10),
+        //    Text(settingsLeft.borderLeft? 'Border is activate' : 'Border is dezactivate',
+        //      style: const TextStyle(
+        //        fontSize: 20
+        //      ),
+        //    ),
           ],
         ),
         Row(
