@@ -156,23 +156,24 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
           Align(
             alignment: Alignment.topLeft,
             child: GestureDetector(
-              onDoubleTap: () {
+              onTap: () {
                 setState(() {
                   _showSettings = !_showSettings;
                   _showSettingsDialog(
                       context); // Переключаем состояние отображения настроек
                 });
               },
-              onTap: () {
-                setState(() {
-                  _showSettings = !_showSettings;
-                  _stopTimer(); // Останавливаем таймер при открытии окна настройки
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => const DialogSetting()),
-                  );
-                });
-              },
+            //  onTap: () {
+            //    setState(() {
+            //      _showSettings = !_showSettings;
+            //      _stopTimer(); // Останавливаем таймер при открытии окна настройки
+            //      Navigator.of(context).push(
+            //        MaterialPageRoute(
+            //            builder: (context) => const DialogSetting()),
+            //      );
+            //    }
+            //    );
+            //  },
               child: Container(
                 width: 150, // Укажите ширину
                 height: 150, // Укажите высоту
@@ -452,7 +453,14 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                 (Route<dynamic> route) => false,
           );
         }
-      }else{
+      }else if(response.statusCode == 400){
+        pref.setString('uri', response.statusCode.toString());
+      }else if(response.statusCode == 502){
+        pref.setString('uri', response.statusCode.toString());
+      }else if(response.statusCode == 404){
+        pref.setString('uri', response.statusCode.toString());
+      }
+      else{
         print('error response.statusCode ${response.statusCode}');
         Navigator.pushAndRemoveUntil(
           context,

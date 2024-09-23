@@ -43,16 +43,16 @@ class AppData {
 
   factory AppData.fromJson(Map<String, dynamic> json) {
     return AppData(
-      licenseCode: json['LicenseCode'],
-      licenseID: json['LicenseID'],
-      status: json['Status'],
-      company: json['Company'],
-      idNo: json['IDNO'],
-      module: json['Module'],
-      picture: List<int>.from(json['Picture']),
-      product: json['Product'],
-      serverDateTime: json['ServerDateTime'],
-      uri: json['URI'],
+      licenseCode: json['LicenseCode'] ?? '',
+      licenseID: json['LicenseID']?? '',
+      status: json['Status']?? '',
+      company: json['Company']?? '',
+      idNo: json['IDNO']?? '',
+      module: json['Module']?? '',
+      picture: json['Picture'] != null ? List<int>.from(json['Picture']) : [],
+      product: json['Product']?? '',
+      serverDateTime: json['ServerDateTime']?? '',
+      uri: json['URI']?? '',
     );
   }
 }

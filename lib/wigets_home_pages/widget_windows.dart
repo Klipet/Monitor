@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,7 +15,6 @@ import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:monitor_for_sales/providers/screen_setting_right.dart';
-import 'package:monitor_for_sales/screens/setting_url.dart';
 import 'package:monitor_for_sales/screens/settings_home_page.dart';
 import 'package:monitor_for_sales/wigets_home_pages/spash_license.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -24,7 +24,6 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:sound_library/sound_library.dart';
 import 'package:synchronized_keyboard_listener/synchronized_keyboard_listener.dart';
 import 'package:system_info2/system_info2.dart';
-import '../animation/columns_animated.dart';
 import '../animation/order_screen.dart';
 import '../factory/post_get_url.dart';
 import '../factory/response_registr_app.dart';
@@ -283,25 +282,43 @@ class _HomePageState extends State<HomePage> {
   //}
 
   void _showSettingsDialog(BuildContext context) {
+    var boxLeft = ScreenSettingsBoxLeft();
+    var boxRight = ScreenSettingsBoxRight();
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Настройки'),
+          title: const Text('Settings'),
           content: const SettingsDialogContent(),
           actions: <Widget>[
-            TextButton(
-              child: Text('Отмена'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            Container(
+              width: 150,
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: TextButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
-            TextButton(
-              child: Text('Сохранить'),
-              onPressed: () {
-                // Добавьте код для сохранения настроек
-                Navigator.of(context).pop();
-              },
+            Container(
+              width: 150,
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: TextButton(
+                child: Text('Save'),
+                onPressed: () {
+                  // Добавьте код для сохранения настроек
+                  Navigator.of(context).pop();
+                  boxLeft.saveSetings();
+                  boxRight.saveBoxRight();
+                },
+              ),
             ),
           ],
         );
@@ -402,7 +419,6 @@ class _HomePageState extends State<HomePage> {
       return ordersList
           .any((order) => order.number == number && order.state == 2);
     }).toList();
-
     ordersListRight = ordersListRight.where((number) {
       return ordersList
           .any((order) => order.number == number && order.state == 6);
@@ -518,7 +534,14 @@ class _HomePageState extends State<HomePage> {
                 (Route<dynamic> route) => false,
           );
         }
-      }else{
+      }else if(response.statusCode == 400){
+        pref.setString('uri', response.statusCode.toString());
+      }else if(response.statusCode == 502){
+        pref.setString('uri', response.statusCode.toString());
+      }else if(response.statusCode == 404){
+        pref.setString('uri', response.statusCode.toString());
+      }
+      else{
         print('error response.statusCode ${response.statusCode}');
         Navigator.pushAndRemoveUntil(
           context,

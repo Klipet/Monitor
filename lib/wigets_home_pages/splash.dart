@@ -29,10 +29,12 @@ class _SplashState extends State<Splash> {
     Colors.blue,
     Colors.white,
     Colors.red,
+    Colors.orangeAccent
   ];
   static const colorizeTextStyle = TextStyle(
     fontSize: 90.0,
     fontFamily: 'RobotoBolt',
+    fontWeight: FontWeight.bold
   );
   @override
   void initState() {
@@ -53,11 +55,6 @@ class _SplashState extends State<Splash> {
       body: Center(
         child: AnimatedTextKit(
           animatedTexts: [
-            ColorizeAnimatedText(
-              'Intelect Soft',
-              textStyle: colorizeTextStyle,
-              colors: colorizeColors,
-            ),
             ColorizeAnimatedText(
               'Monitor Asteptare',
               textStyle: colorizeTextStyle,
@@ -155,7 +152,51 @@ class _SplashState extends State<Splash> {
                 (Route<dynamic> route) => false,
           );
         }
-      }else{
+      }else if(response.statusCode == 502){
+        if(Platform.isWindows){
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+                (Route<dynamic> route) => false,
+          );
+        }else if(Platform.isAndroid){
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePagesAndroid()),
+                (Route<dynamic> route) => false,
+          );
+        }
+      }
+      else if(response.statusCode == 404){
+        if(Platform.isWindows){
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+                (Route<dynamic> route) => false,
+          );
+        }else if(Platform.isAndroid){
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePagesAndroid()),
+                (Route<dynamic> route) => false,
+          );
+        }
+      } else if(response.statusCode == 400){
+        if(Platform.isWindows){
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+                (Route<dynamic> route) => false,
+          );
+        }else if(Platform.isAndroid){
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePagesAndroid()),
+                (Route<dynamic> route) => false,
+          );
+        }
+      }
+      else{
         print('error response.statusCode ${response.statusCode}');
         Navigator.pushAndRemoveUntil(
           context,

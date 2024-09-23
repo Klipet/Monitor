@@ -60,6 +60,11 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
 
   }
 
+  void saveSetings(){
+    _saveSettings();
+    print( 'save succes ScreenSettingsBoxLeft ');
+  }
+
 
   void updateBorderBoxLeft(bool value) {
     _borderBoxLeft = value;

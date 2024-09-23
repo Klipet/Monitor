@@ -240,6 +240,7 @@ class _License extends State<License> {
       }
     }catch(e){
       setState(() {
+        print('Failed to send data: ${e.toString()}');
         forceError = true;
       });
     }

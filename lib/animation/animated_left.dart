@@ -99,8 +99,8 @@ class AnimatedLeft extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     color: settingsBoxLeft
                                         .backgroundBoxColorLeft,
-                                    border: Border.all(
-                                      width: settingsBoxLeft
+                                    border: settingsBoxLeft == 0 ? null : Border.all(
+                                      width:  settingsBoxLeft
                                           .sizeBorderLeft,
                                       color: settingsBoxLeft
                                           .boxBorderColorLeft,
@@ -201,7 +201,7 @@ class AnimatedLeft extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       color: settingsBoxRight
                                           .backgroundBoxColorRight,
-                                      border: Border.all(
+                                      border: settingsBoxRight.sizeBorderRight==0 ? null : Border.all(
                                           width: settingsBoxRight
                                               .sizeBorderRight,
                                           color: settingsBoxRight

@@ -56,7 +56,7 @@ class AnimatedOrderContainer  extends StatelessWidget{
         height: heightSizeBox,
         decoration: BoxDecoration(
           color: backgroundColor,
-          border: Border.all(
+          border: sizeBorder == 0 ? null : Border.all(
             width: sizeBorder,
             color: boxBorderColor,
           ),

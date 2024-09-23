@@ -5,7 +5,7 @@ import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
 
 class ScreenSettingsBoxRight extends ChangeNotifier {
   Color _backgroundBoxColorRight = Colors.white;
-  Color _boxBorderColorRight = Colors.white;
+  Color _boxBorderColorRight = Colors.black;
   Color _textBoxColorRight = Colors.black;
   double _sizeTextRight = 15.0;
   double _radiusBoxRight = 2.0;
@@ -31,7 +31,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
   void _loadSettings() async {
     var box = Hive.box('settings');
     _backgroundBoxColorRight = Color(box.get('backgroundBoxColorRight', defaultValue: Colors.white.value));
-    _boxBorderColorRight = Color(box.get('boxBorderColorRight', defaultValue: Colors.white.value));
+    _boxBorderColorRight = Color(box.get('boxBorderColorRight', defaultValue: Colors.black.value));
     _textBoxColorRight = Color(box.get('textBoxColorRight', defaultValue: Colors.black.value));
     _sizeTextRight = box.get('sizeTextRight', defaultValue: 15.0);
     _radiusBoxRight = box.get('radiusBoxRight', defaultValue: 2.0);
@@ -44,7 +44,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
   void _saveSettings() {
     var box = Hive.box('settings');
     box.put('backgroundBoxColorRight', _backgroundBoxColorRight.value);
-    box.put('backgroundBoxBorderColorRight', _boxBorderColorRight.value);
+    box.put('boxBorderColorRight', _boxBorderColorRight.value);
     box.put('textBoxColorRight', _textBoxColorRight.value);
     box.put('sizeTextRight', _sizeTextRight);
     box.put('radiusBoxRight', _radiusBoxRight);
@@ -52,6 +52,11 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
     box.put('wightBoxRight', _wightBoxRight);
     box.put('heightBoxRight', _heightBoxRight);
     box.put('styleBoxRight', _styleBoxRight);
+  }
+
+  void saveBoxRight(){
+    _saveSettings();
+    print( 'save succes ScreenSettingsBoxRight ');
   }
 
   void updateBackgroundBoxColor(Color color) {

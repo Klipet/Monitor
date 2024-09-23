@@ -28,13 +28,16 @@ class DefaultAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var countColon = 5;
+    var size = MediaQuery.of(context).size.width /2;
+    var aspect = size / settingsBoxRight.wightBoxRight;
     return Scaffold(
       body: Row(
         children: [
           //LEFT
           Expanded(
               child: Container(
-                decoration: BoxDecoration(
+            decoration: BoxDecoration(
                 color: settingsLeft.leftColumnColor,
                 border: Border(
                     top: settingsLeft.borderIsActiveTopLeft
@@ -90,7 +93,7 @@ class DefaultAnimation extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       color: settingsBoxLeft
                                           .backgroundBoxColorLeft,
-                                      border: Border.all(
+                                      border:settingsBoxLeft.sizeBorderLeft == 0 ? null : Border.all(
                                         width: settingsBoxLeft.sizeBorderLeft,
                                         color:
                                             settingsBoxLeft.boxBorderColorLeft,
@@ -117,15 +120,16 @@ class DefaultAnimation extends StatelessWidget {
                             },
                           ),
                         )
-                      : const Center(),
-                )
+                      : Container()
+                ),
+
               ],
             ),
           )),
           //RIGHT
           Expanded(
               child: Container(
-            decoration: BoxDecoration(
+                decoration: BoxDecoration(
                 color: settingsRight.rightColumnColor,
                 border: Border(
                     top: settingsRight.borderIsActiveTopRight
@@ -136,23 +140,22 @@ class DefaultAnimation extends StatelessWidget {
                         : BorderSide.none,
                     left: settingsRight.borderIsActiveLeftRight
                         ? BorderSide(
-                      color: settingsRight.rightColorBorder,
-                      width: settingsRight.rightSizeBorder,
+                            color: settingsRight.rightColorBorder,
+                            width: settingsRight.rightSizeBorder,
                           )
                         : BorderSide.none,
                     right: settingsRight.borderIsActiveRightRight
                         ? BorderSide(
-                      color: settingsRight.rightColorBorder,
-                      width: settingsRight.rightSizeBorder,
+                            color: settingsRight.rightColorBorder,
+                            width: settingsRight.rightSizeBorder,
                           )
                         : BorderSide.none,
                     bottom: settingsRight.borderIsActiveBottomRight
                         ? BorderSide(
-                      color: settingsRight.rightColorBorder,
-                      width: settingsRight.rightSizeBorder,
+                            color: settingsRight.rightColorBorder,
+                            width: settingsRight.rightSizeBorder,
                           )
-                        : BorderSide.none)
-            ),
+                        : BorderSide.none)),
             child: Column(
               children: [
                 Text(
@@ -164,9 +167,10 @@ class DefaultAnimation extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: ordersListRight.isNotEmpty
-                      ? SingleChildScrollView(
+                  child: ordersListRight.isNotEmpty ?
+                  SingleChildScrollView(
                           child: Wrap(
+                            spacing: 1.0,
                             children:
                                 List.generate(ordersListRight.length, (index) {
                               dynamic order = ordersListRight[index];
@@ -178,10 +182,9 @@ class DefaultAnimation extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color:
                                       settingsBoxRight.backgroundBoxColorRight,
-                                  border: Border.all(
+                                  border: settingsBoxRight.sizeBorderRight == 0 ? null: Border.all(
                                       width: settingsBoxRight.sizeBorderRight,
-                                      color:
-                                          settingsBoxRight.boxBorderColorRight),
+                                      color: settingsBoxRight.boxBorderColorRight),
                                 ),
                                 child: Text(
                                   order.toString(),
@@ -195,7 +198,7 @@ class DefaultAnimation extends StatelessWidget {
                             }),
                           ),
                         )
-                      : const Center(),
+                      :  Container()
                 ),
               ],
             ),
@@ -204,4 +207,40 @@ class DefaultAnimation extends StatelessWidget {
       ),
     );
   }
+
+   defaultLeft() {
+    return Container(
+        decoration: BoxDecoration(
+            color: settingsLeft.leftColumnColor,
+            border: Border(
+                top: settingsLeft.borderIsActiveTopLeft
+                    ? BorderSide(
+                        color: settingsLeft.leftColorBorder,
+                        width: settingsLeft.leftSizeBorder,
+                      )
+                    : BorderSide.none,
+                left: settingsLeft.borderIsActiveLeftLeft
+                    ? BorderSide(
+                        color: settingsLeft.leftColorBorder,
+                        width: settingsLeft.leftSizeBorder,
+                      )
+                    : BorderSide.none,
+                right: settingsLeft.borderIsActiveRightLeft
+                    ? BorderSide(
+                        color: settingsLeft.leftColorBorder,
+                        width: settingsLeft.leftSizeBorder,
+                      )
+                    : BorderSide.none,
+                bottom: settingsLeft.borderIsActiveBottomLeft
+                    ? BorderSide(
+                        color: settingsLeft.leftColorBorder,
+                        width: settingsLeft.leftSizeBorder,
+                      )
+                    : BorderSide.none
+            )
+        )
+    );
+  }
 }
+
+
