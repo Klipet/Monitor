@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:logger/logger.dart';
 import 'package:monitor_for_sales/broker/const.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';

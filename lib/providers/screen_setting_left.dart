@@ -68,6 +68,11 @@ class ScreenSettingsLeft extends ChangeNotifier {
     box.put('borderIsActiveLeftLeft', _borderIsActiveLeftLeft);
     box.put('borderIsActiveRightLeft', _borderIsActiveRightLeft);
   }
+  void saveLeft(){
+    _saveSettings();
+    print( 'save succes ScreenSettingsLight ');
+  }
+
   void updateBorderIsActiveRightLeft(bool value) {
     _borderIsActiveRightLeft = value;
     _saveSettings();

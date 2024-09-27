@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/screen_setting_box_left.dart';
@@ -13,6 +14,7 @@ class DefaultAnimation extends StatelessWidget {
   final List<dynamic> ordersListLeft;
   final List<dynamic> ordersListRight;
   final ScreenSettingsLeft settingsLeft;
+  final ScreenSettingsHeader settingsHeader;
   final ScreenSettingsRight settingsRight;
   final ScreenSettingsBoxLeft settingsBoxLeft;
   final ScreenSettingsBoxRight settingsBoxRight;
@@ -21,6 +23,7 @@ class DefaultAnimation extends StatelessWidget {
     required this.ordersListLeft,
     required this.ordersListRight,
     required this.settingsLeft,
+    required this.settingsHeader,
     required this.settingsRight,
     required this.settingsBoxLeft,
     required this.settingsBoxRight,
@@ -115,7 +118,7 @@ class DefaultAnimation extends StatelessWidget {
                                               settingsBoxLeft.sizeTextLeft),
                                     ),
                                   );
-                                }),
+                                })
                               );
                             },
                           ),
@@ -240,6 +243,50 @@ class DefaultAnimation extends StatelessWidget {
             )
         )
     );
+  }
+
+  void getFilterStatus() {
+    // Создаем копии текущих списков для отслеживания изменений
+    List<int> currentOrdersListLeft = List.from(ordersListLeft);
+    List<int> currentOrdersListRight = List.from(ordersListRight);
+
+    // Получаем текущее время
+    DateTime currentTime = DateTime.now();
+    int maxMinutes = settingsHeader.deleteMinuts;  // Время, после которого элементы удаляются
+
+    // Обновляем списки на основе новых данных
+    ordersListLeft.clear();  // Очищаем списки перед обновлением
+    ordersListRight.clear();
+
+    for (var status in ordersListLeft) {
+      Duration difference = currentTime.difference(status.dateCreated);
+
+      // Проверяем, не превышает ли разница во времени максимальное значение
+      if (difference.inMinutes < maxMinutes) {
+        switch (status.state) {
+          case 2:
+          // Добавляем в левый список только если его там еще нет
+            if (!currentOrdersListLeft.contains(status.number)) {
+              ordersListLeft.add(status.number);
+            }
+            break;
+          case 6:
+          // Добавляем в правый список только если его там еще нет
+            if (!currentOrdersListRight.contains(status.number)) {
+              ordersListRight.add(status.number);
+            }
+            break;
+          case 4:
+          // Удаляем из обоих списков
+            ordersListLeft.remove(status.number);
+            ordersListRight.remove(status.number);
+            break;
+          default:
+          // Обработка других состояний, если необходимо
+            break;
+        }
+      }
+    }
   }
 }
 

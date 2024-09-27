@@ -5,7 +5,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:monitor_for_sales/animation/animated_left.dart';
 import 'package:monitor_for_sales/animation/animated_order_container%20.dart';
 import 'package:monitor_for_sales/animation/default_animation.dart';
@@ -21,7 +23,7 @@ import 'package:network_info_plus/network_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:sound_library/sound_library.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:synchronized_keyboard_listener/synchronized_keyboard_listener.dart';
 import 'package:system_info2/system_info2.dart';
 import '../animation/order_screen.dart';
@@ -54,6 +56,7 @@ class _HomePageState extends State<HomePage> {
   Control control = Control.play;
   Map<int, double> opacityMap = {};
   double _opacity = 1.0;
+
 
   @override
   void initState() {
@@ -96,9 +99,11 @@ class _HomePageState extends State<HomePage> {
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       getState();
+
       print("запрос в службу ${_timer.tick}");
     });
   }
+
   void _startTimerApyServer() {
     _timerServer = Timer.periodic(const Duration(hours: 1), (timer) {
       getApyKeyInfo();
@@ -148,9 +153,9 @@ class _HomePageState extends State<HomePage> {
                   LogicalKeyboardKey.f10: () {
                     _handleF10Key();
                   },
-                //  LogicalKeyboardKey.f9: () {
-                //    _handleF9Key();
-                //  },
+                  //  LogicalKeyboardKey.f9: () {
+                  //    _handleF9Key();
+                  //  },
                   //  LogicalKeyboardKey.f8:(){ _handleF8Key();},
                 },
                 child: Stack(
@@ -210,6 +215,7 @@ class _HomePageState extends State<HomePage> {
           ordersListLeft: ordersListLeft,
           ordersListRight: ordersListRight,
           settingsLeft: settingsLeft,
+          settingsHeader: settingsHeader,
           settingsRight: settingsRight,
           settingsBoxLeft: settingsBoxLeft,
           settingsBoxRight: settingsBoxRight);
@@ -284,6 +290,9 @@ class _HomePageState extends State<HomePage> {
   void _showSettingsDialog(BuildContext context) {
     var boxLeft = ScreenSettingsBoxLeft();
     var boxRight = ScreenSettingsBoxRight();
+    var header = ScreenSettingsHeader();
+    var left = ScreenSettingsLeft();
+    var right = ScreenSettingsRight();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -317,6 +326,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context).pop();
                   boxLeft.saveSetings();
                   boxRight.saveBoxRight();
+                  header.saveHeader();
                 },
               ),
             ),
@@ -327,6 +337,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getState() async {
+    var settingsHeader = Provider.of<ScreenSettingsHeader>(context, listen: false);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var url = prefs.getString('uri');
     if (url == '' || url == null) {
@@ -335,102 +346,131 @@ class _HomePageState extends State<HomePage> {
         MaterialPageRoute(builder: (context) => const License()),
             (Route<dynamic> route) => false,
       );
-  //    _stopTimer(); // Останавливаем таймер при открытии окна настройки
-  //    await Navigator.of(context).push(
-  //      MaterialPageRoute(builder: (context) => const DialogSetting()),
-  //    );
-  //    _startTimer(); // Перезапускаем таймер после закрытия окна настройки
     } else {
       var client = http.Client();
       try {
         var response =
-        await client.get(Uri.parse(url + '/json/GetOrdersList?hours=24'));
+        await client.get(Uri.parse('$url/json/GetCurrentOrdersList?hours=${settingsHeader.deleteMinuts}'));
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
-          setState(() {
             commandState = responseData['OrdersList'];
             ordersList = commandState
-                .map((orderData) => Order.fromJson(orderData))
-                .toList();
-            statusState();
+                .map((orderData) => Order.fromJson(orderData)).toList();
             setState(() {
+              statusState();
               _isFetching = true;
             });
-          });
         } else {
           setState(() {
             _isFetching = false;
           });
-          //    _stopTimer(); // Останавливаем таймер при открытии окна настройки
-          //    await Navigator.of(context).push(
-          //      MaterialPageRoute(builder: (context) => const DialogSetting()),
-          //    );
-          //    _startTimer(); // Перезапускаем таймер после закрытия окна настройки
         }
-      } catch (e) {
+      } catch (error) {
+        print(error.toString());
+        final directory = await getApplicationDocumentsDirectory();
+        var logger = Logger(
+          output: FileOutput(file: File('${directory.path}/app_logs.txt')), // Вывод логов в файл
+          printer: PrettyPrinter(), // Формат вывода логов
+        );
+        logger.e(error.toString());
         setState(() {
           _isFetching = false;
         });
-        //  _stopTimer(); // Останавливаем таймер при открытии окна настройки
-        //  await Navigator.of(context).push(
-        //    MaterialPageRoute(builder: (context) => const DialogSetting()),
-        //  );
-        //  _startTimer(); // Перезапускаем таймер после закрытия окна настройки
       } finally {
-        // client.close();
+
       }
     }
     // _isFetching = false; // Устанавливаем флаг в false после выполнения
   }
 
-  void statusState() {
-    // Создаем копии текущих списков для отслеживания изменений
+
+  Future<void> statusState() async {
     List<int> currentOrdersListLeft = List.from(ordersListLeft);
     List<int> currentOrdersListRight = List.from(ordersListRight);
-//    var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
+    var settingsHeader = Provider.of<ScreenSettingsHeader>(context, listen: false);
+    DateTime currentTime = DateTime.now();
+    int maxMinutes = settingsHeader.deleteMinuts;
+
+    // Создаем временные списки для обновления
+    List<int> tempOrdersListLeft = [];
+    List<int> tempOrdersListRight = [];
 
     for (var status in ordersList) {
-      if (status.state == 2) {
-        if (!currentOrdersListLeft.contains(status.number)) {
-          ordersListLeft.add(status.number);
+      try {
+        Duration difference = currentTime.difference(status.dateCreated);
+        if (status.state == 2) {
+          // Логика для обработки статуса 2
+          if (settingsHeader.deleteActive) {
+            if (difference.inMinutes < maxMinutes && !tempOrdersListLeft.contains(status.number)) {
+              tempOrdersListLeft.add(status.number);
+            }
+          } else if (!settingsHeader.deleteActive && !tempOrdersListLeft.contains(status.number)) {
+            tempOrdersListLeft.add(status.number);
+          }
+        } else if (status.state == 6) {
+          // Логика для обработки статуса 6
+          if (!tempOrdersListRight.contains(status.number)) {
+            tempOrdersListRight.add(status.number);
+          }
+        } else if (status.state == 4) {
+          // Логика для обработки статуса 4
+          if (tempOrdersListRight.contains(status.number)) {
+            tempOrdersListRight.remove(status.number);
+          }
         }
-        // Удаляем из правого списка, если статус изменился
-        ordersListRight.remove(status.number);
-      } else if (status.state == 6) {
-        if (!currentOrdersListRight.contains(status.number)) {
-          //  playTransitionSound();
-          ordersListRight.add(status.number);
-          _playSound();
-        }
-        // Удаляем из левого списка, если статус изменился
-        ordersListLeft.remove(status.number);
-      } else if (status.state == 4) {
-        if (currentOrdersListRight.contains(status.number)) {
-          ordersListRight.remove(status.number);
-          updateOpacity();
-          print("Removed ${status.number} from ordersListRight");
-        }
-        // Также проверяем и удаляем из левого списка, если статус изменился
-        ordersListLeft.remove(status.number);
+      } catch (error) {
+        final directory = await getApplicationDocumentsDirectory();
+        var logger = Logger(
+          output: FileOutput(file: File('${directory.path}/app_logs.txt')), // Логируем ошибки
+          printer: PrettyPrinter(),
+        );
+        logger.e(error.toString());
+        print(error.toString());
       }
     }
-    // Удаляем из списков элементы, статусы которых изменились
-    ordersListLeft = ordersListLeft.where((number) {
-      return ordersList
-          .any((order) => order.number == number && order.state == 2);
-    }).toList();
-    ordersListRight = ordersListRight.where((number) {
-      return ordersList
-          .any((order) => order.number == number && order.state == 6);
-    }).toList();
+    try{
+      final tempDir = await getTemporaryDirectory();
+      var logger = Logger(
+        output: FileOutput(file: File('${tempDir.path}/app_logs.txt')), // Вывод логов в файл
+        printer: PrettyPrinter(), // Формат вывода логов
+      );
+      // Удаляем из списков устаревшие элементы для deleteActive = true
+      if (settingsHeader.deleteActive) {
+        tempOrdersListLeft = tempOrdersListLeft.where((number) {
+          var order = ordersList.firstWhere((order) => order.number == number);
+          if (order != null && order.state == 2) {
+            Duration difference = currentTime.difference(order.dateCreated);
 
-    ordersLeft = ordersListLeft.isEmpty;
-    ordersRight = ordersListRight.isEmpty;
+            logger.i(
+                'deferenta: ${difference.toString()} , order: ${order.number}');
+            print(
+                'deferenta: ${difference.toString()} , order: ${order.number}');
+            print('${tempDir.path}/app_logs.txt');
+            return difference.inMinutes < maxMinutes;
+          }
+          return false;
+        }).toList();
+      }
+      // Обновляем списки через setState() один раз
+      setState(() {
+        ordersListLeft = tempOrdersListLeft;
+        ordersListRight = tempOrdersListRight;
 
-    setState(() {
-      // Обновление непрозрачности
-      updateOpacity();
-    });
+        ordersLeft = ordersListLeft.isEmpty;
+        ordersRight = ordersListRight.isEmpty;
+
+        //  updateOpacity(); // Обновление непрозрачности
+      });
+    }catch(error){
+      final tempDir = await getTemporaryDirectory();
+      var logger = Logger(
+        output: FileOutput(file: File('${tempDir.path}/app_logs.txt')), // Вывод логов в файл
+        printer: PrettyPrinter(), // Формат вывода логов
+      );
+      logger.e(error.toString());
+    }
+
+
   }
 
   void updateOpacity() {
@@ -449,17 +489,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _playSound() {
-    var settingsHeader =
-    Provider.of<ScreenSettingsHeader>(context, listen: false);
-    if (settingsHeader.soundActive == true) {
-      Sounds? sound = settingsHeader.sounds;
-      SoundPlayer.play(sound!,
-          volume: 3, position: const Duration(microseconds: 500));
-    } else {
-      null;
-    }
-  }
+  // void _playSound() {
+  //   var settingsHeader =
+  //   Provider.of<ScreenSettingsHeader>(context, listen: false);
+  //   if (settingsHeader.soundActive == true) {
+  //     Sounds? sound = settingsHeader.sounds;
+  //     SoundPlayer.play(sound!,
+  //         volume: 3, position: const Duration(microseconds: 500));
+  //   } else {
+  //     null;
+  //   }
+  // }
 
   Future<void> getApyKeyInfo() async {
     Constants constants = Constants();
@@ -467,10 +507,11 @@ class _HomePageState extends State<HomePage> {
     final ip = await intranetIpv4();
 
     const String applicationVersion = '1.0.0';
-    final String deviceID = SysInfo.kernelArchitecture.name ;
+    final String deviceID = SysInfo.kernelArchitecture.name;
     final String deviceModel = SysInfo.kernelArchitecture.name;
     final String deviceName = SysInfo.kernelName;
-    final String osVersion = '${SysInfo.operatingSystemName} ${SysInfo.operatingSystemVersion}';
+    final String osVersion = '${SysInfo.operatingSystemName} ${SysInfo
+        .operatingSystemVersion}';
     final int osType = constants.WaiterAssistant;
 
     final info = NetworkInfo();
@@ -499,12 +540,13 @@ class _HomePageState extends State<HomePage> {
       serialNumber: serialNumber,
       workplace: workplace,
       lastAuthorizedUser: '',
-      licenseID: licenseID ?? '' ,
+      licenseID: licenseID ?? '',
     );
     // Отправляем POST-запрос
-    try{
+    try {
       final url = Uri.parse('${constants.API_LICENSE}GetURI');
-      final String basicAuth = 'Basic ${base64Encode(utf8.encode('${constants.USERNAME}:${constants.PASSWORD}'))}';
+      final String basicAuth = 'Basic ${base64Encode(
+          utf8.encode('${constants.USERNAME}:${constants.PASSWORD}'))}';
       final response = await http.post(
         url,
         headers: {
@@ -513,20 +555,20 @@ class _HomePageState extends State<HomePage> {
         },
         body: jsonEncode(deviceInfoToPost.toJson()),
       );
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         final responseJson = jsonDecode(response.body);
         print(responseJson.toString());
         final urlResponse = ResponseRegistrApp.fromJson(responseJson);
-        if(urlResponse.errorCode == 0){
+        if (urlResponse.errorCode == 0) {
           pref.setString('uri', urlResponse.appData.uri);
-        }else if(response.statusCode == 134){
+        } else if (response.statusCode == 134) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const License()),
                 (Route<dynamic> route) => false,
           );
         }
-        else{
+        else {
           print('urlResponse.errorCode ${urlResponse.errorCode}');
           Navigator.pushAndRemoveUntil(
             context,
@@ -534,14 +576,14 @@ class _HomePageState extends State<HomePage> {
                 (Route<dynamic> route) => false,
           );
         }
-      }else if(response.statusCode == 400){
+      } else if (response.statusCode == 400) {
         pref.setString('uri', response.statusCode.toString());
-      }else if(response.statusCode == 502){
+      } else if (response.statusCode == 502) {
         pref.setString('uri', response.statusCode.toString());
-      }else if(response.statusCode == 404){
+      } else if (response.statusCode == 404) {
         pref.setString('uri', response.statusCode.toString());
       }
-      else{
+      else {
         print('error response.statusCode ${response.statusCode}');
         Navigator.pushAndRemoveUntil(
           context,
@@ -549,8 +591,7 @@ class _HomePageState extends State<HomePage> {
               (Route<dynamic> route) => false,
         );
       }
-
-    }catch(e){
+    } catch (e) {
       print('error Catch ${e.toString()}');
       Navigator.pushAndRemoveUntil(
         context,
@@ -558,11 +599,12 @@ class _HomePageState extends State<HomePage> {
             (Route<dynamic> route) => false,
       );
     }
-
   }
+
   Future<String> getPublicIP() async {
     try {
-      final response = await http.get(Uri.parse('https://api.ipify.org?format=json'));
+      final response = await http.get(
+          Uri.parse('https://api.ipify.org?format=json'));
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['ip'];
       } else {
@@ -575,3 +617,4 @@ class _HomePageState extends State<HomePage> {
   }
 
 }
+

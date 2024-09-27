@@ -70,6 +70,11 @@ class ScreenSettingsRight extends ChangeNotifier {
     box.put('borderIsActiveRightRight', _borderIsActiveRightRight);
   }
 
+  void saveRight(){
+    _saveSettings();
+    print( 'save succes ScreenSettingsRight ');
+  }
+
   void updateBorderIsActiveRightRight(bool value) {
     _borderIsActiveRightRight = value;
     _saveSettings();

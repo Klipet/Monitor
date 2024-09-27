@@ -42,6 +42,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
   late List<Order> ordersList;
   late List<dynamic> ordersListRight;
   late List<dynamic> ordersListLeft;
+  late List<int> filteredOrdersListLeft;
   late Timer _timer;
   late Timer _timerServer;
   bool ordersLeft = false;
@@ -58,6 +59,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
     super.initState();
     commandState = [];
     ordersListRight = [];
+    filteredOrdersListLeft = [];
     ordersListLeft = [];
     ordersList = [];
     _focusNode = FocusNode();
@@ -195,6 +197,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
           ordersListLeft: ordersListLeft,
           ordersListRight: ordersListRight,
           settingsLeft: settingsLeft,
+          settingsHeader: settingsHeader,
           settingsRight: settingsRight,
           settingsBoxLeft: settingsBoxLeft,
           settingsBoxRight: settingsBoxRight);
@@ -262,6 +265,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
   }
 
   Future<void> getStateAndroid() async {
+    var settingsHeader = Provider.of<ScreenSettingsHeader>(context, listen: false);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var url = prefs.getString('uri');
     if (url == '' || url == null) {
@@ -270,9 +274,8 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
     } else {
       var client = http.Client();
       try {
-        var response = await client.get(
-          Uri.parse(url + '/json/GetOrdersList?hours=24'),
-        );
+        var response =
+          await client.get(Uri.parse('$url/json/GetCurrentOrdersList?hours=${settingsHeader.deleteMinuts}'));
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
           setState(() {
@@ -337,7 +340,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
       } else if (status.state == 6) {
         if (!currentOrdersListRight.contains(status.number)) {
           //  playTransitionSound();
-          _playSound();
+        //  _playSound();
           ordersListRight.add(status.number);
         }
         // Удаляем из левого списка, если статус изменился
@@ -370,17 +373,17 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
     setState(() {});
   }
 
-  void _playSound() {
-    var settingsHeader =
-        Provider.of<ScreenSettingsHeader>(context, listen: false);
-    if (settingsHeader.soundActive == true) {
-      Sounds? sound = settingsHeader.sounds;
-      SoundPlayer.play(sound!,
-          volume: 3, position: const Duration(microseconds: 500));
-    } else {
-      null;
-    }
-  }
+ // void _playSound() {
+ //   var settingsHeader =
+ //       Provider.of<ScreenSettingsHeader>(context, listen: false);
+ //   if (settingsHeader.soundActive == true) {
+ //     Sounds? sound = settingsHeader.sounds;
+ //     SoundPlayer.play(sound!,
+ //         volume: 3, position: const Duration(microseconds: 500));
+ //   } else {
+ //     null;
+ //   }
+ // }
   Future<void> getApyKeyInfo() async {
     Constants constants = Constants();
     final ip = await intranetIpv4();

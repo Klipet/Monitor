@@ -7,6 +7,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sound_library/sound_library.dart';
 
 class ScreenSettingsHeader extends ChangeNotifier {
+//  late Sounds _sounds;
+   bool _soundActive = false;
+   bool _deleteActive = false;
+  String  _animatie = "Default"; // Значение по умолчанию;
   Color _backgroundColor = Colors.white;
   String _textTitle = '';
   String _styleTitle = 'Roboto';
@@ -15,9 +19,8 @@ class ScreenSettingsHeader extends ChangeNotifier {
   double _sizeText = 15.0;
   double _paddingHeader = 10.0;
   double _sizeToolBar = 50.0;
-  late Sounds _sounds;
-  late bool _soundActive;
-  late String _animatie;
+  int _deleteMinuts = 24;
+
 
 
   Color get backgroundColor => _backgroundColor;
@@ -27,9 +30,11 @@ class ScreenSettingsHeader extends ChangeNotifier {
   double get sizeText => _sizeText;
   double get paddingHeader => _paddingHeader;
   double get sizeToolBar => _sizeToolBar;
+  int get deleteMinuts => _deleteMinuts;
   File? get selectedImage => _selectedImage;
-  Sounds? get sounds => _sounds;
+//  Sounds? get sounds => _sounds;
   bool get soundActive => _soundActive;
+  bool get deleteActive => _deleteActive;
   String get animatie => _animatie;
 
 
@@ -48,8 +53,10 @@ class ScreenSettingsHeader extends ChangeNotifier {
     _sizeText = box.get('sizeText', defaultValue: 0.0);
     _paddingHeader = box.get('paddingHeader', defaultValue: 10.0);
     _sizeToolBar = box.get('sizeToolBar', defaultValue: 0.0);
-    _sounds = box.get('sounds', defaultValue: Sounds.action);
+    _deleteMinuts = box.get('deleteMinuts', defaultValue: 50);
+//    _sounds = box.get('sounds', defaultValue: Sounds.action);
     _soundActive = box.get('soundActive', defaultValue: false);
+    _deleteActive = box.get('deleteActive', defaultValue: false);
     _animatie = box.get('animatie', defaultValue: "Default");
     String? imagePath = box.get('selectedImage', defaultValue: null);
     if (imagePath != null) {
@@ -67,15 +74,31 @@ class ScreenSettingsHeader extends ChangeNotifier {
     box.put('styleTitle', _styleTitle);
     box.put('sizeText', _sizeText);
     box.put('sizeToolBar', _sizeToolBar);
-    box.put('sounds', _sounds);
+    box.put('deleteMinuts', _deleteMinuts);
+//    box.put('sounds', _sounds);
     box.put('paddingHeader', _paddingHeader);
     box.put('soundActiv', _soundActive);
+    box.put('deleteActive', _deleteActive);
     box.put('animatie', _animatie);
     if (_selectedImage != null) {
       box.put('selectedImage', _selectedImage!.path);
     }
   }
+  void saveHeader(){
+    _saveSettings();
+    print( 'save succes ScreenSettingsHeader');
+  }
 
+  void updateDeleteMinuts(int value) {
+    _deleteMinuts = value;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateDeleteActivate(bool value) {
+    _deleteActive = value;
+    _saveSettings();
+    notifyListeners();
+  }
   void updateAnimation(String value) {
     _animatie = value;
     _saveSettings();
@@ -86,11 +109,11 @@ class ScreenSettingsHeader extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
-  void updateSounds(Sounds sounds) {
-    _sounds = sounds;
-    _saveSettings();
-    notifyListeners();
-  }
+//  void updateSounds(Sounds sounds) {
+//    _sounds = sounds;
+//    _saveSettings();
+//    notifyListeners();
+//  }
     void updateTextColor(Color color) {
       _textColor = color;
       _saveSettings();
