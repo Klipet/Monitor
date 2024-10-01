@@ -275,7 +275,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
       var client = http.Client();
       try {
         var response =
-          await client.get(Uri.parse('$url/json/GetCurrentOrdersList?hours=${settingsHeader.deleteMinuts}'));
+          await client.get(Uri.parse('$url/json/GetCurrentOrdersList?hours=${settingsHeader.deleteHours}'));
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
           setState(() {

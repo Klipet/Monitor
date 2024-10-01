@@ -252,7 +252,7 @@ class DefaultAnimation extends StatelessWidget {
 
     // Получаем текущее время
     DateTime currentTime = DateTime.now();
-    int maxMinutes = settingsHeader.deleteMinuts;  // Время, после которого элементы удаляются
+    int maxMinutes = settingsHeader.deleteHours;  // Время, после которого элементы удаляются
 
     // Обновляем списки на основе новых данных
     ordersListLeft.clear();  // Очищаем списки перед обновлением

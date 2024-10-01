@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,10 +17,10 @@ class ScreenSettingsHeader extends ChangeNotifier {
   String _styleTitle = 'Roboto';
   File? _selectedImage;
   Color _textColor = Colors.black;
-  double _sizeText = 15.0;
-  double _paddingHeader = 10.0;
-  double _sizeToolBar = 50.0;
-  int _deleteMinuts = 24;
+  double _sizeText = 0.0;
+  double _paddingHeader = 0.0;
+  double _sizeToolBar = 0.0;
+  int _deleteHours = 24;
 
 
 
@@ -30,7 +31,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
   double get sizeText => _sizeText;
   double get paddingHeader => _paddingHeader;
   double get sizeToolBar => _sizeToolBar;
-  int get deleteMinuts => _deleteMinuts;
+  int get deleteHours => _deleteHours;
   File? get selectedImage => _selectedImage;
 //  Sounds? get sounds => _sounds;
   bool get soundActive => _soundActive;
@@ -51,9 +52,9 @@ class ScreenSettingsHeader extends ChangeNotifier {
     _textTitle = box.get('textTitle', defaultValue: '');
     _styleTitle = box.get('styleTitle', defaultValue: 'Roboto');
     _sizeText = box.get('sizeText', defaultValue: 0.0);
-    _paddingHeader = box.get('paddingHeader', defaultValue: 10.0);
+    _paddingHeader = box.get('paddingHeader', defaultValue: 0);
     _sizeToolBar = box.get('sizeToolBar', defaultValue: 0.0);
-    _deleteMinuts = box.get('deleteMinuts', defaultValue: 50);
+    _deleteHours = box.get('deleteHours', defaultValue: 0);
 //    _sounds = box.get('sounds', defaultValue: Sounds.action);
     _soundActive = box.get('soundActive', defaultValue: false);
     _deleteActive = box.get('deleteActive', defaultValue: false);
@@ -62,8 +63,8 @@ class ScreenSettingsHeader extends ChangeNotifier {
     if (imagePath != null) {
       _selectedImage = File(imagePath);
     }
-
     notifyListeners();
+
   }
 
   void _saveSettings() {
@@ -74,7 +75,10 @@ class ScreenSettingsHeader extends ChangeNotifier {
     box.put('styleTitle', _styleTitle);
     box.put('sizeText', _sizeText);
     box.put('sizeToolBar', _sizeToolBar);
-    box.put('deleteMinuts', _deleteMinuts);
+    box.put('deleteHours', _deleteHours);
+    if (kDebugMode) {
+      print( 'save succes Box $_deleteHours, ${box.get('deleteHours')}');
+    }
 //    box.put('sounds', _sounds);
     box.put('paddingHeader', _paddingHeader);
     box.put('soundActiv', _soundActive);
@@ -89,8 +93,8 @@ class ScreenSettingsHeader extends ChangeNotifier {
     print( 'save succes ScreenSettingsHeader');
   }
 
-  void updateDeleteMinuts(int value) {
-    _deleteMinuts = value;
+  void updateDeleteHours(int value) {
+    _deleteHours = value;
     _saveSettings();
     notifyListeners();
   }

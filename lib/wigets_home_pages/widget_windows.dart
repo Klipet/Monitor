@@ -324,9 +324,8 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   // Добавьте код для сохранения настроек
                   Navigator.of(context).pop();
-                  boxLeft.saveSetings();
-                  boxRight.saveBoxRight();
-                  header.saveHeader();
+                //  boxLeft.saveSetings();
+                //  boxRight.saveBoxRight();
                 },
               ),
             ),
@@ -350,7 +349,7 @@ class _HomePageState extends State<HomePage> {
       var client = http.Client();
       try {
         var response =
-        await client.get(Uri.parse('$url/json/GetCurrentOrdersList?hours=${settingsHeader.deleteMinuts}'));
+        await client.get(Uri.parse('$url/json/GetCurrentOrdersList?hours=${settingsHeader.deleteHours}'));
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
             commandState = responseData['OrdersList'];
@@ -389,7 +388,7 @@ class _HomePageState extends State<HomePage> {
     List<int> currentOrdersListRight = List.from(ordersListRight);
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context, listen: false);
     DateTime currentTime = DateTime.now();
-    int maxMinutes = settingsHeader.deleteMinuts;
+    int maxMinutes = settingsHeader.deleteHours;
 
     // Создаем временные списки для обновления
     List<int> tempOrdersListLeft = [];
@@ -591,13 +590,19 @@ class _HomePageState extends State<HomePage> {
               (Route<dynamic> route) => false,
         );
       }
-    } catch (e) {
-      print('error Catch ${e.toString()}');
+    } catch (error) {
+      print('error Catch ${error.toString()}');
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const License()),
             (Route<dynamic> route) => false,
       );
+      final directory = await getApplicationDocumentsDirectory();
+      var logger = Logger(
+        output: FileOutput(file: File('${directory.path}/app_logs.txt')), // Вывод логов в файл
+        printer: PrettyPrinter(), // Формат вывода логов
+      );
+      logger.e(error.toString());
     }
   }
 

@@ -22,7 +22,7 @@ class _SettingHeaderState extends State<SettingHeader> {
   TextEditingController _sizeController = TextEditingController();
   TextEditingController _sizeToolBar = TextEditingController();
   TextEditingController _paddingHeader = TextEditingController();
-  TextEditingController _minuteHeader = TextEditingController();
+  final TextEditingController _minuteHeader = TextEditingController();
   Sounds _selectedSound = Sounds.success;
   String _defaultValue =  "Default";
 
@@ -37,7 +37,7 @@ class _SettingHeaderState extends State<SettingHeader> {
           _sizeController.text = settingsHeader.sizeText.toString();
           _paddingHeader.text = settingsHeader.paddingHeader.toString();
           _sizeToolBar.text = settingsHeader.sizeToolBar.toString();
-          _minuteHeader.text = settingsHeader.deleteMinuts.toString();
+          _minuteHeader.text = settingsHeader.deleteHours.toString();
         });
       }
     });
@@ -228,7 +228,7 @@ class _SettingHeaderState extends State<SettingHeader> {
                 ],
                 decoration: const InputDecoration(labelText: 'Receipt visibility time (Hours)'),
                 onChanged: (value) {
-                  settingsHeader.updateDeleteMinuts(int.parse(value));
+                  settingsHeader.updateDeleteHours(int.parse(value));
                   },
               ),
               //минуты
