@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:monitor_for_sales/screens_setting/box.dart';
-import 'package:monitor_for_sales/screens_setting/column.dart';
-
+import 'package:monitor_for_sales/screens_setting/box_left.dart';
+import 'package:monitor_for_sales/screens_setting/box_right.dart';
+import 'package:monitor_for_sales/screens_setting/setting_column_left.dart';
 import '../screens_setting/header.dart';
-import '../screens_setting/setting_column_left.dart';
+import '../screens_setting/setting_column_right.dart';
 
 class SettingsDialogContent extends StatefulWidget {
   const SettingsDialogContent({super.key});
@@ -19,7 +19,7 @@ class _SettingsDialogContentState extends State<SettingsDialogContent>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
   }
 
 
@@ -55,11 +55,16 @@ class _SettingsDialogContentState extends State<SettingsDialogContent>
                 children: [
                   SettingColumnRight(),
                 ],
+              ), ExpansionTile(
+                title: Text('Box Left Settings'),
+                children: [
+                  SettingBoxLeft(),
+                ],
               ),
               ExpansionTile(
-                title: Text('Box Settings'),
+                title: Text('Box Right Settings'),
                 children: [
-                  SettingBox(),
+                  SettingBoxRight(),
                 ],
               ),
             ],

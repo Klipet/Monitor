@@ -15,6 +15,9 @@ add_executable(${BINARY_NAME} WIN32
   "Runner.rc"
   "runner.exe.manifest"
 )
+# Указание на иконку приложения
+set(APPLICATION_ICON_RES "resources/app_icon.ico")
+set_source_files_properties("Runner.rc" PROPERTIES LANGUAGE RC)
 
 # Apply the standard set of build settings. This can be removed for applications
 # that need different build settings.

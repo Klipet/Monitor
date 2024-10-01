@@ -3,8 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  audioplayers_windows
   fullscreen_window
   hotkey_manager_windows
+  permission_handler_windows
   screen_retriever
   window_manager
 )
