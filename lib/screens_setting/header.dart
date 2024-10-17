@@ -180,44 +180,61 @@ class _SettingHeaderState extends State<SettingHeader> {
                   settingsHeader.updateTitle(value);
                 },
               ),
-            //  Padding(
-            //    padding: const EdgeInsets.only(top: 8.0),
-            //    child: Row(
-            //      children: [
-            //        Container(
-            //          child: Row(
-            //            children: [
-            //              DropdownButton<Sounds>(
-            //                  value: _selectedSound,
-            //                  onChanged: (Sounds? newValue) {
-            //                    setState(() {
-            //                      if (newValue != null) {
-            //                        _selectedSound = newValue;
-            //                        settingsHeader.updateSounds(newValue);
-            //                      }
-            //                    });
-            //                  },
-            //                  items: _availableSounds
-            //                      .map<DropdownMenuItem<Sounds>>((Sounds value) {
-            //                    return DropdownMenuItem<Sounds>(
-            //                      value: value,
-            //                      child: Text(value
-            //                          .toString()), // Преобразование перечисления в строку для отображения
-            //                    );
-            //                  }).toList()),
-            //              Padding(
-            //                padding: const EdgeInsets.only(left: 18.0),
-            //                child: ElevatedButton(
-            //                  onPressed: () => _playSound(_selectedSound),
-            //                  child: Text('Play Selected Sound'),
-            //                ),
-            //              ),
-            //            ],
-            //          ),
-            //        ),
-            //      ],
-            //    ),
-            //  ),
+
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  children: [
+                    Container(
+                      child: Row(
+                        children: [
+                          DropdownButton<Sounds>(
+                              value: _selectedSound,
+                              onChanged: (Sounds? newValue) {
+                                setState(() {
+                                  if (newValue != null) {
+                                    _selectedSound = newValue;
+                                    settingsHeader.updateSounds(newValue);
+                                  }
+                                });
+                              },
+                              items: _availableSounds
+                                  .map<DropdownMenuItem<Sounds>>((Sounds value) {
+                                return DropdownMenuItem<Sounds>(
+                                  value: value,
+                                  child: Text(value
+                                      .toString()), // Преобразование перечисления в строку для отображения
+                                );
+                              }).toList()),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 18.0),
+                            child: ElevatedButton(
+                              onPressed: () => _playSound(_selectedSound),
+                              child: Text('Play Selected Sound'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(padding: const EdgeInsets.only(left: 0.0),
+                      child: Column(
+                        children: [
+                          Text(settingsHeader.soundActive? 'Enable' : 'Disable'), // Добавляем текст для чекбокса
+                          Checkbox(
+                            value: settingsHeader.soundActive, // Переменная, хранящая состояние чекбокса
+                            onChanged: (bool? value) {
+                              setState(() {
+                                settingsHeader.updateSoundsActive(value!); // Обновляем состояние
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+
               TextField(
                 controller: _minuteHeader,
                 keyboardType: TextInputType.number,
@@ -307,7 +324,6 @@ class _SettingHeaderState extends State<SettingHeader> {
                   ),
                 ],
               ),
-
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ElevatedButton(

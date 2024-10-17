@@ -8,9 +8,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sound_library/sound_library.dart';
 
 class ScreenSettingsHeader extends ChangeNotifier {
-//  late Sounds _sounds;
+   Sounds _sounds = Sounds.action;
    bool _soundActive = false;
    bool _deleteActive = false;
+   bool _videoPlayer = false;
   String  _animatie = "Default"; // Значение по умолчанию;
   Color _backgroundColor = Colors.white;
   String _textTitle = '';
@@ -33,9 +34,10 @@ class ScreenSettingsHeader extends ChangeNotifier {
   double get sizeToolBar => _sizeToolBar;
   int get deleteHours => _deleteHours;
   File? get selectedImage => _selectedImage;
-//  Sounds? get sounds => _sounds;
+  Sounds? get sounds => _sounds;
   bool get soundActive => _soundActive;
   bool get deleteActive => _deleteActive;
+  bool get videoPlayer => _videoPlayer;
   String get animatie => _animatie;
 
 
@@ -55,9 +57,10 @@ class ScreenSettingsHeader extends ChangeNotifier {
     _paddingHeader = box.get('paddingHeader', defaultValue: 0);
     _sizeToolBar = box.get('sizeToolBar', defaultValue: 0.0);
     _deleteHours = box.get('deleteHours', defaultValue: 0);
-//    _sounds = box.get('sounds', defaultValue: Sounds.action);
+    _sounds = box.get('sounds', defaultValue: Sounds.action);
     _soundActive = box.get('soundActive', defaultValue: false);
     _deleteActive = box.get('deleteActive', defaultValue: false);
+    _videoPlayer = box.get('videoPlayer', defaultValue: false);
     _animatie = box.get('animatie', defaultValue: "Default");
     String? imagePath = box.get('selectedImage', defaultValue: null);
     if (imagePath != null) {
@@ -79,10 +82,11 @@ class ScreenSettingsHeader extends ChangeNotifier {
     if (kDebugMode) {
       print( 'save succes Box $_deleteHours, ${box.get('deleteHours')}');
     }
-//    box.put('sounds', _sounds);
+    box.put('sounds', _sounds);
     box.put('paddingHeader', _paddingHeader);
-    box.put('soundActiv', _soundActive);
+    box.put('soundActive', _soundActive);
     box.put('deleteActive', _deleteActive);
+    box.put('videoPlayer', _deleteActive);
     box.put('animatie', _animatie);
     if (_selectedImage != null) {
       box.put('selectedImage', _selectedImage!.path);
@@ -95,6 +99,11 @@ class ScreenSettingsHeader extends ChangeNotifier {
 
   void updateDeleteHours(int value) {
     _deleteHours = value;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateShowVideoPlayer(bool value) {
+    _videoPlayer = value;
     _saveSettings();
     notifyListeners();
   }
@@ -113,11 +122,11 @@ class ScreenSettingsHeader extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
-//  void updateSounds(Sounds sounds) {
-//    _sounds = sounds;
-//    _saveSettings();
-//    notifyListeners();
-//  }
+  void updateSounds(Sounds sounds) {
+    _sounds = sounds;
+    _saveSettings();
+    notifyListeners();
+  }
     void updateTextColor(Color color) {
       _textColor = color;
       _saveSettings();

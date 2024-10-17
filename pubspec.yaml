@@ -61,7 +61,11 @@ dependencies:
   device_info_plus: ^10.1.1
   animated_text_kit: ^4.2.2
   intranet_ip: ^1.0.2
-  logger: ^1.1.0
+  logging: ^1.2.0
+  logger: ^2.4.0
+  video_player_win: ^3.1.0
+  video_player: ^2.9.2
+  colorful_circular_progress_indicator: ^0.0.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

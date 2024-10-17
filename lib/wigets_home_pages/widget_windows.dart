@@ -18,21 +18,25 @@ import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:monitor_for_sales/providers/screen_setting_right.dart';
 import 'package:monitor_for_sales/screens/settings_home_page.dart';
+import 'package:monitor_for_sales/screens/video_player_sequence.dart';
 import 'package:monitor_for_sales/wigets_home_pages/spash_license.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sound_library/sound_library.dart';
 import 'package:synchronized_keyboard_listener/synchronized_keyboard_listener.dart';
 import 'package:system_info2/system_info2.dart';
 import '../animation/order_screen.dart';
+import '../broker/logerEvent.dart';
 import '../factory/post_get_url.dart';
 import '../factory/response_registr_app.dart';
 import '../providers/screen_setting_left.dart';
 import 'package:lottie/lottie.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:intranet_ip/intranet_ip.dart';
+import 'package:window_manager/window_manager.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -56,6 +60,10 @@ class _HomePageState extends State<HomePage> {
   Control control = Control.play;
   Map<int, double> opacityMap = {};
   double _opacity = 1.0;
+  Size? _lastKnownSize;
+  late Logger logger;
+
+
 
 
   @override
@@ -74,7 +82,23 @@ class _HomePageState extends State<HomePage> {
     _startTimer();
     getState();
     _startTimerApyServer();
+    _initLogger();
   }
+  Future<void> _initLogger() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/app_logs.txt';
+    File log = File(path);
+    final fileOutput = FileOutput(file: log); // Передаем путь к файлу в FileOutput
+    logger = Logger(
+      level: Level.error, // Убедитесь, что уровень логирования позволяет записывать ошибки
+      output: fileOutput,
+      filter: DevelopmentFilter(),
+    );
+
+    // Пример записи логов
+    logger.i("Логгирование инициализировано."); // Используйте logger после его инициализации
+  }
+
 
   @override
   void dispose() {
@@ -89,6 +113,16 @@ class _HomePageState extends State<HomePage> {
       const Text(
         "F10 - Setting \n"
             "ESC - Exit \n ",
+        style: TextStyle(color: Colors.black),
+      ),
+      background: Colors.white10.withOpacity(0.9),
+      duration: const Duration(seconds: 3),
+    );
+  }
+  void _notificationError(String content) {
+    showSimpleNotification(
+       Text(
+        content,
         style: TextStyle(color: Colors.black),
       ),
       background: Colors.white10.withOpacity(0.9),
@@ -125,7 +159,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
-    return Scaffold(
+    var size = MediaQuery.sizeOf(context);
+    print('Size: $size');
+    return ordersListRight.isEmpty && ordersListLeft.isEmpty
+        ? VideoPlayerSequence() : Scaffold(
         appBar: settingsHeader.textTitle.isEmpty
             ? null
             : AppBar(
@@ -300,19 +337,19 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Settings'),
           content: const SettingsDialogContent(),
           actions: <Widget>[
-            Container(
-              width: 150,
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: TextButton(
-                child: Text('Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
+          //  Container(
+          //    width: 150,
+          //    height: 50,
+          //    decoration: BoxDecoration(
+          //      borderRadius: BorderRadius.circular(15),
+          //    ),
+          //    child: TextButton(
+          //      child: Text('Cancel'),
+          //      onPressed: () {
+          //        Navigator.of(context).pop();
+          //      },
+          //    ),
+          //  ),
             Container(
               width: 150,
               height: 50,
@@ -363,14 +400,9 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             _isFetching = false;
           });
+          logger.i(response.statusCode);
         }
       } catch (error) {
-        print(error.toString());
-        final directory = await getApplicationDocumentsDirectory();
-        var logger = Logger(
-          output: FileOutput(file: File('${directory.path}/app_logs.txt')), // Вывод логов в файл
-          printer: PrettyPrinter(), // Формат вывода логов
-        );
         logger.e(error.toString());
         setState(() {
           _isFetching = false;
@@ -384,8 +416,6 @@ class _HomePageState extends State<HomePage> {
 
 
   Future<void> statusState() async {
-    List<int> currentOrdersListLeft = List.from(ordersListLeft);
-    List<int> currentOrdersListRight = List.from(ordersListRight);
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context, listen: false);
     DateTime currentTime = DateTime.now();
     int maxMinutes = settingsHeader.deleteHours;
@@ -393,23 +423,22 @@ class _HomePageState extends State<HomePage> {
     // Создаем временные списки для обновления
     List<int> tempOrdersListLeft = [];
     List<int> tempOrdersListRight = [];
+    // Храним номера заказов, которые изменились
+    Set<int> previouslyInState2 = {}; // Заказы, которые были в состоянии 2
+    Set<int> currentlyInState6 = {};   // Заказы, которые сейчас в состоянии 6
 
     for (var status in ordersList) {
       try {
         Duration difference = currentTime.difference(status.dateCreated);
         if (status.state == 2) {
           // Логика для обработки статуса 2
-          if (settingsHeader.deleteActive) {
-            if (difference.inMinutes < maxMinutes && !tempOrdersListLeft.contains(status.number)) {
-              tempOrdersListLeft.add(status.number);
-            }
-          } else if (!settingsHeader.deleteActive && !tempOrdersListLeft.contains(status.number)) {
-            tempOrdersListLeft.add(status.number);
-          }
+          tempOrdersListLeft.add(status.number);
+          previouslyInState2.add(status.number); // Добавляем номер заказа в состояние 2
         } else if (status.state == 6) {
           // Логика для обработки статуса 6
           if (!tempOrdersListRight.contains(status.number)) {
             tempOrdersListRight.add(status.number);
+            currentlyInState6.add(status.number); // Добавляем номер заказа в состояние 6
           }
         } else if (status.state == 4) {
           // Логика для обработки статуса 4
@@ -418,55 +447,32 @@ class _HomePageState extends State<HomePage> {
           }
         }
       } catch (error) {
-        final directory = await getApplicationDocumentsDirectory();
-        var logger = Logger(
-          output: FileOutput(file: File('${directory.path}/app_logs.txt')), // Логируем ошибки
-          printer: PrettyPrinter(),
-        );
-        logger.e(error.toString());
         print(error.toString());
       }
     }
     try{
-      final tempDir = await getTemporaryDirectory();
-      var logger = Logger(
-        output: FileOutput(file: File('${tempDir.path}/app_logs.txt')), // Вывод логов в файл
-        printer: PrettyPrinter(), // Формат вывода логов
-      );
       // Удаляем из списков устаревшие элементы для deleteActive = true
-      if (settingsHeader.deleteActive) {
-        tempOrdersListLeft = tempOrdersListLeft.where((number) {
-          var order = ordersList.firstWhere((order) => order.number == number);
-          if (order != null && order.state == 2) {
-            Duration difference = currentTime.difference(order.dateCreated);
-
-            logger.i(
-                'deferenta: ${difference.toString()} , order: ${order.number}');
-            print(
-                'deferenta: ${difference.toString()} , order: ${order.number}');
-            print('${tempDir.path}/app_logs.txt');
-            return difference.inMinutes < maxMinutes;
-          }
-          return false;
-        }).toList();
-      }
-      // Обновляем списки через setState() один раз
+  //    if (settingsHeader.deleteActive) {
+  //      tempOrdersListLeft = tempOrdersListLeft.where((number) {
+  //        var order = ordersList.firstWhere((order) => order.number == number);
+  //        if (order != null && order.state == 2) {
+  //          Duration difference = currentTime.difference(order.dateCreated);
+  //          return difference.inMinutes < maxMinutes;
+  //        }
+  //        return false;
+  //      }).toList();
+  //    }
+  //    // Обновляем списки через setState() один раз
+      if(tempOrdersListRight.contains())
       setState(() {
         ordersListLeft = tempOrdersListLeft;
         ordersListRight = tempOrdersListRight;
 
         ordersLeft = ordersListLeft.isEmpty;
         ordersRight = ordersListRight.isEmpty;
-
-        //  updateOpacity(); // Обновление непрозрачности
       });
     }catch(error){
-      final tempDir = await getTemporaryDirectory();
-      var logger = Logger(
-        output: FileOutput(file: File('${tempDir.path}/app_logs.txt')), // Вывод логов в файл
-        printer: PrettyPrinter(), // Формат вывода логов
-      );
-      logger.e(error.toString());
+
     }
 
 
@@ -488,17 +494,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // void _playSound() {
-  //   var settingsHeader =
-  //   Provider.of<ScreenSettingsHeader>(context, listen: false);
-  //   if (settingsHeader.soundActive == true) {
-  //     Sounds? sound = settingsHeader.sounds;
-  //     SoundPlayer.play(sound!,
-  //         volume: 3, position: const Duration(microseconds: 500));
-  //   } else {
-  //     null;
-  //   }
-  // }
+   void _playSound() {
+     var settingsHeader =
+     Provider.of<ScreenSettingsHeader>(context, listen: false);
+     if (settingsHeader.soundActive == true) {
+       Sounds? sound = settingsHeader.sounds;
+       SoundPlayer.play(sound!,
+           volume: 3, position: const Duration(microseconds: 500));
+     } else {
+       null;
+     }
+   }
 
   Future<void> getApyKeyInfo() async {
     Constants constants = Constants();
@@ -576,13 +582,12 @@ class _HomePageState extends State<HomePage> {
           );
         }
       } else if (response.statusCode == 400) {
-        pref.setString('uri', response.statusCode.toString());
+
       } else if (response.statusCode == 502) {
-        pref.setString('uri', response.statusCode.toString());
+
       } else if (response.statusCode == 404) {
-        pref.setString('uri', response.statusCode.toString());
-      }
-      else {
+
+      } else {
         print('error response.statusCode ${response.statusCode}');
         Navigator.pushAndRemoveUntil(
           context,
@@ -597,12 +602,7 @@ class _HomePageState extends State<HomePage> {
         MaterialPageRoute(builder: (context) => const License()),
             (Route<dynamic> route) => false,
       );
-      final directory = await getApplicationDocumentsDirectory();
-      var logger = Logger(
-        output: FileOutput(file: File('${directory.path}/app_logs.txt')), // Вывод логов в файл
-        printer: PrettyPrinter(), // Формат вывода логов
-      );
-      logger.e(error.toString());
+
     }
   }
 
@@ -620,6 +620,6 @@ class _HomePageState extends State<HomePage> {
       return 'Unknown';
     }
   }
-
+  
 }
 

@@ -121,7 +121,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
+  late final Logger logger;
+  
   @override
   Widget build(BuildContext context) {
     return const OverlaySupport.global(
@@ -130,6 +131,8 @@ class _MyAppState extends State<MyApp> {
         )
     );
   }
+
+
 
 }
 

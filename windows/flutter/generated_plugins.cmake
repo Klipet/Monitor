@@ -8,6 +8,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   hotkey_manager_windows
   permission_handler_windows
   screen_retriever
+  video_player_win
   window_manager
 )
 

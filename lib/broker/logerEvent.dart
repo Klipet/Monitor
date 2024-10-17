@@ -1,33 +1,28 @@
-import 'dart:async';
+
 import 'dart:io';
+
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
-class FileOutput extends LogOutput {
-  late final File file;
+class LogerEvent extends LogOutput {
+  late final logFile;
 
   FileOutput() {
-    _init();
+    _initLogFile();
   }
 
-  // Инициализация файла логов
-  Future<void> _init() async {
-    final directory = await getApplicationDocumentsDirectory();
-    file = File('${directory.path}/app_logs.txt');
+  Future<void> _initLogFile() async {
+    final directory = await getApplicationDocumentsDirectory(); // Получаем директорию приложения
+    final path = '${directory.path}/app_logs.txt'; // Путь к файлу логов
+    logFile = File(path);
+    await logFile.create(); // Создаем файл, если его нет
 
-    if (!(await file.exists())) {
-      await file.create(recursive: true);
-    }
   }
 
-  // Переопределяем метод output
   @override
-  void output(OutputEvent event) async {
-    // Ждем завершения инициализации файла
-    await _init();
-    final logMessage = event.lines.join('\n');
-
-    // Записываем логи в файл
-    await file.writeAsString('$logMessage\n', mode: FileMode.append, flush: true);
+  void output(OutputEvent event) {
+    for (var line in event.lines) {
+      logFile.writeAsStringSync('$line\n', mode: FileMode.append); // Записываем строки в файл
+    }
   }
 }
