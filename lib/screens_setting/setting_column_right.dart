@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:monitor_for_sales/broker/color_app.dart';
 import 'package:monitor_for_sales/providers/screen_setting_left.dart';
 import 'package:provider/provider.dart';
 
@@ -18,9 +20,9 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
   TextEditingController _rightTextController = TextEditingController();
   TextEditingController _rightSizeController = TextEditingController();
   TextEditingController _rightSizeBorder = TextEditingController();
+  TextEditingController _colorPickerController = TextEditingController();
 
-  void _openColorPicker(BuildContext context, Color currentColor,
-      Function(Color) onColorChanged) {
+  void _openColorPicker(BuildContext context, String defaultColor, HexColor currentColor, Function(Color) onColorChanged) {
     showDialog(
       context: context,
       builder: (context) {
@@ -30,15 +32,26 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
             child: ColorPicker(
               pickerColor: currentColor,
               onColorChanged: onColorChanged,
+              hexInputBar: true,
+              hexInputController: _colorPickerController,
             ),
           ),
           actions: <Widget>[
+            TextButton(
+              child: const Text('Default color'),
+              onPressed: () {
+                setState(() {
+                  _colorPickerController.text = defaultColor;
+                });
+              },
+            ),
             TextButton(
               child: const Text('Done'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
+
           ],
         );
       },
@@ -85,32 +98,32 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
     final settingsLeft = Provider.of<ScreenSettingsLeft>(context);
     return Column(
       children: [
-        TextField(
-          controller: _rightSizeController,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(
-              RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-            ),
-          ],
-          decoration: const InputDecoration(labelText: 'Enter size Right text'),
-          onChanged: (value) {
-            settingsRight.updateRightSizeText(double.parse(value));
-          },
-        ),
-        TextField(
-          controller: _rightSizeBorder,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(
-              RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-            ),
-          ],
-          decoration: const InputDecoration(labelText: 'Enter size Right Border'),
-          onChanged: (value) {
-            settingsRight.updateRightSizeBorder(double.parse(value));
-          },
-        ),
+    //    TextField(
+    //      controller: _rightSizeController,
+    //      keyboardType: TextInputType.number,
+    //      inputFormatters: [
+    //        FilteringTextInputFormatter.allow(
+    //          RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+    //        ),
+    //      ],
+    //      decoration: const InputDecoration(labelText: 'Enter size Right text'),
+    //      onChanged: (value) {
+    //        settingsRight.updateRightSizeText(double.parse(value));
+    //      },
+    //    ),
+    //    TextField(
+    //      controller: _rightSizeBorder,
+    //      keyboardType: TextInputType.number,
+    //      inputFormatters: [
+    //        FilteringTextInputFormatter.allow(
+    //          RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+    //        ),
+    //      ],
+    //      decoration: const InputDecoration(labelText: 'Enter size Right Border'),
+    //      onChanged: (value) {
+    //        settingsRight.updateRightSizeBorder(double.parse(value));
+    //      },
+    //    ),
         TextField(
           controller: _rightTextController,
           decoration:
@@ -121,52 +134,52 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
         ),
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-              child: GestureDetector(
-                child:  Icon(Icons.border_bottom,
-                  size: 50,
-                  color: settingsRight.borderIsActiveBottomRight ? Colors.black : Colors.grey ,
-                ),
-                onTap: (){
-                  setState(() {
-                    settingsRight.updateBorderIsActiveBottomRight(!settingsRight.borderIsActiveBottomRight);
-                  });
-                },),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-              child: GestureDetector(child: Icon(Icons.border_top,
-                size: 50,
-                color:  settingsRight.borderIsActiveTopRight ? Colors.black : Colors.grey ,),
-                onTap: (){
-                  setState(() {
-                    settingsRight.updateBorderIsActiveTopRight(!settingsRight.borderIsActiveTopRight);
-                  });
-                },),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-              child: GestureDetector(child: Icon(Icons.border_left,
-                size: 50,
-                color:  settingsRight.borderIsActiveLeftRight ? Colors.black : Colors.grey ,),
-                onTap: (){
-                  setState(() {
-                    settingsRight.updateBorderIsActiveLeftRight(!settingsRight.borderIsActiveLeftRight);
-                  });
-                },),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-              child: GestureDetector(child: Icon(Icons.border_right,
-                size: 50,
-                color:  settingsRight.borderIsActiveRightRight ? Colors.black : Colors.grey ,),
-                onTap: (){
-                  setState(() {
-                    settingsRight.updateBorderIsActiveRightRight(!settingsRight.borderIsActiveRightRight);
-                  });
-                },),
-            ),
+        //   Padding(
+        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+        //     child: GestureDetector(
+        //       child:  Icon(Icons.border_bottom,
+        //         size: 50,
+        //         color: settingsRight.borderIsActiveBottomRight ? Colors.black : Colors.grey ,
+        //       ),
+        //       onTap: (){
+        //         setState(() {
+        //           settingsRight.updateBorderIsActiveBottomRight(!settingsRight.borderIsActiveBottomRight);
+        //         });
+        //       },),
+        //   ),
+        //   Padding(
+        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+        //     child: GestureDetector(child: Icon(Icons.border_top,
+        //       size: 50,
+        //       color:  settingsRight.borderIsActiveTopRight ? Colors.black : Colors.grey ,),
+        //       onTap: (){
+        //         setState(() {
+        //           settingsRight.updateBorderIsActiveTopRight(!settingsRight.borderIsActiveTopRight);
+        //         });
+        //       },),
+        //   ),
+        //   Padding(
+        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+        //     child: GestureDetector(child: Icon(Icons.border_left,
+        //       size: 50,
+        //       color:  settingsRight.borderIsActiveLeftRight ? Colors.black : Colors.grey ,),
+        //       onTap: (){
+        //         setState(() {
+        //           settingsRight.updateBorderIsActiveLeftRight(!settingsRight.borderIsActiveLeftRight);
+        //         });
+        //       },),
+        //   ),
+        //   Padding(
+        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+        //     child: GestureDetector(child: Icon(Icons.border_right,
+        //       size: 50,
+        //       color:  settingsRight.borderIsActiveRightRight ? Colors.black : Colors.grey ,),
+        //       onTap: (){
+        //         setState(() {
+        //           settingsRight.updateBorderIsActiveRightRight(!settingsRight.borderIsActiveRightRight);
+        //         });
+        //       },),
+        //   ),
         //    GestureDetector(
         //      onTap: () {
         //        setState(() {
@@ -187,33 +200,33 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
         //    ),
           ],
         ),
-        Row(
-          children: [
-            DropdownButton<String>(
-              value: settingsRight.styleColumnRight,
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedFont = newValue!;
-                  settingsRight.updateStyleColumnRight(newValue);
-                });
-              },
-              items: _fonts.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value, style: GoogleFonts.getFont(value)),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+    //    Row(
+    //      children: [
+    //        DropdownButton<String>(
+    //          value: settingsRight.styleColumnRight,
+    //          onChanged: (String? newValue) {
+    //            setState(() {
+    //              _selectedFont = newValue!;
+    //              settingsRight.updateStyleColumnRight(newValue);
+    //            });
+    //          },
+    //          items: _fonts.map<DropdownMenuItem<String>>((String value) {
+    //            return DropdownMenuItem<String>(
+    //              value: value,
+    //              child: Text(value, style: GoogleFonts.getFont(value)),
+    //            );
+    //          }).toList(),
+    //        ),
+    //      ],
+    //    ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: ElevatedButton(
             onPressed: () {
-              _openColorPicker(context, settingsRight.rightColumnColor,
+              _openColorPicker(context, colorRight ,HexColor(settingsRight.rightColumnColor),
                   (color) {
                 setState(() {
-                  settingsRight.updateRightColumnColor(color);
+                  settingsRight.updateRightColumnColor(colorToHex(color));
                 });
               });
             },
@@ -221,40 +234,53 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 8.0, bottom: 5),
           child: ElevatedButton(
             onPressed: () {
-              _openColorPicker(context, settingsRight.rightColorText, (color) {
+              _openColorPicker(context, colorTitleRightBox , HexColor(settingsRight.rightColorText), (color) {
                 setState(() {
-                  settingsRight.updateRightColorText(color);
+                  settingsRight.updateRightTitleBoxColor(colorToHex(color));
+                });
+              });
+            },
+            child: const Text('Change Right Title Color'),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0, bottom: 5),
+          child: ElevatedButton(
+            onPressed: () {
+              _openColorPicker(context, colorTextTitleRight , HexColor(settingsRight.rightColorText), (color) {
+                setState(() {
+                  settingsRight.updateRightColorText(colorToHex(color));
                 });
               });
             },
             child: const Text('Change Right Column Text Color'),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              _openColorPicker(context, settingsRight.rightColorBorder, (color) {
-                setState(() {
-                  settingsRight.updateRightColorBorder(color);
-                });
-              });
-            },
-            child: const Text('Change Right Column Border Color'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
-          child: ElevatedButton(
-            onPressed: () {
-              settingsLeft.updateFromRight(settingsRight);
-            },
-            child: const Text('Update to left'),
-          ),
-        ),
+    //    Padding(
+    //      padding: const EdgeInsets.only(top: 8.0),
+    //      child: ElevatedButton(
+    //        onPressed: () {
+    //          _openColorPicker(context, settingsRight.rightColorBorder, (color) {
+    //            setState(() {
+    //              settingsRight.updateRightColorBorder(color);
+    //            });
+    //          });
+    //        },
+    //        child: const Text('Change Right Column Border Color'),
+    //      ),
+    //    ),
+    //    Padding(
+    //      padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
+    //      child: ElevatedButton(
+    //        onPressed: () {
+    //          settingsLeft.updateFromRight(settingsRight);
+    //        },
+    //        child: const Text('Update to left'),
+    //      ),
+    //    ),
       ],
     );
   }

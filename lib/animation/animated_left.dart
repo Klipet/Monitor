@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_animations/animation_builder/custom_animation_builder.dart';
 import '../providers/screen_setting_box_left.dart';
@@ -37,25 +38,25 @@ class AnimatedLeft extends StatelessWidget {
         Expanded(
             child: Container(
               decoration: BoxDecoration(
-                  color: settingsLeft.leftColumnColor,
-                  border: Border(
-                      top: settingsLeft.borderIsActiveTopLeft ? BorderSide(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      ): BorderSide.none,
-                      left: settingsLeft.borderIsActiveLeftLeft ? BorderSide(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      ): BorderSide.none,
-                      right: settingsLeft.borderIsActiveRightLeft ? BorderSide(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      ): BorderSide.none,
-                      bottom: settingsLeft.borderIsActiveBottomLeft ? BorderSide(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      ): BorderSide.none
-                  )
+              //    color: settingsLeft.leftColumnColor,
+            //      border: Border(
+            //          top: settingsLeft.borderIsActiveTopLeft ? BorderSide(
+            //            color: settingsLeft.leftColorBorder,
+            //            width: settingsLeft.leftSizeBorder,
+            //          ): BorderSide.none,
+            //          left: settingsLeft.borderIsActiveLeftLeft ? BorderSide(
+            //            color: settingsLeft.leftColorBorder,
+            //            width: settingsLeft.leftSizeBorder,
+            //          ): BorderSide.none,
+            //          right: settingsLeft.borderIsActiveRightLeft ? BorderSide(
+            //            color: settingsLeft.leftColorBorder,
+            //            width: settingsLeft.leftSizeBorder,
+            //          ): BorderSide.none,
+            //          bottom: settingsLeft.borderIsActiveBottomLeft ? BorderSide(
+            //            color: settingsLeft.leftColorBorder,
+            //            width: settingsLeft.leftSizeBorder,
+            //          ): BorderSide.none
+            //      )
               ),
               child: Column(
                 children: [
@@ -64,7 +65,7 @@ class AnimatedLeft extends StatelessWidget {
                     style: GoogleFonts.getFont(
                         fontSize: settingsLeft.leftSizeText,
                         settingsLeft.styleColumnLeft,
-                        color: settingsLeft.leftColorText
+                    //    color: settingsLeft.leftColorText
                     ),
                   ),
                   Expanded(
@@ -97,8 +98,7 @@ class AnimatedLeft extends StatelessWidget {
                                   width: settingsBox.widthBoxLeft,
                                   height: settingsBox.heightBoxLeft,
                                   decoration: BoxDecoration(
-                                    color: settingsBoxLeft
-                                        .backgroundBoxColorLeft,
+                                    color: HexColor(settingsBoxLeft.backgroundBoxColorLeft),
                                     border: settingsBoxLeft == 0 ? null : Border.all(
                                       width:  settingsBoxLeft
                                           .sizeBorderLeft,
@@ -115,7 +115,7 @@ class AnimatedLeft extends StatelessWidget {
                                   order.toString(),
                                     style: GoogleFonts.getFont(
                                         settingsBoxLeft.styleBoxLeft,
-                                        color: settingsBoxLeft.textBoxColorLeft,
+                                        color: HexColor(settingsBoxLeft.textBoxColorLeft),
                                         fontSize: settingsBoxLeft.sizeTextLeft),
                                   ),
                                 ),
@@ -138,32 +138,32 @@ class AnimatedLeft extends StatelessWidget {
             child:
             Container(
               decoration: BoxDecoration(
-                  color: settingsRight.rightColumnColor,
-                  border: Border(
-                      top: settingsRight.borderIsActiveTopRight
-                          ? BorderSide(
-                        color: settingsRight.rightColorBorder,
-                        width: settingsRight.rightSizeBorder,
-                      )
-                          : BorderSide.none,
-                      left: settingsRight.borderIsActiveLeftRight
-                          ? BorderSide(
-                        color: settingsRight.rightColorBorder,
-                        width: settingsRight.rightSizeBorder,
-                      )
-                          : BorderSide.none,
-                      right: settingsRight.borderIsActiveRightRight
-                          ? BorderSide(
-                        color: settingsRight.rightColorBorder,
-                        width: settingsRight.rightSizeBorder,
-                      )
-                          : BorderSide.none,
-                      bottom: settingsRight.borderIsActiveBottomRight
-                          ? BorderSide(
-                        color: settingsRight.rightColorBorder,
-                        width: settingsRight.rightSizeBorder,
-                      )
-                          : BorderSide.none)
+              //    color: settingsRight.rightColumnColor,
+              //    border: Border(
+              //        top: settingsRight.borderIsActiveTopRight
+              //            ? BorderSide(
+              //          color: settingsRight.rightColorBorder,
+              //          width: settingsRight.rightSizeBorder,
+              //        )
+              //            : BorderSide.none,
+              //        left: settingsRight.borderIsActiveLeftRight
+              //            ? BorderSide(
+              //          color: settingsRight.rightColorBorder,
+              //          width: settingsRight.rightSizeBorder,
+              //        )
+              //            : BorderSide.none,
+              //        right: settingsRight.borderIsActiveRightRight
+              //            ? BorderSide(
+              //          color: settingsRight.rightColorBorder,
+              //          width: settingsRight.rightSizeBorder,
+              //        )
+              //            : BorderSide.none,
+              //        bottom: settingsRight.borderIsActiveBottomRight
+              //            ? BorderSide(
+              //          color: settingsRight.rightColorBorder,
+              //          width: settingsRight.rightSizeBorder,
+              //        )
+              //            : BorderSide.none)
               ),
               child: Column(
                 children: [
@@ -172,7 +172,7 @@ class AnimatedLeft extends StatelessWidget {
                     style: GoogleFonts.getFont(
                       settingsRight.styleColumnRight,
                       fontSize: settingsRight.rightSizeText,
-                      color: settingsRight.rightColorText,
+                    //  color: settingsRight.rightColorText,
                     ),
                   ),
                   Expanded(
@@ -199,8 +199,7 @@ class AnimatedLeft extends StatelessWidget {
                                     width: settingsBoxRight.wightBoxRight,
                                     height: settingsBoxRight.heightBoxRight,
                                     decoration: BoxDecoration(
-                                      color: settingsBoxRight
-                                          .backgroundBoxColorRight,
+                                      color: HexColor(settingsBoxRight.backgroundBoxColorRight),
                                       border: settingsBoxRight.sizeBorderRight==0 ? null : Border.all(
                                           width: settingsBoxRight
                                               .sizeBorderRight,
@@ -212,7 +211,7 @@ class AnimatedLeft extends StatelessWidget {
                                       order.toString(),
                                       style: GoogleFonts.getFont(
                                           settingsBoxRight.styleBoxRight,
-                                          color: settingsBoxRight.textBoxColorRight,
+                                          color: HexColor(settingsBoxRight.textBoxColorRight),
                                           fontSize: settingsBoxRight.sizeTextRight),
                                     ),
                                   )

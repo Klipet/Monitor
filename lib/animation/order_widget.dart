@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 import '../providers/screen_setting_box_left.dart';
 import '../providers/screen_setting_box_right.dart';
@@ -30,8 +31,8 @@ class OrderWidget extends StatelessWidget {
         height: isLeft ? settingsBox.widthBoxLeft : settingsBoxRight.heightBoxRight,
         decoration: BoxDecoration(
           color: isLeft
-              ? settingsBox.backgroundBoxColorLeft
-              : settingsBoxRight.backgroundBoxColorRight,
+              ? HexColor(settingsBox.backgroundBoxColorLeft)
+              : HexColor(settingsBoxRight.backgroundBoxColorRight),
           border: Border.all(
             width: isLeft ? settingsBox.sizeBorderLeft : settingsBoxRight.sizeBorderRight,
             color: isLeft ? settingsBox.boxBorderColorLeft : settingsBoxRight.boxBorderColorRight,
@@ -44,7 +45,7 @@ class OrderWidget extends StatelessWidget {
           textAlign: TextAlign.center,
           number.toString(),
           style: TextStyle(
-            color: isLeft ? settingsBox.textBoxColorLeft : settingsBoxRight.textBoxColorRight,
+            color: isLeft ? HexColor(settingsBox.textBoxColorLeft) : HexColor(settingsBoxRight.textBoxColorRight),
             fontSize: isLeft ? settingsBox.sizeTextLeft : settingsBoxRight.sizeTextRight,
           ),
         ),

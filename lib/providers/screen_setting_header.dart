@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sound_library/sound_library.dart';
 
 class ScreenSettingsHeader extends ChangeNotifier {
-   Sounds _sounds = Sounds.action;
+   late Sounds _sounds;
    bool _soundActive = false;
    bool _deleteActive = false;
    bool _videoPlayer = false;
@@ -48,8 +48,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
 
   void _loadSettings() async {
     var box = Hive.box('settings');
-    _backgroundColor =
-        Color(box.get('backgroundColor', defaultValue: Colors.white.value));
+    _backgroundColor = Color(box.get('backgroundColor', defaultValue: Colors.white.value));
     _textColor = Color(box.get('textColor', defaultValue: Colors.black.value));
     _textTitle = box.get('textTitle', defaultValue: '');
     _styleTitle = box.get('styleTitle', defaultValue: 'Roboto');
@@ -86,7 +85,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
     box.put('paddingHeader', _paddingHeader);
     box.put('soundActive', _soundActive);
     box.put('deleteActive', _deleteActive);
-    box.put('videoPlayer', _deleteActive);
+    box.put('videoPlayer', _videoPlayer);
     box.put('animatie', _animatie);
     if (_selectedImage != null) {
       box.put('selectedImage', _selectedImage!.path);

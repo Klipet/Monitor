@@ -3,12 +3,13 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:monitor_for_sales/broker/color_app.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 
 class ScreenSettingsBoxLeft extends ChangeNotifier {
-  Color _backgroundBoxColorLeft = Colors.white;
+  String _backgroundBoxColorLeft = colorLeftBox;
   Color _boxBorderColorLeft = Colors.white;
-  Color _textBoxColorLeft = Colors.black;
+  String _textBoxColorLeft = colorTextBoxLeft;
   String _styleBoxLeft = 'Roboto';
   double _sizeTextLeft = 15.0;
   double _radiusBoxLeft = 2.0;
@@ -18,9 +19,9 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   bool _borderBoxLeft = false;
 
 
-  Color get backgroundBoxColorLeft => _backgroundBoxColorLeft;
+  String get backgroundBoxColorLeft => _backgroundBoxColorLeft;
   Color get boxBorderColorLeft => _boxBorderColorLeft;
-  Color get textBoxColorLeft => _textBoxColorLeft;
+  String get textBoxColorLeft => _textBoxColorLeft;
   String get styleBoxLeft => _styleBoxLeft;
   double get sizeTextLeft => _sizeTextLeft;
   double get radiusBoxLeft => _radiusBoxLeft;
@@ -33,9 +34,9 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   }
   void _loadSettings() async {
     var box = Hive.box('settings');
-    _backgroundBoxColorLeft = Color(box.get('backgroundBoxColorLeft', defaultValue: Colors.white.value));
+    _backgroundBoxColorLeft = box.get('backgroundBoxColorLeft', defaultValue: colorLeftBox);
     _boxBorderColorLeft = Color(box.get('boxBorderColorLeft', defaultValue: Colors.white.value));
-    _textBoxColorLeft = Color(box.get('textBoxColorLeft', defaultValue: Colors.black.value));
+    _textBoxColorLeft = box.get('textBoxColorLeft', defaultValue: colorTextBoxLeft);
     _styleBoxLeft = box.get('styleBoxLeft', defaultValue: 'Roboto');
     _sizeTextLeft = box.get('sizeTextLeft', defaultValue: 15.0);
     _radiusBoxLeft= box.get('radiusBoxLeft', defaultValue: 2.0);
@@ -47,9 +48,9 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   }
   void _saveSettings() {
     var box = Hive.box('settings');
-    box.put('backgroundBoxColorLeft', _backgroundBoxColorLeft.value);
+    box.put('backgroundBoxColorLeft', _backgroundBoxColorLeft);
     box.put('boxBorderColorLeft', _boxBorderColorLeft.value);
-    box.put('textBoxColorLeft', _textBoxColorLeft.value);
+    box.put('textBoxColorLeft', _textBoxColorLeft);
     box.put('styleBoxLeft', _styleBoxLeft);
     box.put('sizeTextLeft', _sizeTextLeft);
     box.put('radiusBoxLeft', _radiusBoxLeft);
@@ -71,7 +72,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
-   void updateBackgroundBoxColor(Color color) {
+   void updateBackgroundBoxColor(String color) {
     _backgroundBoxColorLeft = color;
     _saveSettings();
     notifyListeners();
@@ -81,7 +82,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
-  void updateTextBoxColor(Color color) {
+  void updateTextBoxColor(String color) {
     _textBoxColorLeft = color;
     _saveSettings();
     notifyListeners();
@@ -126,6 +127,13 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
     _heightBoxLeft = leftSettings.heightBoxRight;
     _widthBoxLeft = leftSettings.wightBoxRight;
     _styleBoxLeft = leftSettings.styleBoxRight;
+    _saveSettings();
+    notifyListeners();
+  }
+
+  void updateDefault(){
+    _backgroundBoxColorLeft = colorLeftBox;
+    _textBoxColorLeft = colorTextBoxLeft;
     _saveSettings();
     notifyListeners();
   }

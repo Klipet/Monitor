@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:monitor_for_sales/broker/color_app.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +21,7 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
   TextEditingController _boxWidthSize = TextEditingController();
   TextEditingController _boxBorderSize = TextEditingController();
   TextEditingController _boxTextSize = TextEditingController();
+  TextEditingController _colorPickerController = TextEditingController();
 
 
   String _selectedFont = '';
@@ -47,7 +50,7 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
       }
     });
   }
-  void _openColorPicker(BuildContext context, Color currentColor, Function(Color) onColorChanged) {
+  void _openColorPicker(BuildContext context, String defaultColor, HexColor currentColor, Function(Color) onColorChanged) {
     showDialog(
       context: context,
       builder: (context) {
@@ -57,15 +60,26 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
             child: ColorPicker(
               pickerColor: currentColor,
               onColorChanged: onColorChanged,
+              hexInputBar: true,
+              hexInputController: _colorPickerController,
             ),
           ),
           actions: <Widget>[
+            TextButton(
+              child: const Text('Default color'),
+              onPressed: () {
+                setState(() {
+                  _colorPickerController.text = defaultColor;
+                });
+              },
+            ),
             TextButton(
               child: const Text('Done'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
+
           ],
         );
       },
@@ -79,123 +93,123 @@ class _SettingBoxLeft extends State<SettingBoxLeft> {
     return Material(
       child: Column(
         children: [
-          TextField(
-            controller: _boxBorderSize,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-              ),],
-            decoration: const InputDecoration(labelText: 'Size Border'),
-            onChanged: (value) {
-              settingsBox.updateSizeBorder(double.parse(value));
-            },
-          ),
-          TextField(
-            controller: _boxTextSize,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-              ),],
-            decoration: const InputDecoration(labelText: 'Size Text'),
-            onChanged: (value) {
-              settingsBox.updateSizeText(double.parse(value));
-            },
-          ),
-          TextField(
-            controller: _boxHeightSize,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-              ),],
-            decoration: const InputDecoration(labelText: 'Height Box Left '),
-            onChanged: (value) {
-              settingsBox.updateHeightBox(double.parse(value));
-            },
-          ),
-          TextField(
-            controller: _boxWidthSize,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-              ),],
-            decoration: const InputDecoration(labelText: 'Width Box Left '),
-            onChanged: (value) {
-              settingsBox.updateWidthBox(double.parse(value));
-            },
-          ),
-          Row(
-            children: [
-              DropdownButton<String>(
-                value: settingsBox.styleBoxLeft,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedFont = newValue!;
-                    settingsBox.updateStyleBoxLeft(newValue);
-                  });
-                },
-                items: _fonts.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value, style: GoogleFonts.getFont(value)),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
+      //    TextField(
+      //      controller: _boxBorderSize,
+      //      keyboardType: TextInputType.number,
+      //      inputFormatters: [
+      //        FilteringTextInputFormatter.allow(
+      //          RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+      //        ),],
+      //      decoration: const InputDecoration(labelText: 'Size Border'),
+      //      onChanged: (value) {
+      //        settingsBox.updateSizeBorder(double.parse(value));
+      //      },
+      //    ),
+      //    TextField(
+      //      controller: _boxTextSize,
+      //      keyboardType: TextInputType.number,
+      //      inputFormatters: [
+      //        FilteringTextInputFormatter.allow(
+      //          RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+      //        ),],
+      //      decoration: const InputDecoration(labelText: 'Size Text'),
+      //      onChanged: (value) {
+      //        settingsBox.updateSizeText(double.parse(value));
+      //      },
+      //    ),
+      //    TextField(
+      //      controller: _boxHeightSize,
+      //      keyboardType: TextInputType.number,
+      //      inputFormatters: [
+      //        FilteringTextInputFormatter.allow(
+      //          RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+      //        ),],
+      //      decoration: const InputDecoration(labelText: 'Height Box Left '),
+      //      onChanged: (value) {
+      //        settingsBox.updateHeightBox(double.parse(value));
+      //      },
+      //    ),
+      //    TextField(
+      //      controller: _boxWidthSize,
+      //      keyboardType: TextInputType.number,
+      //      inputFormatters: [
+      //        FilteringTextInputFormatter.allow(
+      //          RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+      //        ),],
+      //      decoration: const InputDecoration(labelText: 'Width Box Left '),
+      //      onChanged: (value) {
+      //        settingsBox.updateWidthBox(double.parse(value));
+      //      },
+      //    ),
+      //    Row(
+      //      children: [
+      //        DropdownButton<String>(
+      //          value: settingsBox.styleBoxLeft,
+      //          onChanged: (String? newValue) {
+      //            setState(() {
+      //              _selectedFont = newValue!;
+      //              settingsBox.updateStyleBoxLeft(newValue);
+      //            });
+      //          },
+      //          items: _fonts.map<DropdownMenuItem<String>>((String value) {
+      //            return DropdownMenuItem<String>(
+      //              value: value,
+      //              child: Text(value, style: GoogleFonts.getFont(value)),
+      //            );
+      //          }).toList(),
+      //        ),
+      //      ],
+      //    ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: ElevatedButton(
               onPressed: () {
-                _openColorPicker(context, settingsBox.backgroundBoxColorLeft, (color) {
+                _openColorPicker(context, colorLeftBox ,   HexColor(settingsBox.backgroundBoxColorLeft), (color) {
                   setState(() {
-                    settingsBox.updateBackgroundBoxColor(color);
+                    settingsBox.updateBackgroundBoxColor(colorToHex(color));
                   });
                 });
               },
               child: const Text('Background Box Color'),
             ),
           ),
+      //    Padding(
+      //      padding: const EdgeInsets.only(top: 8.0),
+      //      child: ElevatedButton(
+      //        onPressed: () {
+      //          _openColorPicker(context, settingsBox.boxBorderColorLeft, (color) {
+      //            setState(() {
+      //              settingsBox.updateBackgroundBoxBorderColor(color);
+      //            });
+      //          });
+      //        },
+      //        child: const Text('Box Border Color'),
+      //      ),
+      //    ),
           Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
             child: ElevatedButton(
               onPressed: () {
-                _openColorPicker(context, settingsBox.boxBorderColorLeft, (color) {
+                _openColorPicker(context, colorTextBoxLeft ,  HexColor(settingsBox.textBoxColorLeft), (color) {
                   setState(() {
-                    settingsBox.updateBackgroundBoxBorderColor(color);
-                  });
-                });
-              },
-              child: const Text('Box Border Color'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                _openColorPicker(context, settingsBox.textBoxColorLeft, (color) {
-                  setState(() {
-                    settingsBox.updateTextBoxColor(color);
+                    settingsBox.updateTextBoxColor(colorToHex(color));
                   });
                 });
               },
               child: const Text('Text Box Color'),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
-            child: ElevatedButton(
-              onPressed: () {
-                  setState(() {
-                    settingsBoxRight.updateFromLeft(settingsBox);
-                  });
-              },
-              child: const Text('Copy to Right'),
-            ),
-          ),
+    //      Padding(
+    //        padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
+    //        child: ElevatedButton(
+    //          onPressed: () {
+    //              setState(() {
+    //                settingsBoxRight.updateFromLeft(settingsBox);
+    //              });
+    //          },
+    //          child: const Text('Copy to Right'),
+    //        ),
+    //      ),
         ],
       ),
     );

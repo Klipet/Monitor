@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:provider/provider.dart';
 
@@ -31,9 +32,7 @@ class DefaultAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var countColon = 5;
     var size = MediaQuery.of(context).size.width /2;
-    var aspect = size / settingsBoxRight.wightBoxRight;
     return Scaffold(
       body: Row(
         children: [
@@ -41,32 +40,33 @@ class DefaultAnimation extends StatelessWidget {
           Expanded(
               child: Container(
             decoration: BoxDecoration(
-                color: settingsLeft.leftColumnColor,
-                border: Border(
-                    top: settingsLeft.borderIsActiveTopLeft
-                        ? BorderSide(
-                            color: settingsLeft.leftColorBorder,
-                            width: settingsLeft.leftSizeBorder,
-                          )
-                        : BorderSide.none,
-                    left: settingsLeft.borderIsActiveLeftLeft
-                        ? BorderSide(
-                            color: settingsLeft.leftColorBorder,
-                            width: settingsLeft.leftSizeBorder,
-                          )
-                        : BorderSide.none,
-                    right: settingsLeft.borderIsActiveRightLeft
-                        ? BorderSide(
-                            color: settingsLeft.leftColorBorder,
-                            width: settingsLeft.leftSizeBorder,
-                          )
-                        : BorderSide.none,
-                    bottom: settingsLeft.borderIsActiveBottomLeft
-                        ? BorderSide(
-                            color: settingsLeft.leftColorBorder,
-                            width: settingsLeft.leftSizeBorder,
-                          )
-                        : BorderSide.none)),
+              //  color: settingsLeft.leftColumnColor,
+              //  border: Border(
+              //      top: settingsLeft.borderIsActiveTopLeft
+              //          ? BorderSide(
+              //              color: settingsLeft.leftColorBorder,
+              //              width: settingsLeft.leftSizeBorder,
+              //            )
+              //          : BorderSide.none,
+              //      left: settingsLeft.borderIsActiveLeftLeft
+              //          ? BorderSide(
+              //              color: settingsLeft.leftColorBorder,
+              //              width: settingsLeft.leftSizeBorder,
+              //            )
+              //          : BorderSide.none,
+              //      right: settingsLeft.borderIsActiveRightLeft
+              //          ? BorderSide(
+              //              color: settingsLeft.leftColorBorder,
+              //              width: settingsLeft.leftSizeBorder,
+              //            )
+              //          : BorderSide.none,
+              //      bottom: settingsLeft.borderIsActiveBottomLeft
+              //          ? BorderSide(
+              //              color: settingsLeft.leftColorBorder,
+              //              width: settingsLeft.leftSizeBorder,
+              //            )
+              //          : BorderSide.none)
+                ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -75,7 +75,8 @@ class DefaultAnimation extends StatelessWidget {
                   style: GoogleFonts.getFont(
                       fontSize: settingsLeft.leftSizeText,
                       settingsLeft.styleColumnLeft,
-                      color: settingsLeft.leftColorText),
+                //      color: settingsLeft.leftColorText
+                          ),
                 ),
                 Expanded(
                   child: ordersListLeft.isNotEmpty
@@ -94,8 +95,7 @@ class DefaultAnimation extends StatelessWidget {
                                     width: settingsBox.widthBoxLeft,
                                     height: settingsBox.heightBoxLeft,
                                     decoration: BoxDecoration(
-                                      color: settingsBoxLeft
-                                          .backgroundBoxColorLeft,
+                                      color: HexColor(settingsBoxLeft.backgroundBoxColorLeft),
                                       border:settingsBoxLeft.sizeBorderLeft == 0 ? null : Border.all(
                                         width: settingsBoxLeft.sizeBorderLeft,
                                         color:
@@ -112,8 +112,7 @@ class DefaultAnimation extends StatelessWidget {
                                       order.toString(),
                                       style: GoogleFonts.getFont(
                                           settingsBoxLeft.styleBoxLeft,
-                                          color:
-                                              settingsBoxLeft.textBoxColorLeft,
+                                          color: HexColor(settingsBoxLeft.textBoxColorLeft),
                                           fontSize:
                                               settingsBoxLeft.sizeTextLeft),
                                     ),
@@ -133,32 +132,33 @@ class DefaultAnimation extends StatelessWidget {
           Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                color: settingsRight.rightColumnColor,
-                border: Border(
-                    top: settingsRight.borderIsActiveTopRight
-                        ? BorderSide(
-                            color: settingsRight.rightColorBorder,
-                            width: settingsRight.rightSizeBorder,
-                          )
-                        : BorderSide.none,
-                    left: settingsRight.borderIsActiveLeftRight
-                        ? BorderSide(
-                            color: settingsRight.rightColorBorder,
-                            width: settingsRight.rightSizeBorder,
-                          )
-                        : BorderSide.none,
-                    right: settingsRight.borderIsActiveRightRight
-                        ? BorderSide(
-                            color: settingsRight.rightColorBorder,
-                            width: settingsRight.rightSizeBorder,
-                          )
-                        : BorderSide.none,
-                    bottom: settingsRight.borderIsActiveBottomRight
-                        ? BorderSide(
-                            color: settingsRight.rightColorBorder,
-                            width: settingsRight.rightSizeBorder,
-                          )
-                        : BorderSide.none)),
+              //  color: settingsRight.rightColumnColor,
+              //  border: Border(
+              //      top: settingsRight.borderIsActiveTopRight
+              //          ? BorderSide(
+              //              color: settingsRight.rightColorBorder,
+              //              width: settingsRight.rightSizeBorder,
+              //            )
+              //          : BorderSide.none,
+              //      left: settingsRight.borderIsActiveLeftRight
+              //          ? BorderSide(
+              //              color: settingsRight.rightColorBorder,
+              //              width: settingsRight.rightSizeBorder,
+              //            )
+              //          : BorderSide.none,
+              //      right: settingsRight.borderIsActiveRightRight
+              //          ? BorderSide(
+              //              color: settingsRight.rightColorBorder,
+              //              width: settingsRight.rightSizeBorder,
+              //            )
+              //          : BorderSide.none,
+              //      bottom: settingsRight.borderIsActiveBottomRight
+              //          ? BorderSide(
+              //              color: settingsRight.rightColorBorder,
+              //              width: settingsRight.rightSizeBorder,
+              //            )
+              //          : BorderSide.none)
+              ),
             child: Column(
               children: [
                 Text(
@@ -166,7 +166,7 @@ class DefaultAnimation extends StatelessWidget {
                   style: GoogleFonts.getFont(
                     settingsRight.styleColumnRight,
                     fontSize: settingsRight.rightSizeText,
-                    color: settingsRight.rightColorText,
+                  //  color: settingsRight.rightColorText,
                   ),
                 ),
                 Expanded(
@@ -184,7 +184,7 @@ class DefaultAnimation extends StatelessWidget {
                                 height: settingsBoxRight.heightBoxRight,
                                 decoration: BoxDecoration(
                                   color:
-                                      settingsBoxRight.backgroundBoxColorRight,
+                                      HexColor(settingsBoxRight.backgroundBoxColorRight),
                                   border: settingsBoxRight.sizeBorderRight == 0 ? null: Border.all(
                                       width: settingsBoxRight.sizeBorderRight,
                                       color: settingsBoxRight.boxBorderColorRight),
@@ -193,7 +193,7 @@ class DefaultAnimation extends StatelessWidget {
                                   order.toString(),
                                   style: GoogleFonts.getFont(
                                     settingsBoxRight.styleBoxRight,
-                                    color: settingsBoxRight.textBoxColorRight,
+                                    color: HexColor(settingsBoxRight.textBoxColorRight),
                                     fontSize: settingsBoxRight.sizeTextRight,
                                   ),
                                 ),
@@ -214,33 +214,33 @@ class DefaultAnimation extends StatelessWidget {
    defaultLeft() {
     return Container(
         decoration: BoxDecoration(
-            color: settingsLeft.leftColumnColor,
-            border: Border(
-                top: settingsLeft.borderIsActiveTopLeft
-                    ? BorderSide(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      )
-                    : BorderSide.none,
-                left: settingsLeft.borderIsActiveLeftLeft
-                    ? BorderSide(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      )
-                    : BorderSide.none,
-                right: settingsLeft.borderIsActiveRightLeft
-                    ? BorderSide(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      )
-                    : BorderSide.none,
-                bottom: settingsLeft.borderIsActiveBottomLeft
-                    ? BorderSide(
-                        color: settingsLeft.leftColorBorder,
-                        width: settingsLeft.leftSizeBorder,
-                      )
-                    : BorderSide.none
-            )
+        //    color: settingsLeft.leftColumnColor,
+        //    border: Border(
+        //        top: settingsLeft.borderIsActiveTopLeft
+        //            ? BorderSide(
+        //                color: settingsLeft.leftColorBorder,
+        //                width: settingsLeft.leftSizeBorder,
+        //              )
+        //            : BorderSide.none,
+        //        left: settingsLeft.borderIsActiveLeftLeft
+        //            ? BorderSide(
+        //                color: settingsLeft.leftColorBorder,
+        //                width: settingsLeft.leftSizeBorder,
+        //              )
+        //            : BorderSide.none,
+        //        right: settingsLeft.borderIsActiveRightLeft
+        //            ? BorderSide(
+        //                color: settingsLeft.leftColorBorder,
+        //                width: settingsLeft.leftSizeBorder,
+        //              )
+        //            : BorderSide.none,
+        //        bottom: settingsLeft.borderIsActiveBottomLeft
+        //            ? BorderSide(
+        //                color: settingsLeft.leftColorBorder,
+        //                width: settingsLeft.leftSizeBorder,
+        //              )
+        //            : BorderSide.none
+        //    )
         )
     );
   }

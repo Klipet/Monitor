@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:lottie/lottie.dart';
 import 'package:monitor_for_sales/wigets_home_pages/spash_license.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -214,8 +215,8 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
           heightSizeBox: settingsBoxRight.heightBoxRight,
           sizeBorder: settingsBoxRight.sizeBorderRight,
           boxBorderColor: settingsBoxRight.boxBorderColorRight,
-          backgroundColor: settingsBoxRight.textBoxColorRight,
-          textColor: settingsBoxRight.textBoxColorRight,
+          backgroundColor: HexColor(settingsBoxRight.textBoxColorRight),
+          textColor: HexColor(settingsBoxRight.textBoxColorRight),
           textSize: settingsBoxRight.sizeTextRight,
           font: settingsBoxRight.styleBoxRight,
           order: null,

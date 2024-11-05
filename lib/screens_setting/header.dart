@@ -134,52 +134,52 @@ class _SettingHeaderState extends State<SettingHeader> {
    //       child:
     Column(
             children: [
-              TextField(
-                controller: _sizeController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(
-                    RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-                  ),
-                ],
-                decoration: const InputDecoration(labelText: 'Size Title'),
-                onChanged: (value) {
-                  settingsHeader.updateSizeText(double.parse(value));
-                },
-              ),
-
-              TextField(
-                controller: _sizeToolBar,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(
-                    RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-                  ),
-                ],
-                decoration: const InputDecoration(labelText: 'Size Tool Bar'),
-                onChanged: (value) {
-                  settingsHeader.updateSizeToolBar(double.parse(value));
-                },
-              ),TextField(
-                controller: _paddingHeader,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(
-                    RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-                  ),
-                ],
-                decoration: const InputDecoration(labelText: 'Size Padding Header'),
-                onChanged: (value) {
-                  settingsHeader.updatePaddingText(double.parse(value));
-                },
-              ),
-              TextField(
-                controller: _textController,
-                decoration: const InputDecoration(labelText: 'Enter title text'),
-                onChanged: (value) {
-                  settingsHeader.updateTitle(value);
-                },
-              ),
+    //          TextField(
+    //            controller: _sizeController,
+    //            keyboardType: TextInputType.number,
+    //            inputFormatters: [
+    //              FilteringTextInputFormatter.allow(
+    //                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+    //              ),
+    //            ],
+    //            decoration: const InputDecoration(labelText: 'Size Title'),
+    //            onChanged: (value) {
+    //              settingsHeader.updateSizeText(double.parse(value));
+    //            },
+    //          ),
+    //
+    //          TextField(
+    //            controller: _sizeToolBar,
+    //            keyboardType: TextInputType.number,
+    //            inputFormatters: [
+    //              FilteringTextInputFormatter.allow(
+    //                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+    //              ),
+    //            ],
+    //            decoration: const InputDecoration(labelText: 'Size Tool Bar'),
+    //            onChanged: (value) {
+    //              settingsHeader.updateSizeToolBar(double.parse(value));
+    //            },
+    //          ),TextField(
+    //            controller: _paddingHeader,
+    //            keyboardType: TextInputType.number,
+    //            inputFormatters: [
+    //              FilteringTextInputFormatter.allow(
+    //                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+    //              ),
+    //            ],
+    //            decoration: const InputDecoration(labelText: 'Size Padding Header'),
+    //            onChanged: (value) {
+    //              settingsHeader.updatePaddingText(double.parse(value));
+    //            },
+    //          ),
+    //          TextField(
+    //            controller: _textController,
+    //            decoration: const InputDecoration(labelText: 'Enter title text'),
+    //            onChanged: (value) {
+    //              settingsHeader.updateTitle(value);
+    //            },
+    //          ),
 
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
@@ -234,7 +234,21 @@ class _SettingHeaderState extends State<SettingHeader> {
                   ],
                 ),
               ),
-
+              Padding(padding: const EdgeInsets.only(left: 0.0),
+                child: Column(
+                  children: [
+                    Text(settingsHeader.videoPlayer? 'Enable video' : 'Disable video'), // Добавляем текст для чекбокса
+                    Checkbox(
+                      value: settingsHeader.videoPlayer, // Переменная, хранящая состояние чекбокса
+                      onChanged: (bool? value) {
+                        setState(() {
+                          settingsHeader.updateShowVideoPlayer(value!); // Обновляем состояние
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
               TextField(
                 controller: _minuteHeader,
                 keyboardType: TextInputType.number,
@@ -267,25 +281,25 @@ class _SettingHeaderState extends State<SettingHeader> {
             //        fontSize: 15
             //    ),
             //  ),
-              Row(
-                children: [
-                  DropdownButton<String>(
-                    value: _defaultValue,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _defaultValue = newValue!;
-                        settingsHeader.updateAnimation(newValue);
-                      });
-                    },
-                    items: _animation.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
+    //          Row(
+    //            children: [
+    //              DropdownButton<String>(
+    //                value: _defaultValue,
+    //                onChanged: (String? newValue) {
+    //                  setState(() {
+    //                    _defaultValue = newValue!;
+    //                    settingsHeader.updateAnimation(newValue);
+    //                  });
+    //                },
+    //                items: _animation.map<DropdownMenuItem<String>>((String value) {
+    //                  return DropdownMenuItem<String>(
+    //                    value: value,
+    //                    child: Text(value),
+    //                  );
+    //                }).toList(),
+    //              ),
+    //            ],
+    //          ),
               //Sounds
           //  GestureDetector(
           //    onTap: () {
@@ -305,52 +319,52 @@ class _SettingHeaderState extends State<SettingHeader> {
           //        fontSize: 20
           //    ),
           //  ),
-              Row(
-                children: [
-                  DropdownButton<String>(
-                    value: settingsHeader.styleTitle,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedFont = newValue!;
-                        settingsHeader.updateFontTitle(newValue);
-                      });
-                    },
-                    items: _fonts.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value, style: GoogleFonts.getFont(value)),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    _openColorPicker(context, settingsHeader.textColor, (color) {
-                      setState(() {
-                        settingsHeader.updateTextColor(color);
-                      });
-                    });
-                  },
-                  child: const Text('Text Color'),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 10),
-                child: ElevatedButton(
-                  onPressed: () {
-                    _openColorPicker(context, settingsHeader.backgroundColor,
-                        (color) {
-                      setState(() {
-                        settingsHeader.updateBackgroundColor(color);
-                      });
-                    });
-                  },
-                  child: const Text('Background Color'),
-                ),
-              ),
+    //          Row(
+    //            children: [
+    //              DropdownButton<String>(
+    //                value: settingsHeader.styleTitle,
+    //                onChanged: (String? newValue) {
+    //                  setState(() {
+    //                    _selectedFont = newValue!;
+    //                    settingsHeader.updateFontTitle(newValue);
+    //                  });
+    //                },
+    //                items: _fonts.map<DropdownMenuItem<String>>((String value) {
+    //                  return DropdownMenuItem<String>(
+    //                    value: value,
+    //                    child: Text(value, style: GoogleFonts.getFont(value)),
+    //                  );
+    //                }).toList(),
+    //              ),
+    //            ],
+    //          ),
+    //          Padding(
+    //            padding: const EdgeInsets.only(top: 8.0),
+    //            child: ElevatedButton(
+    //              onPressed: () {
+    //                _openColorPicker(context, settingsHeader.textColor, (color) {
+    //                  setState(() {
+    //                    settingsHeader.updateTextColor(color);
+    //                  });
+    //                });
+    //              },
+    //              child: const Text('Text Color'),
+    //            ),
+    //          ),
+    //          Padding(
+    //            padding: const EdgeInsets.only(top: 8.0, bottom: 10),
+    //            child: ElevatedButton(
+    //              onPressed: () {
+    //                _openColorPicker(context, settingsHeader.backgroundColor,
+    //                    (color) {
+    //                  setState(() {
+    //                    settingsHeader.updateBackgroundColor(color);
+    //                  });
+    //                });
+    //              },
+    //              child: const Text('Background Color'),
+    //            ),
+    //          ),
               //    Padding(
               //      padding: const EdgeInsets.only(top: 8.0),
               //      child: ElevatedButton(

@@ -68,7 +68,8 @@ class _SettingsDialogContentState extends State<SettingsDialogContent>
                 ],
               ),
             ],
-          ),)
+          ),
+        )
 
     );
   }
