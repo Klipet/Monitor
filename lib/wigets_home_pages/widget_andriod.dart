@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:lottie/lottie.dart';
@@ -16,6 +17,7 @@ import 'package:system_info2/system_info2.dart';
 import '../animation/animated_left.dart';
 import '../animation/animated_order_container .dart';
 import '../animation/default_animation.dart';
+import '../animation/new_animation.dart';
 import '../animation/order_screen.dart';
 import '../broker/const.dart';
 import '../factory/Order.dart';
@@ -41,7 +43,7 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
   late FocusNode _focusNode;
   late List<dynamic> commandState;
   late List<Order> ordersList;
-  late List<dynamic> ordersListRight;
+  late List<int> ordersListRight;
   late List<dynamic> ordersListLeft;
   late List<int> filteredOrdersListLeft;
   late Timer _timer;
@@ -102,26 +104,26 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
   Widget build(BuildContext context) {
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
     return Scaffold(
-        appBar: settingsHeader.textTitle.isEmpty
-            ? null
-            : AppBar(
-                backgroundColor: settingsHeader.backgroundColor,
-                centerTitle: true,
-                toolbarHeight: settingsHeader.sizeToolBar,
-                title: Padding(
-                  padding: const EdgeInsets.only(bottom: 30.0),
-                  child: Text(settingsHeader.textTitle,
-                      style: GoogleFonts.getFont(settingsHeader.styleTitle,
-                          fontSize: settingsHeader.sizeText,
-                          color: settingsHeader.textColor)
-                      //  TextStyle(
-                      //      fontSize: settingsHeader.sizeText,
-                      //      color: settingsHeader.textColor
-                      //  ),
-                      ),
-                ),
-                automaticallyImplyLeading: false, // Hide back button on AppBar
-              ),
+    //    appBar: settingsHeader.textTitle.isEmpty
+    //        ? null
+    //        : AppBar(
+    //            backgroundColor: settingsHeader.backgroundColor,
+    //            centerTitle: true,
+    //            toolbarHeight: settingsHeader.sizeToolBar,
+    //            title: Padding(
+    //              padding: const EdgeInsets.only(bottom: 30.0),
+    //              child: Text(settingsHeader.textTitle,
+    //                  style: GoogleFonts.getFont(settingsHeader.styleTitle,
+    //                      fontSize: settingsHeader.sizeText,
+    //                      color: settingsHeader.textColor)
+    //                  //  TextStyle(
+    //                  //      fontSize: settingsHeader.sizeText,
+    //                  //      color: settingsHeader.textColor
+    //                  //  ),
+    //                  ),
+    //            ),
+    //            automaticallyImplyLeading: false, // Hide back button on AppBar
+    //          ),
         body: Stack(children: [
           _animation(context),
           !_isFetching
@@ -194,45 +196,59 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
     var settingsBoxLeft = Provider.of<ScreenSettingsBoxLeft>(context);
     var settingsBoxRight = Provider.of<ScreenSettingsBoxRight>(context);
     if (settingsHeader.animatie == "Default") {
-      return DefaultAnimation(
-          ordersListLeft: ordersListLeft,
-          ordersListRight: ordersListRight,
-          settingsLeft: settingsLeft,
-          settingsHeader: settingsHeader,
-          settingsRight: settingsRight,
-          settingsBoxLeft: settingsBoxLeft,
-          settingsBoxRight: settingsBoxRight);
-    } else if (settingsHeader.animatie == "Top Dawn") {
-      return OrderScreen(
+      return NewAnimation(
         ordersListLeft: ordersListLeft,
         ordersListRight: ordersListRight,
         settingsLeft: settingsLeft,
+        settingsHeader: settingsHeader,
         settingsRight: settingsRight,
         settingsBoxLeft: settingsBoxLeft,
         settingsBoxRight: settingsBoxRight,
-        control: AnimatedOrderContainer(
-          wightSizeBox: settingsBoxRight.wightBoxRight,
-          heightSizeBox: settingsBoxRight.heightBoxRight,
-          sizeBorder: settingsBoxRight.sizeBorderRight,
-          boxBorderColor: settingsBoxRight.boxBorderColorRight,
-          backgroundColor: HexColor(settingsBoxRight.textBoxColorRight),
-          textColor: HexColor(settingsBoxRight.textBoxColorRight),
-          textSize: settingsBoxRight.sizeTextRight,
-          font: settingsBoxRight.styleBoxRight,
-          order: null,
-        ),
-      );
-    } else if (settingsHeader.animatie == "Left Right") {
-      return AnimatedLeft(
-        ordersListLeft: ordersListLeft,
-        ordersListRight: ordersListRight,
-        settingsLeft: settingsLeft,
-        settingsRight: settingsRight,
-        settingsBoxLeft: settingsBoxLeft,
-        settingsBoxRight: settingsBoxRight,
-        control: control,
-      );
+        numberRight: 0);
     }
+    else if (settingsHeader.animatie == "Top Dawn") {
+    //  return
+    //    OrderScreen(
+    //    ordersListLeft: ordersListLeft,
+    //    ordersListRight: ordersListRight,
+    //    settingsLeft: settingsLeft,
+    //    settingsRight: settingsRight,
+    //    settingsBoxLeft: settingsBoxLeft,
+    //    settingsBoxRight: settingsBoxRight,
+    //    control: AnimatedOrderContainer(
+    //      wightSizeBox: settingsBoxRight.wightBoxRight,
+    //      heightSizeBox: settingsBoxRight.heightBoxRight,
+    //      sizeBorder: settingsBoxRight.sizeBorderRight,
+    //      boxBorderColor: settingsBoxRight.boxBorderColorRight,
+    //      backgroundColor: HexColor(settingsBoxRight.textBoxColorRight),
+    //      textColor: HexColor(settingsBoxRight.textBoxColorRight),
+    //      textSize: settingsBoxRight.sizeTextRight,
+    //      font: settingsBoxRight.styleBoxRight,
+    //      order: null,
+    //    ),
+    //  );
+    } else if (settingsHeader.animatie == "Left Right") {
+    //  return DefaultAnimation(
+    //    ordersListLeft: ordersListLeft,
+    //    ordersListRight: ordersListRight,
+    //    settingsLeft: settingsLeft,
+    //    settingsRight: settingsRight,
+    //    settingsBoxLeft: settingsBoxLeft,
+    //    settingsBoxRight: settingsBoxRight,
+    //    settingsHeader: settingsHeader,
+    //    //  control: control,
+    //  );
+    }
+    // else if (settingsHeader.animatie == "Columns"){
+    //  return ColumnsAnimated(
+    //      ordersListLeft: ordersListLeft,
+    //      ordersListRight: ordersListRight,
+    //      ordersList: ordersList,
+    //      settingsLeft: settingsLeft,
+    //      settingsRight: settingsRight,
+    //      settingsBoxLeft: settingsBoxLeft,
+    //      settingsBoxRight: settingsBoxRight);
+    //}
     return Container();
   }
 
@@ -270,13 +286,15 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var url = prefs.getString('uri');
     if (url == '' || url == null) {
-      _stopTimer(); // Останавливаем таймер при открытии окна настройки
-      //  _startTimer(); // Перезапускаем таймер после закрытия окна настройки
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const License()),
+            (Route<dynamic> route) => false,
+      );
     } else {
       var client = http.Client();
       try {
-        var response =
-          await client.get(Uri.parse('$url/json/GetCurrentOrdersList?hours=${settingsHeader.deleteHours}'));
+        var response = await client.get(Uri.parse('$url/json/GetCurrentOrdersList?hours=${settingsHeader.deleteHours}'));
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
           setState(() {
@@ -286,42 +304,44 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
                 .toList();
             statusState();
             _isFetching = true;
-            //  Fluttertoast.showToast(
-            //    msg: response.toString(),
-            //    toastLength: Toast.LENGTH_SHORT,
-            //    gravity: ToastGravity.BOTTOM,
-            //    backgroundColor: Colors.white,
-            //    textColor: Colors.black,
-            //    fontSize: 16.0,
-            //  );
-          });
-        } else {
-          setState(() {
-            _isFetching = false;
-            //    Fluttertoast.showToast(
-            //      msg: response.toString(),
-            //      toastLength: Toast.LENGTH_SHORT,
-            //      gravity: ToastGravity.BOTTOM,
-            //      backgroundColor: Colors.white,
-            //      textColor: Colors.black,
-            //      fontSize: 16.0,
-            //    );
-          });
-        }
-      } catch (e) {
-        setState(() {
-          _isFetching = false;
           //    Fluttertoast.showToast(
-          //      msg: e.toString(),
+          //      msg: response.toString(),
           //      toastLength: Toast.LENGTH_SHORT,
           //      gravity: ToastGravity.BOTTOM,
           //      backgroundColor: Colors.white,
           //      textColor: Colors.black,
           //      fontSize: 16.0,
           //    );
+          });
+        } else {
+          setState(() {
+            getApyKeyInfo();
+            _isFetching = false;
+                Fluttertoast.showToast(
+                  msg: response.toString(),
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.white,
+                  textColor: Colors.black,
+                  fontSize: 16.0,
+                );
+          });
+        }
+      } catch (e) {
+        getApyKeyInfo();
+        setState(() {
+          _isFetching = false;
+              Fluttertoast.showToast(
+                msg: e.toString(),
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.white,
+                textColor: Colors.black,
+                fontSize: 16.0,
+              );
         });
       } finally {
-        client.close();
+      //  client.close();
       }
     }
   }
@@ -458,7 +478,11 @@ class _HomePagesAndroidState extends State<HomePagesAndroid> {
           );
         }
       }else if(response.statusCode == 400){
-        pref.setString('uri', response.statusCode.toString());
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const License()),
+              (Route<dynamic> route) => false,
+        );
       }else if(response.statusCode == 502){
         pref.setString('uri', response.statusCode.toString());
       }else if(response.statusCode == 404){

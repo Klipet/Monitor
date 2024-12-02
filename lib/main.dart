@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:logger/logger.dart';
+import 'package:monitor_for_sales/adapter/my_sounds_model.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
@@ -47,8 +48,8 @@ Future<void> main() async {
   }
   await Hive.initFlutter();
   await Hive.openBox('settings');
-  final appDocumentDirectory = await path_provider
-      .getApplicationDocumentsDirectory();
+  Hive.registerAdapter(MySoundModelAdapter());
+  final appDocumentDirectory = await path_provider.getApplicationDocumentsDirectory();
 
   print('Hive is initialized at: ${appDocumentDirectory.path}');
   fileLogger.logInfo("Приложение запущено");

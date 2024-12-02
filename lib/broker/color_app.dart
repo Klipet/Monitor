@@ -12,4 +12,5 @@ String colorLeftBox = "#2C3539";
 String colorRightBox = "#44C369";
 String colorTextBoxLeft = "#FFFFFF";
 String colorTextBoxRight = "#FFFFFF";
+String boxBorderColor = "#FFFFFF";
 

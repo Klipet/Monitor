@@ -7,8 +7,10 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sound_library/sound_library.dart';
 
+import '../adapter/my_sounds_model.dart';
+
 class ScreenSettingsHeader extends ChangeNotifier {
-   late Sounds _sounds;
+  Sounds _sounds = Sounds.success;
    bool _soundActive = false;
    bool _deleteActive = false;
    bool _videoPlayer = false;
@@ -22,6 +24,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
   double _paddingHeader = 0.0;
   double _sizeToolBar = 0.0;
   int _deleteHours = 24;
+  int _sizeBox = 4;
 
 
 
@@ -39,6 +42,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
   bool get deleteActive => _deleteActive;
   bool get videoPlayer => _videoPlayer;
   String get animatie => _animatie;
+  int get sizeBox => _sizeBox;
 
 
 
@@ -56,7 +60,14 @@ class ScreenSettingsHeader extends ChangeNotifier {
     _paddingHeader = box.get('paddingHeader', defaultValue: 0);
     _sizeToolBar = box.get('sizeToolBar', defaultValue: 0.0);
     _deleteHours = box.get('deleteHours', defaultValue: 0);
-    _sounds = box.get('sounds', defaultValue: Sounds.action);
+  //  _sounds = box.get('sounds', defaultValue: Sounds.action.toString());
+    String? savedSound  = box.get('sounds');
+    if (savedSound != null) {
+      _sounds = Sounds.values.firstWhere(
+            (sound) => sound.toString() == savedSound,
+        orElse: () => Sounds.success,
+      );
+    }
     _soundActive = box.get('soundActive', defaultValue: false);
     _deleteActive = box.get('deleteActive', defaultValue: false);
     _videoPlayer = box.get('videoPlayer', defaultValue: false);
@@ -65,6 +76,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
     if (imagePath != null) {
       _selectedImage = File(imagePath);
     }
+    _sizeBox = box.get('sizeBox', defaultValue: 4);
     notifyListeners();
 
   }
@@ -81,7 +93,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
     if (kDebugMode) {
       print( 'save succes Box $_deleteHours, ${box.get('deleteHours')}');
     }
-    box.put('sounds', _sounds);
+    box.put('sounds', _sounds.toString());
     box.put('paddingHeader', _paddingHeader);
     box.put('soundActive', _soundActive);
     box.put('deleteActive', _deleteActive);
@@ -90,10 +102,23 @@ class ScreenSettingsHeader extends ChangeNotifier {
     if (_selectedImage != null) {
       box.put('selectedImage', _selectedImage!.path);
     }
+    box.put('sizeBox', _sizeBox);
   }
+
+  void updateSizeBox(int value) {
+    _sizeBox = value;
+    _saveSettings();
+    notifyListeners();
+  }
+
   void saveHeader(){
     _saveSettings();
     print( 'save succes ScreenSettingsHeader');
+  }
+  void updateSounds(Sounds sounds) {
+    _sounds = sounds;
+    _saveSettings();
+    notifyListeners();
   }
 
   void updateDeleteHours(int value) {
@@ -121,11 +146,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
-  void updateSounds(Sounds sounds) {
-    _sounds = sounds;
-    _saveSettings();
-    notifyListeners();
-  }
+
     void updateTextColor(Color color) {
       _textColor = color;
       _saveSettings();
@@ -164,9 +185,7 @@ class ScreenSettingsHeader extends ChangeNotifier {
     Future<void> updateSelectedImage(File image) async {
       try {
         final directory = await getApplicationDocumentsDirectory();
-        final imagePath = '${image.path
-            .split('/')
-            .last}';
+        final imagePath = '${image.path.split('/').last}';
         final newImage = await image.copy(imagePath);
         print('Image copied to: $imagePath');
         _selectedImage = newImage;

@@ -50,6 +50,14 @@ class _NewAnimationState extends State<NewAnimation> {
   bool isFirstRun = true;
   // Флаг для предотвращения одновременного запуска нескольких удалений
   bool _isRemoving = false;
+  late int sizewidth;
+  late int sizeheight;
+  late int sizeheightBig;
+  late int sizewidthBig;
+  late int countBox;
+  late double sizeText;
+  late double sizeTextBig;
+
 
   @override
   void initState() {
@@ -62,6 +70,28 @@ class _NewAnimationState extends State<NewAnimation> {
 
   @override
   Widget build(BuildContext context) {
+    var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
+    sizewidth = (203 * 4) ~/ settingsHeader.sizeBox;
+    sizeheight = (148 * 4) ~/ settingsHeader.sizeBox;
+    sizeheightBig = (320 * 4) ~/ settingsHeader.sizeBox;
+    sizewidthBig = (429 * 4) ~/ settingsHeader.sizeBox;
+    sizeText = 84 *(sizewidth / 203) ;
+    sizeTextBig = 148 * (sizewidthBig / 429) ;
+
+
+    if(settingsHeader.sizeBox == 3){
+      countBox = 12;
+
+    }else if(settingsHeader.sizeBox == 4){
+      countBox = 20;
+    }else if(settingsHeader.sizeBox == 5){
+      countBox = 30;
+    }else{
+      countBox = 4;
+    };
+
+    var fullScreen = MediaQuery.of(context).size;
+    print(fullScreen);
     return ScreenUtilInit(
         designSize: const Size(1920, 1080),
         builder: (context, child) {
@@ -83,20 +113,25 @@ class _NewAnimationState extends State<NewAnimation> {
                           children: [
                             Container(
                               height: 83.h,
-                              width: 328.w,
+                              constraints: BoxConstraints(minWidth: 328.w),
                               color: HexColor(widget.settingsLeft.titleColorBox),
                           child: Padding(
-                            padding: EdgeInsets.only(left: 16.0.h, bottom: 8.w),
-                            child: Text(
-                                        widget.settingsLeft.textLeftTitle
-                                            .toString(),
-                                        style: GoogleFonts.getFont(
-                                          'Roboto',
-                                          fontSize: 56.h,
-                                          fontWeight: FontWeight.w400,
-                                          //  height: 67.2,
-                                          color: HexColor(widget.settingsLeft.leftColorText),
-                                        )),
+                            padding: EdgeInsets.only(
+                                left: 16.w, bottom: 8.h, right: 16.w, top: 8.h
+                            ),
+                            child: FittedBox(
+                              fit: BoxFit.fill,
+                              child:Text(
+                                  widget.settingsLeft.textLeftTitle.toString(),
+                                  style: GoogleFonts.getFont(
+                                    'Roboto',
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 56.sp,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2,  // Высота строки,
+                                    color: HexColor(widget.settingsLeft.leftColorText),
+                                  )),
+                            )
                           ),
                             ),
                             Expanded(
@@ -109,16 +144,19 @@ class _NewAnimationState extends State<NewAnimation> {
                                             widget.ordersListLeft.sort((a, b) => a.compareTo(b));
                                             return Padding(
                                               padding: EdgeInsets.only(top: 26.h),
-                                              child: Wrap(
+                                              child:
+                                              Wrap(
                                                 direction: Axis.vertical,
-                                                  children: List.generate(widget.ordersListLeft.length >= 20 ? 20 : widget.ordersListLeft.length, (index) {
+                                                  children: List.generate(
+                                                      widget.ordersListLeft.length >= countBox ? countBox : widget.ordersListLeft.length,
+                                                          (index) {
                                                 dynamic order = widget.ordersListLeft[index];
                                                 return Padding(
                                                   padding: EdgeInsets.only(right: 23.h, top: 24.h),
                                                   child: Container(
                                                       alignment: Alignment.center,
-                                                      width: 203.w,
-                                                      height: 148.w,
+                                                      width: sizewidth.w,
+                                                      height: sizeheight.h,
                                                       decoration: BoxDecoration(
                                                         color: HexColor(widget.settingsBoxLeft.backgroundBoxColorLeft),
                                                         borderRadius:
@@ -131,7 +169,7 @@ class _NewAnimationState extends State<NewAnimation> {
                                                           order.toString(),
                                                           style: GoogleFonts.getFont(
                                                             'Roboto',
-                                                            fontSize: 84.sp,
+                                                            fontSize: sizeText.sp,
                                                             fontWeight: FontWeight.w400,
                                                             color: HexColor(widget.settingsBoxLeft.textBoxColorLeft),
                                                           ))),
@@ -160,21 +198,29 @@ class _NewAnimationState extends State<NewAnimation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              height: 83.w,
-                              width: 271.w,
+                              height: 83.h,
+                              constraints: BoxConstraints(minWidth: 271.w),
+                            //  width: 271.w,
                               color: HexColor(widget.settingsRight.rightColorTitleBox),
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 16.w, bottom: 8.w),
-                                  child: Text(
-                                      widget.settingsRight.textRightTitle
-                                          .toString(),
-                                      style: GoogleFonts.getFont(
-                                        'Roboto',
-                                        fontSize: 56.sp,
-                                        fontWeight: FontWeight.w400,
-                                        wordSpacing: 0,
-                                        color: HexColor(widget.settingsRight.rightColorText),
-                                      )),
+                              child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 16.w, right: 16.w, bottom: 8.h,top: 8.h
+                                  ),
+                                  child:
+                                  FittedBox(
+                                    fit: BoxFit.fill,
+                                    child:Text(
+                                        widget.settingsRight.textRightTitle.toString(),
+                                       // textAlign: TextAlign.center,
+                                        style: GoogleFonts.getFont(
+                                          'Roboto',
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 56.spMin,
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.2,  // Высота строки,
+                                          color: HexColor(widget.settingsRight.rightColorText),
+                                        )),
+                                  )
                               ),
                             ),
                             Expanded(
@@ -193,27 +239,30 @@ class _NewAnimationState extends State<NewAnimation> {
                                                           dynamic order = widget.ordersListRight[index];
                                                           // Остальные строки без смещения
                                                           return Padding(
-                                                                padding: EdgeInsets.only(right: 23.h, top: 24.h,
+                                                                padding: EdgeInsets.only(right: 23.w, top: 24.h,
                                                                   //left: leftPadding
                                                                 ),
                                                                 child: Container(
                                                                     alignment: Alignment.center,
-                                                                    width: 203.w,
-                                                                    height: 148.h,
+                                                                    width: sizewidth.w,
+                                                                    height: sizeheight.h,
                                                                     decoration:
                                                                     BoxDecoration(color: HexColor(widget.settingsBoxRight.backgroundBoxColorRight),
                                                                       borderRadius: BorderRadius.all(Radius.circular(24.r),),
                                                                     ),
-                                                                    child: Text(
-                                                                        maxLines: 1,
-                                                                        textAlign: TextAlign.start,
-                                                                        order.toString(),
-                                                                        style: GoogleFonts.getFont(
-                                                                          'Roboto',
-                                                                          fontSize: 84.sp,
-                                                                          fontWeight: FontWeight.w400,
-                                                                          color: HexColor(widget.settingsBoxRight.textBoxColorRight),
-                                                                        )
+                                                                    child: FittedBox(
+                                                                      fit: BoxFit.fill,
+                                                                      child: Text(
+                                                                          maxLines: 1,
+                                                                          textAlign: TextAlign.start,
+                                                                          order.toString(),
+                                                                          style: GoogleFonts.getFont(
+                                                                            'Roboto',
+                                                                            fontSize: sizeText.sp,
+                                                                            fontWeight: FontWeight.w400,
+                                                                            color: HexColor(widget.settingsBoxRight.textBoxColorRight),
+                                                                          )
+                                                                      ),
                                                                     )
                                                                 ),
                                                               );
@@ -221,11 +270,11 @@ class _NewAnimationState extends State<NewAnimation> {
                                                     ),
                                                    displayedOrders.isNotEmpty ?
                                                    Padding(
-                                                     padding: EdgeInsets.only(right: 23.h, top: 24.h,),
+                                                     padding: EdgeInsets.only(right: 23.w, top: 24.h,),
                                                      child: Container(
                                                           alignment: Alignment.center,
-                                                          width: 429.w,
-                                                          height: 320.w,
+                                                          width: sizewidthBig.w,
+                                                          height: sizeheightBig.h,
                                                           decoration:
                                                           BoxDecoration(color: HexColor(widget.settingsBoxRight.backgroundBoxColorRight),
                                                             borderRadius: BorderRadius.all(Radius.circular(34.r),),
@@ -236,7 +285,7 @@ class _NewAnimationState extends State<NewAnimation> {
                                                               displayedOrders[0].toString(),
                                                               style: GoogleFonts.getFont(
                                                                 'Roboto',
-                                                                fontSize: 148.sp,
+                                                                fontSize: sizeTextBig.sp,
                                                                 fontWeight: FontWeight.w400,
                                                                 color: HexColor(widget.settingsBoxRight.textBoxColorRight),
                                                               )
@@ -301,16 +350,20 @@ class _NewAnimationState extends State<NewAnimation> {
   }
 
 
-
-
   void _playSound() {
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context, listen: false);
     if (settingsHeader.soundActive == true) {
-      Sounds? sound = settingsHeader.sounds;
+      Sounds? sound = settingsHeader.sounds as Sounds;
       SoundPlayer.play(sound!,
           volume: 3, position: const Duration(microseconds: 500));
     } else {
       null;
     }
+  }
+  void size(){
+    var settingsHeader = Provider.of<ScreenSettingsHeader>(context, listen: false);
+    int sizeBox = settingsHeader.sizeBox;
+    sizeheight = ((203 * 4) / sizeBox).toInt();
+    sizewidth = ((148 * 4) / sizeBox).toInt();
   }
 }

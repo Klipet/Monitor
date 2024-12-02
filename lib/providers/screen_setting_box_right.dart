@@ -6,7 +6,7 @@ import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
 
 class ScreenSettingsBoxRight extends ChangeNotifier {
   String _backgroundBoxColorRight = colorRightBox;
-  Color _boxBorderColorRight = Colors.black;
+  String _boxBorderColorRight = boxBorderColor;
   String _textBoxColorRight = colorTextBoxRight;
   double _sizeTextRight = 15.0;
   double _radiusBoxRight = 2.0;
@@ -17,7 +17,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
 
 
   String get backgroundBoxColorRight => _backgroundBoxColorRight;
-  Color get boxBorderColorRight => _boxBorderColorRight;
+  String get boxBorderColorRight => _boxBorderColorRight;
   String get textBoxColorRight => _textBoxColorRight;
   double get sizeTextRight => _sizeTextRight;
   double get radiusBoxRight => _radiusBoxRight;
@@ -32,7 +32,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
   void _loadSettings() async {
     var box = Hive.box('settings');
     _backgroundBoxColorRight = box.get('backgroundBoxColorRight', defaultValue: colorRightBox);
-    _boxBorderColorRight = Color(box.get('boxBorderColorRight', defaultValue: Colors.black.value));
+    _boxBorderColorRight = box.get('boxBorderColorRight', defaultValue: boxBorderColor);
     _textBoxColorRight = box.get('textBoxColorRight', defaultValue: colorTitleRightBox);
     _sizeTextRight = box.get('sizeTextRight', defaultValue: 15.0);
     _radiusBoxRight = box.get('radiusBoxRight', defaultValue: 2.0);
@@ -45,7 +45,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
   void _saveSettings() {
     var box = Hive.box('settings');
     box.put('backgroundBoxColorRight', _backgroundBoxColorRight);
-    box.put('boxBorderColorRight', _boxBorderColorRight.value);
+    box.put('boxBorderColorRight', _boxBorderColorRight);
     box.put('textBoxColorRight', _textBoxColorRight);
     box.put('sizeTextRight', _sizeTextRight);
     box.put('radiusBoxRight', _radiusBoxRight);
@@ -65,7 +65,7 @@ class ScreenSettingsBoxRight extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
-  void updateBackgroundBoxBorderColor(Color color) {
+  void updateBackgroundBoxBorderColor(String color) {
     _boxBorderColorRight = color;
     _saveSettings();
     notifyListeners();

@@ -9,6 +9,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:monitor_for_sales/animation/animated_left.dart';
 import 'package:monitor_for_sales/animation/animated_order_container%20.dart';
+import 'package:monitor_for_sales/animation/default_animation.dart';
 import 'package:monitor_for_sales/animation/new_animation.dart';
 import 'package:monitor_for_sales/broker/const.dart';
 import 'package:monitor_for_sales/factory/Order.dart';
@@ -17,6 +18,7 @@ import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:monitor_for_sales/providers/screen_setting_right.dart';
 import 'package:monitor_for_sales/screens/settings_home_page.dart';
+import 'package:monitor_for_sales/screens/tab_setting.dart';
 import 'package:monitor_for_sales/screens/video_player_sequence.dart';
 import 'package:monitor_for_sales/wigets_home_pages/spash_license.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -206,13 +208,13 @@ class _HomePageState extends State<HomePage> {
                                       Padding(
                                         padding: const EdgeInsets.only(
                                             right: 50.0),
-                                        child: Lottie.asset(
-                                          'assets/errorWifi.json',
-                                          width: 200,
-                                          height: 200,
-                                          reverse: true,
-                                          fit: BoxFit.fill,
-                                        ),
+                                          child: Lottie.asset(
+                                            'assets/errorWifi.json',
+                                            width: 200,
+                                            height: 200,
+                                            reverse: true,
+                                            fit: BoxFit.fill,
+                                          ),
                                       )
                                     ],
                                   ),
@@ -328,35 +330,36 @@ class _HomePageState extends State<HomePage> {
         settingsBoxRight: settingsBoxRight,
         numberRight: numderNewRight,);
     } else if (settingsHeader.animatie == "Top Dawn") {
-      return OrderScreen(
-        ordersListLeft: ordersListLeft,
-        ordersListRight: ordersListRight,
-        settingsLeft: settingsLeft,
-        settingsRight: settingsRight,
-        settingsBoxLeft: settingsBoxLeft,
-        settingsBoxRight: settingsBoxRight,
-        control: AnimatedOrderContainer(
-          wightSizeBox: settingsBoxRight.wightBoxRight,
-          heightSizeBox: settingsBoxRight.heightBoxRight,
-          sizeBorder: settingsBoxRight.sizeBorderRight,
-          boxBorderColor: settingsBoxRight.boxBorderColorRight,
-          backgroundColor: HexColor(settingsBoxRight.textBoxColorRight),
-          textColor: HexColor(settingsBoxRight.textBoxColorRight),
-          textSize: settingsBoxRight.sizeTextRight,
-          font: settingsBoxRight.styleBoxRight,
-          order: null,
-        ),
-      );
+    //  return OrderScreen(
+    //    ordersListLeft: ordersListLeft,
+    //    ordersListRight: ordersListRight,
+    //    settingsLeft: settingsLeft,
+    //    settingsRight: settingsRight,
+    //    settingsBoxLeft: settingsBoxLeft,
+    //    settingsBoxRight: settingsBoxRight,
+    //    control: AnimatedOrderContainer(
+    //      wightSizeBox: settingsBoxRight.wightBoxRight,
+    //      heightSizeBox: settingsBoxRight.heightBoxRight,
+    //      sizeBorder: settingsBoxRight.sizeBorderRight,
+    //      boxBorderColor: settingsBoxRight.boxBorderColorRight,
+    //      backgroundColor: HexColor(settingsBoxRight.textBoxColorRight),
+    //      textColor: HexColor(settingsBoxRight.textBoxColorRight),
+    //      textSize: settingsBoxRight.sizeTextRight,
+    //      font: settingsBoxRight.styleBoxRight,
+    //      order: null,
+    //    ),
+    //  );
     } else if (settingsHeader.animatie == "Left Right") {
-      return AnimatedLeft(
-        ordersListLeft: ordersListLeft,
-        ordersListRight: ordersListRight,
-        settingsLeft: settingsLeft,
-        settingsRight: settingsRight,
-        settingsBoxLeft: settingsBoxLeft,
-        settingsBoxRight: settingsBoxRight,
-        control: control,
-      );
+    //  return DefaultAnimation(
+    //    ordersListLeft: ordersListLeft,
+    //    ordersListRight: ordersListRight,
+    //    settingsLeft: settingsLeft,
+    //    settingsRight: settingsRight,
+    //    settingsBoxLeft: settingsBoxLeft,
+    //    settingsBoxRight: settingsBoxRight,
+    //    settingsHeader: settingsHeader,
+    //  //  control: control,
+    //  );
     }
     // else if (settingsHeader.animatie == "Columns"){
     //  return ColumnsAnimated(
@@ -383,6 +386,16 @@ class _HomePageState extends State<HomePage> {
     print('F10 pressed');
     // Открыть диалог настроек
     _showSettingsDialog(context);
+//  showDialog(context: context, builder: (BuildContext context){
+//    return const SizedBox(
+//      width: 250,
+//      height: 250,
+//      child: Dialog(
+//           child: TabSetting(),
+//      ),
+//    );
+//  });
+    
   }
 
   //void _handleF9Key() {
@@ -573,7 +586,7 @@ class _HomePageState extends State<HomePage> {
   void _playSound() {
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context, listen: false);
     if (settingsHeader.soundActive == true) {
-      Sounds? sound = settingsHeader.sounds;
+      Sounds? sound = settingsHeader.sounds as Sounds;
       SoundPlayer.play(sound!,
           volume: 3, position: const Duration(microseconds: 500));
     } else {
