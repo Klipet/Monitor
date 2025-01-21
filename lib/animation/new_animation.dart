@@ -1,5 +1,5 @@
-import 'dart:async';
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
@@ -9,7 +9,10 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:provider/provider.dart';
 import 'package:sound_library/sound_library.dart';
-
+import 'package:win32/win32.dart';
+import 'package:window_manager/window_manager.dart';
+import 'dart:ffi' as ffi;
+import 'package:ffi/ffi.dart';
 import '../broker/color_app.dart';
 import '../providers/screen_setting_box_left.dart';
 import '../providers/screen_setting_box_right.dart';
@@ -41,7 +44,7 @@ class NewAnimation extends StatefulWidget {
   State<NewAnimation> createState() => _NewAnimationState();
 }
 
-class _NewAnimationState extends State<NewAnimation> {
+class _NewAnimationState extends State<NewAnimation> with WindowListener {
   late List<int> displayedOrders;
   List<int> previousList = []; // Список для хранения предыдущего состояния mainList
   late AnimationController _controller;
@@ -57,16 +60,22 @@ class _NewAnimationState extends State<NewAnimation> {
   late int countBox;
   late double sizeText;
   late double sizeTextBig;
+  double appScale = 1.0;
+  String windowSize = "Не определено";
 
 
   @override
   void initState() {
     super.initState();
     displayedOrders = [];
+    windowManager.addListener(this);
     Timer.periodic(const Duration(seconds: 5), (timer){
       response();
     });
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +86,6 @@ class _NewAnimationState extends State<NewAnimation> {
     sizewidthBig = (429 * 4) ~/ settingsHeader.sizeBox;
     sizeText = 84 *(sizewidth / 203) ;
     sizeTextBig = 148 * (sizewidthBig / 429) ;
-
 
     if(settingsHeader.sizeBox == 3){
       countBox = 12;
@@ -90,11 +98,13 @@ class _NewAnimationState extends State<NewAnimation> {
       countBox = 4;
     };
 
-    var fullScreen = MediaQuery.of(context).size;
-    print(fullScreen);
     return ScreenUtilInit(
         designSize: const Size(1920, 1080),
+        minTextAdapt: true,
+        ensureScreenSize: true,
+        useInheritedMediaQuery: true,
         builder: (context, child) {
+          // Получаем размеры монитора
           return Scaffold(
             body: Row(
               children: [
@@ -367,3 +377,4 @@ class _NewAnimationState extends State<NewAnimation> {
     sizewidth = ((148 * 4) / sizeBox).toInt();
   }
 }
+

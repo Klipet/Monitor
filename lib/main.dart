@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:logger/logger.dart';
 import 'package:monitor_for_sales/adapter/my_sounds_model.dart';
+import 'package:monitor_for_sales/providers/full_screen_monitor.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
@@ -34,6 +35,7 @@ Future<void> main() async {
     await WindowManager.instance.ensureInitialized();
     await WindowManager.instance.setFullScreen(true);
     await WindowManager.instance.setAlwaysOnTop(true);
+    await WindowManager.instance.setResizable(false);
     launchAtStartup.setup(
       appName: packageInfo.appName,
       appPath: Platform.resolvedExecutable,
@@ -62,6 +64,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (context) => ScreenSettingsHeader()),
         ChangeNotifierProvider(create: (context) => ScreenSettingsBoxLeft()),
         ChangeNotifierProvider(create: (context) => ScreenSettingsBoxRight()),
+        ChangeNotifierProvider(create: (context) => WindowStateMonitor())
         // Добавьте другие провайдеры здесь
       ],
       child: const MyApp(),

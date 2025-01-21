@@ -28,10 +28,12 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:sound_library/sound_library.dart';
 import 'package:synchronized_keyboard_listener/synchronized_keyboard_listener.dart';
 import 'package:system_info2/system_info2.dart';
+import 'package:window_manager/window_manager.dart';
 import '../animation/order_screen.dart';
 import '../broker/log.dart';
 import '../factory/post_get_url.dart';
 import '../factory/response_registr_app.dart';
+import '../providers/full_screen_monitor.dart';
 import '../providers/screen_setting_left.dart';
 import 'package:lottie/lottie.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -46,7 +48,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late FocusNode _focusNode;
   late List<dynamic> commandState;
   late List<Order> ordersList;
@@ -63,6 +65,7 @@ class _HomePageState extends State<HomePage> {
   Map<int, int> statusSound = {};
   final fileLogger = FileLogger();
   final int numderNewRight = 0;
+  double? currentPixelRatio;
 
 
   @override
@@ -81,6 +84,8 @@ class _HomePageState extends State<HomePage> {
     _startTimer();
     getState();
     _startTimerApyServer();
+    WidgetsBinding.instance.addObserver(this);
+    currentPixelRatio = WidgetsBinding.instance.window.devicePixelRatio;
   }
 
 
@@ -103,6 +108,7 @@ class _HomePageState extends State<HomePage> {
       duration: const Duration(seconds: 3),
     );
   }
+
 
 
   void _notificationError(String content) {
@@ -130,6 +136,22 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  @override
+  Future<void> didChangeMetrics() async {
+    super.didChangeMetrics();
+    final newPixelRatio = WidgetsBinding.instance.window.devicePixelRatio;
+    if (newPixelRatio != currentPixelRatio) {
+      await WindowManager.instance.setFullScreen(true);
+      await WindowManager.instance.show();
+      await WindowManager.instance.focus();
+      setState(() {
+        currentPixelRatio = newPixelRatio;
+      });
+
+      debugPrint('devicePixelRatio изменился: $newPixelRatio');
+    }
+  }
+
   void _stopTimer() {
     _timer?.cancel();
     print("Stop Tomer Windows ");
@@ -141,14 +163,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
-    var size = MediaQuery.sizeOf(context);
+    //var size = MediaQuery.sizeOf(context);
+    var size =  WidgetsBinding.instance.window.display.size;
     print('Size: $size');
      if(settingsHeader.videoPlayer){
       if (ordersListRight.isEmpty && ordersListLeft.isEmpty){
-        return  VideoPlayerSequence();
+        return  const VideoPlayerSequence();
       }
       else{
         return Scaffold(
@@ -703,4 +727,5 @@ class _HomePageState extends State<HomePage> {
       return 'Unknown';
     }
   }
+
 }
