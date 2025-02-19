@@ -1,14 +1,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:monitor_for_sales/broker/color_app.dart';
 import 'package:monitor_for_sales/providers/screen_setting_left.dart';
 
 class ScreenSettingsRight extends ChangeNotifier {
 
-  String _textRightTitle = 'Right Title';
-  Color _rightColumnColor = Colors.white;
-  Color _rightColorText = Colors.black;
-  Color _rightColorBorder = Colors.black;
+  String _textRightTitle = 'Pregătite:';
+  String _rightColumnColor = colorRight;
+  String _rightColorText = colorTextTitleLeft;
+  String _rightColorTitleBox = colorTitleRightBox;
+  String _rightColorBorder = boxBorderColor;
   double _rightSizeText = 15.0;
   double _rightSizeBorder = 0.0;
   String _styleColumnRight = 'Roboto';
@@ -20,18 +22,19 @@ class ScreenSettingsRight extends ChangeNotifier {
 
 
 
-  Color get rightColumnColor => _rightColumnColor;
-  Color get rightColorText => _rightColorText;
-  Color get rightColorBorder => _rightColorBorder;
+  String get rightColumnColor => _rightColumnColor;
+  String get rightColorText => _rightColorText;
+  String get rightColorTitleBox => _rightColorTitleBox;
+  String get rightColorBorder => _rightColorBorder;
   String get textRightTitle => _textRightTitle;
   double get rightSizeText => _rightSizeText;
   double get rightSizeBorder => _rightSizeBorder;
   String get styleColumnRight => _styleColumnRight;
-  bool get borderRight => _borderRight;
-  bool get borderIsActiveBottomRight => _borderIsActiveBottomRight;
-  bool get borderIsActiveTopRight => _borderIsActiveTopLeftRight;
-  bool get borderIsActiveLeftRight => _borderIsActiveLeftRight;
-  bool get borderIsActiveRightRight => _borderIsActiveRightRight;
+ bool get borderRight => _borderRight;
+ bool get borderIsActiveBottomRight => _borderIsActiveBottomRight;
+ bool get borderIsActiveTopRight => _borderIsActiveTopLeftRight;
+ bool get borderIsActiveLeftRight => _borderIsActiveLeftRight;
+ bool get borderIsActiveRightRight => _borderIsActiveRightRight;
 
 
   ScreenSettingsRight() {
@@ -39,12 +42,13 @@ class ScreenSettingsRight extends ChangeNotifier {
   }
   void _loadSettings() async {
     var box = Hive.box('settings');
-    _rightColorText = Color(box.get('rightColorText', defaultValue: Colors.black.value));
-    _rightColumnColor = Color(box.get('rightColumnColor', defaultValue: Colors.white.value));
-    _rightColorBorder = Color(box.get('rightColorBorder', defaultValue: Colors.black.value));
+    _rightColorText = box.get('rightColorText', defaultValue: colorTextTitleLeft);
+    _rightColumnColor = box.get('rightColumnColor', defaultValue: colorRight);
+    _rightColorTitleBox = box.get('rightColorBox', defaultValue: colorTitleRightBox);
+    _rightColorBorder = box.get('rightColorBorder', defaultValue: boxBorderColor);
     _rightSizeText = box.get('rightSizeText', defaultValue: 15.0);
     _rightSizeBorder = box.get('rightSizeBorder', defaultValue: 0.0);
-    _textRightTitle = box.get('textRightTitle', defaultValue: 'Right Title');
+    _textRightTitle = box.get('textRightTitle', defaultValue: 'Pregătite:');
     _styleColumnRight = box.get('styleColumnRight', defaultValue: 'Roboto');
     _borderRight = box.get('borderRight', defaultValue: false);
     _borderIsActiveBottomRight = box.get('borderIsActiveBottomRight', defaultValue: false);
@@ -56,9 +60,10 @@ class ScreenSettingsRight extends ChangeNotifier {
   }
   void _saveSettings() {
     var box = Hive.box('settings');
-    box.put('rightColorText', _rightColorText.value);
-    box.put('rightColumnColor', _rightColumnColor.value);
-    box.put('rightColorBorder', _rightColorBorder.value);
+    box.put('rightColorText', _rightColorText);
+    box.put('rightColumnColor', _rightColumnColor);
+    box.put('_rightColorTitleBox', _rightColorTitleBox);
+    box.put('rightColorBorder', _rightColorBorder);
     box.put('rightSizeText', _rightSizeText);
     box.put('textRightTitle', _textRightTitle);
     box.put('rightSizeBorder', _rightSizeBorder);
@@ -111,17 +116,22 @@ class ScreenSettingsRight extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateRightColumnColor(Color color) {
+  void updateRightColumnColor(String color) {
     _rightColumnColor = color;
     _saveSettings();
     notifyListeners();
   }
-  void updateRightColorText(Color color) {
+  void updateRightTitleBoxColor(String color) {
+    _rightColorTitleBox = color;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateRightColorText(String color) {
     _rightColorText = color;
     _saveSettings();
     notifyListeners();
   }
-  void updateRightColorBorder(Color color) {
+  void updateRightColorBorder(String color) {
     _rightColorBorder = color;
     _saveSettings();
     notifyListeners();
@@ -138,8 +148,9 @@ class ScreenSettingsRight extends ChangeNotifier {
     notifyListeners();
   }
 
+
   void updateFromLeft(ScreenSettingsLeft leftSettings) {
-    _rightColumnColor = leftSettings.leftColumnColor;
+  //  _rightColumnColor = leftSettings.leftColumnColor;
     _rightColorText = leftSettings.leftColorText;
     _rightColorBorder = leftSettings.leftColorBorder;
     _rightSizeText = leftSettings.leftSizeText;
@@ -154,5 +165,16 @@ class ScreenSettingsRight extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
+
+  void updateDefault(){
+    _rightColumnColor = colorRight;
+    _rightColorText = colorTextTitleLeft;
+    _rightColorTitleBox = colorTitleRightBox;
+    _textRightTitle = 'Pregătite:';
+    _saveSettings();
+    notifyListeners();
+  }
+
+
 
 }

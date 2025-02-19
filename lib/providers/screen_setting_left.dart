@@ -1,13 +1,16 @@
 
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:monitor_for_sales/broker/color_app.dart';
 import 'package:monitor_for_sales/providers/screen_setting_right.dart';
 
 class ScreenSettingsLeft extends ChangeNotifier {
-  String _textLeftTitle = 'Left title';
-  Color _leftColumnColor = Colors.white;
-  Color _leftColorText = Colors.black;
-  Color _leftColorBorder = Colors.black;
+  String _textLeftTitle = 'În pregătire:';
+  String _leftColumnColor = colorLeft;
+  String _leftColorText = colorTextTitleLeft;
+  String _titleColorBox = colorTitleLeftBox;
+  String _leftColorBorder = boxBorderColor;
   double _leftSizeText = 15.0;
   double _leftSizeBorder = 0.0;
   String _styleColumnLeft = 'Roboto';
@@ -20,10 +23,11 @@ class ScreenSettingsLeft extends ChangeNotifier {
 
 
 
-  Color get leftColumnColor => _leftColumnColor;
-  Color get leftColorText => _leftColorText;
-  Color get leftColorBorder => _leftColorBorder;
+  String get leftColumnColor => _leftColumnColor;
+  String get leftColorText => _leftColorText;
+  String get leftColorBorder => _leftColorBorder;
   String get textLeftTitle => _textLeftTitle;
+  String get titleColorBox => _titleColorBox;
   double get leftSizeText => _leftSizeText;
   double get leftSizeBorder => _leftSizeBorder;
   String get styleColumnLeft => _styleColumnLeft;
@@ -31,7 +35,7 @@ class ScreenSettingsLeft extends ChangeNotifier {
   bool get borderIsActiveBottomLeft => _borderIsActiveBottomLeft;
   bool get borderIsActiveTopLeft => _borderIsActiveTopLeft;
   bool get borderIsActiveLeftLeft => _borderIsActiveLeftLeft;
-  bool get borderIsActiveRightLeft => _borderIsActiveRightLeft;
+ bool get borderIsActiveRightLeft => _borderIsActiveRightLeft;
 
 
   ScreenSettingsLeft() {
@@ -39,12 +43,13 @@ class ScreenSettingsLeft extends ChangeNotifier {
   }
   void _loadSettings() async {
     var box = Hive.box('settings');
-    _leftColorText = Color(box.get('leftColorText', defaultValue: Colors.black.value));
-    _leftColumnColor = Color(box.get('leftColumnColor', defaultValue: Colors.white.value));
-    _leftColorBorder = Color(box.get('leftColorBorder', defaultValue: Colors.black.value));
+    _leftColorText = box.get('leftColorText', defaultValue: colorTextTitleLeft);
+    _leftColumnColor = box.get('leftColumnColor', defaultValue: colorLeft);
+    _titleColorBox = box.get('titleColorBox', defaultValue: colorTitleLeftBox);
+    _leftColorBorder = box.get('leftColorBorder', defaultValue: boxBorderColor);
     _leftSizeText = box.get('leftSizeText', defaultValue: 15.0);
     _leftSizeBorder = box.get('leftSizeBorder', defaultValue: 0.0);
-    _textLeftTitle = box.get('textLeftTitle', defaultValue: 'Left title');
+    _textLeftTitle = box.get('textLeftTitle', defaultValue: 'În pregătire:');
     _styleColumnLeft = box.get('styleColumnLeft', defaultValue: 'Roboto');
     _borderLeft = box.get('borderLeft', defaultValue: false);
     _borderIsActiveBottomLeft = box.get('borderIsActiveBottomLeft', defaultValue: false);
@@ -55,8 +60,9 @@ class ScreenSettingsLeft extends ChangeNotifier {
   }
   void _saveSettings() {
     var box = Hive.box('settings');
-    box.put('leftColorText', _leftColorText.value);
-    box.put('leftColumnColor', _leftColumnColor.value);
+    box.put('leftColorText', _leftColorText);
+    box.put('leftColumnColor', _leftColumnColor);
+    box.put('titleColorBox', _titleColorBox);
     box.put('leftSizeText', _leftSizeText);
     box.put('textLeftTitle', _textLeftTitle);
     box.put('leftColorBorder', _leftColorBorder);
@@ -68,10 +74,7 @@ class ScreenSettingsLeft extends ChangeNotifier {
     box.put('borderIsActiveLeftLeft', _borderIsActiveLeftLeft);
     box.put('borderIsActiveRightLeft', _borderIsActiveRightLeft);
   }
-  void saveLeft(){
-    _saveSettings();
-    print( 'save succes ScreenSettingsLight ');
-  }
+
 
   void updateBorderIsActiveRightLeft(bool value) {
     _borderIsActiveRightLeft = value;
@@ -111,17 +114,22 @@ class ScreenSettingsLeft extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
-  void updateLeftColumnColor(Color color) {
+  void updateLeftColumnColor(String color) {
     _leftColumnColor = color;
     _saveSettings();
     notifyListeners();
   }
-  void updateLeftColorText(Color color) {
+  void updateLeftColorText(String color) {
     _leftColorText = color;
     _saveSettings();
     notifyListeners();
   }
-  void updateLeftColorBorder(Color color) {
+  void updateTitleColorBox(String color) {
+    _titleColorBox = color;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateLeftColorBorder(String color) {
     _leftColorBorder = color;
     _saveSettings();
     notifyListeners();
@@ -147,6 +155,14 @@ class ScreenSettingsLeft extends ChangeNotifier {
     _borderIsActiveTopLeft = rightSettings.borderIsActiveTopRight;
     _borderIsActiveLeftLeft = rightSettings.borderIsActiveLeftRight;
     _borderIsActiveRightLeft = rightSettings.borderIsActiveRightRight;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updaateDefault(){
+    _leftColumnColor = colorLeft;
+    _leftColorText = colorTextTitleLeft;
+    _titleColorBox = colorTitleLeftBox;
+    _textLeftTitle = 'În pregătire:';
     _saveSettings();
     notifyListeners();
   }

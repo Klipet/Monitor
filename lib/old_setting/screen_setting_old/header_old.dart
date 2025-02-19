@@ -8,29 +8,29 @@ import 'package:sound_library/sound_library.dart';
 
 import 'dart:io';
 
-import '../providers/screen_setting_header.dart';
+import '../../providers/screen_setting_header.dart';
 
-class SettingHeader extends StatefulWidget {
-  const SettingHeader({super.key});
+
+
+class SettingHeaderOld extends StatefulWidget {
+  const SettingHeaderOld({super.key});
 
   @override
-  State<SettingHeader> createState() => _SettingHeaderState();
+  State<SettingHeaderOld> createState() => _SettingHeaderOldState();
 }
 
-class _SettingHeaderState extends State<SettingHeader> {
+class _SettingHeaderOldState extends State<SettingHeaderOld> {
   TextEditingController _textController = TextEditingController();
   TextEditingController _sizeController = TextEditingController();
   TextEditingController _sizeToolBar = TextEditingController();
   TextEditingController _paddingHeader = TextEditingController();
   final TextEditingController _minuteHeader = TextEditingController();
   late Sounds _selectedSound;
-  late int sizeBoxInsert;
   String _defaultValue =  "Default";
 
   void initState() {
     super.initState();
     _selectedSound = Sounds.success;
-    sizeBoxInsert = 4;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final settingsHeader =
@@ -74,12 +74,6 @@ class _SettingHeaderState extends State<SettingHeader> {
      "Left Right",
      "Top Dawn",
      "Default"
-  ];
-   final List<int> sizeBoxInsertVariant = [
-    2,
-    3,
-    4,
-    5
   ];
 
   void _playSound(Sounds sound) {
@@ -135,7 +129,6 @@ class _SettingHeaderState extends State<SettingHeader> {
         await settingsHeader.updateSelectedImage(selectedFile);
       }
     }
-
     return Column(
       children: [
     //    Container(
@@ -143,53 +136,52 @@ class _SettingHeaderState extends State<SettingHeader> {
    //       child:
     Column(
             children: [
-    //          TextField(
-    //            controller: _sizeController,
-    //            keyboardType: TextInputType.number,
-    //            inputFormatters: [
-    //              FilteringTextInputFormatter.allow(
-    //                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-    //              ),
-    //            ],
-    //            decoration: const InputDecoration(labelText: 'Size Title'),
-    //            onChanged: (value) {
-    //              settingsHeader.updateSizeText(double.parse(value));
-    //            },
-    //          ),
-    //
-    //          TextField(
-    //            controller: _sizeToolBar,
-    //            keyboardType: TextInputType.number,
-    //            inputFormatters: [
-    //              FilteringTextInputFormatter.allow(
-    //                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-    //              ),
-    //            ],
-    //            decoration: const InputDecoration(labelText: 'Size Tool Bar'),
-    //            onChanged: (value) {
-    //              settingsHeader.updateSizeToolBar(double.parse(value));
-    //            },
-    //          ),TextField(
-    //            controller: _paddingHeader,
-    //            keyboardType: TextInputType.number,
-    //            inputFormatters: [
-    //              FilteringTextInputFormatter.allow(
-    //                RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-    //              ),
-    //            ],
-    //            decoration: const InputDecoration(labelText: 'Size Padding Header'),
-    //            onChanged: (value) {
-    //              settingsHeader.updatePaddingText(double.parse(value));
-    //            },
-    //          ),
-    //          TextField(
-    //            controller: _textController,
-    //            decoration: const InputDecoration(labelText: 'Enter title text'),
-    //            onChanged: (value) {
-    //              settingsHeader.updateTitle(value);
-    //            },
-    //          ),
+             TextField(
+               controller: _sizeController,
+               keyboardType: TextInputType.number,
+               inputFormatters: [
+                 FilteringTextInputFormatter.allow(
+                   RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+                 ),
+               ],
+               decoration: const InputDecoration(labelText: 'Size Title'),
+               onChanged: (value) {
+                 settingsHeader.updateSizeText(double.parse(value));
+               },
+             ),
 
+             TextField(
+               controller: _sizeToolBar,
+               keyboardType: TextInputType.number,
+               inputFormatters: [
+                 FilteringTextInputFormatter.allow(
+                   RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+                 ),
+               ],
+               decoration: const InputDecoration(labelText: 'Size Tool Bar'),
+               onChanged: (value) {
+                 settingsHeader.updateSizeToolBar(double.parse(value));
+               },
+             ),TextField(
+               controller: _paddingHeader,
+               keyboardType: TextInputType.number,
+               inputFormatters: [
+                 FilteringTextInputFormatter.allow(
+                   RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
+                 ),
+               ],
+               decoration: const InputDecoration(labelText: 'Size Padding Header'),
+               onChanged: (value) {
+                 settingsHeader.updatePaddingText(double.parse(value));
+               },
+             ),
+             TextField(
+               controller: _textController,
+               decoration: const InputDecoration(labelText: 'Enter title text'),
+               onChanged: (value) {
+                 settingsHeader.updateTitle(value);
+               },
+             ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Row(
@@ -224,9 +216,6 @@ class _SettingHeaderState extends State<SettingHeader> {
                         ],
                       ),
                     ),
-                  ]
-                )
-              ),
                     Padding(padding: const EdgeInsets.only(left: 0.0),
                       child: Column(
                         children: [
@@ -241,8 +230,10 @@ class _SettingHeaderState extends State<SettingHeader> {
                           ),
                         ],
                       ),
+                    )
+                  ],
                 ),
-
+              ),
               Padding(padding: const EdgeInsets.only(left: 0.0),
                 child: Column(
                   children: [
@@ -270,33 +261,6 @@ class _SettingHeaderState extends State<SettingHeader> {
                 onChanged: (value) {
                   settingsHeader.updateDeleteHours(int.parse(value));
                   },
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text('Setting Size Box'),
-                    ),
-                    DropdownButton<int>(
-                        value: settingsHeader.sizeBox,
-                        onChanged: (int? newValue) {
-                          setState(() {
-                            if (newValue != null) {
-                              sizeBoxInsert = newValue;
-                              settingsHeader.updateSizeBox(sizeBoxInsert);
-                            }
-                          });
-                        },
-                        items: sizeBoxInsertVariant.map<DropdownMenuItem<int>>((int value) {
-                          return DropdownMenuItem<int>(
-                            value: value,
-                            child: Text(value.toString()),
-                          );
-                        }).toList()),
-                  ],
-                ),
               ),
               //минуты
             //  GestureDetector(
@@ -355,52 +319,52 @@ class _SettingHeaderState extends State<SettingHeader> {
           //        fontSize: 20
           //    ),
           //  ),
-    //          Row(
-    //            children: [
-    //              DropdownButton<String>(
-    //                value: settingsHeader.styleTitle,
-    //                onChanged: (String? newValue) {
-    //                  setState(() {
-    //                    _selectedFont = newValue!;
-    //                    settingsHeader.updateFontTitle(newValue);
-    //                  });
-    //                },
-    //                items: _fonts.map<DropdownMenuItem<String>>((String value) {
-    //                  return DropdownMenuItem<String>(
-    //                    value: value,
-    //                    child: Text(value, style: GoogleFonts.getFont(value)),
-    //                  );
-    //                }).toList(),
-    //              ),
-    //            ],
-    //          ),
-    //          Padding(
-    //            padding: const EdgeInsets.only(top: 8.0),
-    //            child: ElevatedButton(
-    //              onPressed: () {
-    //                _openColorPicker(context, settingsHeader.textColor, (color) {
-    //                  setState(() {
-    //                    settingsHeader.updateTextColor(color);
-    //                  });
-    //                });
-    //              },
-    //              child: const Text('Text Color'),
-    //            ),
-    //          ),
-    //          Padding(
-    //            padding: const EdgeInsets.only(top: 8.0, bottom: 10),
-    //            child: ElevatedButton(
-    //              onPressed: () {
-    //                _openColorPicker(context, settingsHeader.backgroundColor,
-    //                    (color) {
-    //                  setState(() {
-    //                    settingsHeader.updateBackgroundColor(color);
-    //                  });
-    //                });
-    //              },
-    //              child: const Text('Background Color'),
-    //            ),
-    //          ),
+              Row(
+                children: [
+                  DropdownButton<String>(
+                    value: settingsHeader.styleTitle,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedFont = newValue!;
+                        settingsHeader.updateFontTitle(newValue);
+                      });
+                    },
+                    items: _fonts.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value, style: GoogleFonts.getFont(value)),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    _openColorPicker(context, settingsHeader.textColor, (color) {
+                      setState(() {
+                        settingsHeader.updateTextColor(color);
+                      });
+                    });
+                  },
+                  child: const Text('Text Color'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    _openColorPicker(context, settingsHeader.backgroundColor,
+                        (color) {
+                      setState(() {
+                        settingsHeader.updateBackgroundColor(color);
+                      });
+                    });
+                  },
+                  child: const Text('Background Color'),
+                ),
+              ),
               //    Padding(
               //      padding: const EdgeInsets.only(top: 8.0),
               //      child: ElevatedButton(
@@ -412,7 +376,7 @@ class _SettingHeaderState extends State<SettingHeader> {
               //    ),
             ],
           ),
-    ],
+      ],
     );
   }
 }

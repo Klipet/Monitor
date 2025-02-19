@@ -7,16 +7,17 @@ import 'package:monitor_for_sales/broker/color_app.dart';
 import 'package:monitor_for_sales/providers/screen_setting_left.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/screen_setting_right.dart';
+import '../../providers/screen_setting_right.dart';
 
-class SettingColumnRight extends StatefulWidget {
-  const SettingColumnRight({super.key});
+
+class SettingColumnRightOld extends StatefulWidget {
+  const SettingColumnRightOld({super.key});
 
   @override
-  State<SettingColumnRight> createState() => _SettingColumnRightState();
+  State<SettingColumnRightOld> createState() => _SettingColumnRightOldState();
 }
 
-class _SettingColumnRightState extends State<SettingColumnRight> {
+class _SettingColumnRightOldState extends State<SettingColumnRightOld> {
   TextEditingController _rightTextController = TextEditingController();
   TextEditingController _rightSizeController = TextEditingController();
   TextEditingController _rightSizeBorder = TextEditingController();
@@ -134,91 +135,91 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
         ),
         Row(
           children: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-        //     child: GestureDetector(
-        //       child:  Icon(Icons.border_bottom,
-        //         size: 50,
-        //         color: settingsRight.borderIsActiveBottomRight ? Colors.black : Colors.grey ,
-        //       ),
-        //       onTap: (){
-        //         setState(() {
-        //           settingsRight.updateBorderIsActiveBottomRight(!settingsRight.borderIsActiveBottomRight);
-        //         });
-        //       },),
-        //   ),
-        //   Padding(
-        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-        //     child: GestureDetector(child: Icon(Icons.border_top,
-        //       size: 50,
-        //       color:  settingsRight.borderIsActiveTopRight ? Colors.black : Colors.grey ,),
-        //       onTap: (){
-        //         setState(() {
-        //           settingsRight.updateBorderIsActiveTopRight(!settingsRight.borderIsActiveTopRight);
-        //         });
-        //       },),
-        //   ),
-        //   Padding(
-        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-        //     child: GestureDetector(child: Icon(Icons.border_left,
-        //       size: 50,
-        //       color:  settingsRight.borderIsActiveLeftRight ? Colors.black : Colors.grey ,),
-        //       onTap: (){
-        //         setState(() {
-        //           settingsRight.updateBorderIsActiveLeftRight(!settingsRight.borderIsActiveLeftRight);
-        //         });
-        //       },),
-        //   ),
-        //   Padding(
-        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-        //     child: GestureDetector(child: Icon(Icons.border_right,
-        //       size: 50,
-        //       color:  settingsRight.borderIsActiveRightRight ? Colors.black : Colors.grey ,),
-        //       onTap: (){
-        //         setState(() {
-        //           settingsRight.updateBorderIsActiveRightRight(!settingsRight.borderIsActiveRightRight);
-        //         });
-        //       },),
-        //   ),
-        //    GestureDetector(
-        //      onTap: () {
-        //        setState(() {
-        //          settingsRight.updateBorderRight(!settingsRight.borderRight);
-        //        });
-        //      },
-        //      child: Icon(
-        //        settingsRight.borderRight ? Icons.check_box : Icons.check_box_outline_blank,
-        //        size: 35.0,
-        //        color: settingsRight.borderRight ? Colors.green : Colors.black,
-        //      ),
-        //    ),
-        //    const SizedBox(width: 10),
-        //    Text(settingsRight.borderRight? 'Border is activate' : 'Border is dezactivate',
-        //      style: const TextStyle(
-        //          fontSize: 20
-        //      ),
-        //    ),
+           Padding(
+             padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+             child: GestureDetector(
+               child:  Icon(Icons.border_bottom,
+                 size: 50,
+                 color: settingsRight.borderIsActiveBottomRight ? Colors.black : Colors.grey ,
+               ),
+               onTap: (){
+                 setState(() {
+                   settingsRight.updateBorderIsActiveBottomRight(!settingsRight.borderIsActiveBottomRight);
+                 });
+               },),
+           ),
+           Padding(
+             padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+             child: GestureDetector(child: Icon(Icons.border_top,
+               size: 50,
+               color:  settingsRight.borderIsActiveTopRight ? Colors.black : Colors.grey ,),
+               onTap: (){
+                 setState(() {
+                   settingsRight.updateBorderIsActiveTopRight(!settingsRight.borderIsActiveTopRight);
+                 });
+               },),
+           ),
+           Padding(
+             padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+             child: GestureDetector(child: Icon(Icons.border_left,
+               size: 50,
+               color:  settingsRight.borderIsActiveLeftRight ? Colors.black : Colors.grey ,),
+               onTap: (){
+                 setState(() {
+                   settingsRight.updateBorderIsActiveLeftRight(!settingsRight.borderIsActiveLeftRight);
+                 });
+               },),
+           ),
+           Padding(
+             padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
+             child: GestureDetector(child: Icon(Icons.border_right,
+               size: 50,
+               color:  settingsRight.borderIsActiveRightRight ? Colors.black : Colors.grey ,),
+               onTap: (){
+                 setState(() {
+                   settingsRight.updateBorderIsActiveRightRight(!settingsRight.borderIsActiveRightRight);
+                 });
+               },),
+           ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  settingsRight.updateBorderRight(!settingsRight.borderRight);
+                });
+              },
+              child: Icon(
+                settingsRight.borderRight ? Icons.check_box : Icons.check_box_outline_blank,
+                size: 35.0,
+                color: settingsRight.borderRight ? Colors.green : Colors.black,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(settingsRight.borderRight? 'Border is activate' : 'Border is dezactivate',
+              style: const TextStyle(
+                  fontSize: 20
+              ),
+            ),
           ],
         ),
-    //    Row(
-    //      children: [
-    //        DropdownButton<String>(
-    //          value: settingsRight.styleColumnRight,
-    //          onChanged: (String? newValue) {
-    //            setState(() {
-    //              _selectedFont = newValue!;
-    //              settingsRight.updateStyleColumnRight(newValue);
-    //            });
-    //          },
-    //          items: _fonts.map<DropdownMenuItem<String>>((String value) {
-    //            return DropdownMenuItem<String>(
-    //              value: value,
-    //              child: Text(value, style: GoogleFonts.getFont(value)),
-    //            );
-    //          }).toList(),
-    //        ),
-    //      ],
-    //    ),
+        Row(
+          children: [
+            DropdownButton<String>(
+              value: settingsRight.styleColumnRight,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedFont = newValue!;
+                  settingsRight.updateStyleColumnRight(newValue);
+                });
+              },
+              items: _fonts.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value, style: GoogleFonts.getFont(value)),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: ElevatedButton(
@@ -259,28 +260,28 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
             child: const Text('Change Right Column Text Color'),
           ),
         ),
-    //    Padding(
-    //      padding: const EdgeInsets.only(top: 8.0),
-    //      child: ElevatedButton(
-    //        onPressed: () {
-    //          _openColorPicker(context, settingsRight.rightColorBorder, (color) {
-    //            setState(() {
-    //              settingsRight.updateRightColorBorder(color);
-    //            });
-    //          });
-    //        },
-    //        child: const Text('Change Right Column Border Color'),
-    //      ),
-    //    ),
-    //    Padding(
-    //      padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
-    //      child: ElevatedButton(
-    //        onPressed: () {
-    //          settingsLeft.updateFromRight(settingsRight);
-    //        },
-    //        child: const Text('Update to left'),
-    //      ),
-    //    ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              _openColorPicker(context, boxBorderColor,HexColor(settingsRight.rightColorBorder), (color) {
+                setState(() {
+                  settingsRight.updateRightColorBorder(colorToHex(color));
+                });
+              });
+            },
+            child: const Text('Change Right Column Border Color'),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
+          child: ElevatedButton(
+            onPressed: () {
+              settingsLeft.updateFromRight(settingsRight);
+            },
+            child: const Text('Update to left'),
+          ),
+        ),
       ],
     );
   }

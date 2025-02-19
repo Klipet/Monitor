@@ -71,6 +71,7 @@ class _SplashState extends State<Splash> {
   Future<void> getUrl() async {
     Constants constants = Constants();
     var pref = await SharedPreferences.getInstance();
+    pref.setDouble('ratio', MediaQuery.of(context).devicePixelRatio);
       const String applicationVersion = '1.0.0';
       final String deviceID = SysInfo.kernelArchitecture.name ;
       final String deviceModel = SysInfo.kernelArchitecture.name;
