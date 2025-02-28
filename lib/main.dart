@@ -28,7 +28,7 @@ import 'broker/log.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final fileLogger = FileLogger();
+  await FileLogger().init();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   // Установка полноэкранного режима
   if (Platform.isWindows) {
@@ -52,11 +52,8 @@ Future<void> main() async {
   await Hive.openBox('settings');
   Hive.registerAdapter(MySoundModelAdapter());
   final appDocumentDirectory = await path_provider.getApplicationDocumentsDirectory();
-
   print('Hive is initialized at: ${appDocumentDirectory.path}');
-  fileLogger.logInfo("Приложение запущено");
   runApp(
-
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ScreenSettingsLeft()),
@@ -124,6 +121,7 @@ class _MyAppState extends State<MyApp> {
   
   @override
   Widget build(BuildContext context) {
+    FileLogger().logInfo("App Started");
     return const OverlaySupport.global(
         child: MaterialApp(
           home: Splash()

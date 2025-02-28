@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:monitor_for_sales/broker/log.dart';
 import 'package:monitor_for_sales/factory/post_register_app.dart';
 import 'package:monitor_for_sales/factory/response_registr_app.dart';
 import 'package:monitor_for_sales/wigets_home_pages/widget_andriod.dart';
@@ -234,6 +235,7 @@ class _License extends State<License> {
         }
       } else {
         print('Failed to send data: ${response.statusCode}');
+        FileLogger().logError(response.body);
         setState(() {
           forceError = true;
         });
@@ -241,6 +243,7 @@ class _License extends State<License> {
     }catch(e){
       setState(() {
         print('Failed to send data: ${e.toString()}');
+        FileLogger().logError(e.toString());
         forceError = true;
       });
     }
