@@ -1,19 +1,15 @@
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:provider/provider.dart';
 import 'package:sound_library/sound_library.dart';
-import 'package:win32/win32.dart';
 import 'package:window_manager/window_manager.dart';
-import 'dart:ffi' as ffi;
-import 'package:ffi/ffi.dart';
-import '../broker/color_app.dart';
+import '../broker/log.dart';
 import '../providers/screen_setting_box_left.dart';
 import '../providers/screen_setting_box_right.dart';
 import '../providers/screen_setting_left.dart';
@@ -62,6 +58,7 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
   late double sizeTextBig;
   double appScale = 1.0;
   String windowSize = "Не определено";
+  final fileLogger = FileLogger();
 
 
   @override
@@ -69,7 +66,7 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
     super.initState();
     displayedOrders = [];
     windowManager.addListener(this);
-    Timer.periodic(const Duration(seconds: 5), (timer){
+    Timer.periodic(const Duration(seconds: 1), (timer){
       response();
     });
   }
@@ -96,7 +93,7 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
       countBox = 30;
     }else{
       countBox = 4;
-    };
+    }
 
     return ScreenUtilInit(
         designSize: const Size(1920, 1080),
@@ -243,6 +240,7 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
                                             return Padding(padding: EdgeInsets.only(top: 26.h),
                                                 child: Stack(
                                                   children: [
+
                                                     Wrap(
                                                         direction: Axis.vertical,
                                                         children: List.generate(widget.ordersListRight.length >= 20 ? 20 : widget.ordersListRight.length, (index) {
@@ -278,10 +276,10 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
                                                               );
                                                         })
                                                     ),
-                                                   displayedOrders.isNotEmpty ?
-                                                   Padding(
-                                                     padding: EdgeInsets.only(right: 23.w, top: 24.h,),
-                                                     child: Container(
+                                                    displayedOrders.isNotEmpty ?
+                                                    Padding(
+                                                      padding: EdgeInsets.only(right: 23.w, top: 24.h,),
+                                                      child: Container(
                                                           alignment: Alignment.center,
                                                           width: sizewidthBig.w,
                                                           height: sizeheightBig.h,
@@ -300,8 +298,8 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
                                                                 color: HexColor(widget.settingsBoxRight.textBoxColorRight),
                                                               )
                                                           )
-                                                        ),
-                                                   ): Container(color: Colors.transparent,)
+                                                      ),
+                                                    ): Container(color: Colors.transparent,),
                                                   ],
                                                 ),
                                               );
@@ -323,16 +321,15 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
     // Находим новые элементы, которых не было в предыдущем списке
     List<int> newItems = widget.ordersListRight.where((item) =>
     !previousList.contains(item)).toList();
-
     if (isFirstRun) {
       isFirstRun = false;
     } else {
       if (newItems.isNotEmpty) {
         displayedOrders.addAll(newItems); // Добавляем только новые элементы
-        print('Added new items to displayedOrders: $displayedOrders');
-        setState(() {});
+      //  print('Added new items to displayedOrders: $displayedOrders');
+      //  fileLogger.logInfo('Added new items to displayedOrders: $displayedOrders');
+          setState(() {});
         _playSound();
-
         // Запускаем удаление с задержкой, если его еще не было
         if (!_isRemoving) {
           _removeItemsWithDelay();
@@ -349,7 +346,9 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
       Future.delayed(const Duration(seconds: 5), () {
         setState(() {
           displayedOrders.removeAt(0); // Удаляем первый элемент
-          print('Removed an item from displayedOrders: $displayedOrders');
+          if (kDebugMode) {
+            print('Removed an item from displayedOrders: $displayedOrders');
+          }
         });
         // Рекурсивно вызываем себя для следующего элемента
         _removeItemsWithDelay();
@@ -364,7 +363,7 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context, listen: false);
     if (settingsHeader.soundActive == true) {
       Sounds? sound = settingsHeader.sounds as Sounds;
-      SoundPlayer.play(sound!,
+      SoundPlayer.play(sound,
           volume: 3, position: const Duration(microseconds: 500));
     } else {
       null;

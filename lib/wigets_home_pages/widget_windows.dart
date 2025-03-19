@@ -169,7 +169,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
     //var size = MediaQuery.sizeOf(context);
     var size =  WidgetsBinding.instance.window.display.size;
-    print('Size: $size');
      if(settingsHeader.videoPlayer){
       if (ordersListRight.isEmpty && ordersListLeft.isEmpty){
         return  const VideoPlayerSequence();
@@ -507,7 +506,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           setState(() {
             statusState();
             _isFetching = true;
-            fileLogger.logError(response.statusCode.toString());
+          //  fileLogger.logError(response.statusCode.toString());
           });
         } else {
           setState(() {
