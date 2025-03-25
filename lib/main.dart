@@ -21,6 +21,7 @@ import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
+import 'aligment_adapter/my_aligment_model.dart';
 import 'broker/log.dart';
 
 
@@ -28,7 +29,7 @@ import 'broker/log.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final fileLogger = FileLogger();
+  await FileLogger().init();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   // Установка полноэкранного режима
   if (Platform.isWindows) {
@@ -49,14 +50,12 @@ Future<void> main() async {
         SystemUiMode.immersiveSticky, overlays: SystemUiOverlay.values);
   }
   await Hive.initFlutter();
-  await Hive.openBox('settings');
   Hive.registerAdapter(MySoundModelAdapter());
+  Hive.registerAdapter(AlignmentAdapter());
+  await Hive.openBox('settings');
   final appDocumentDirectory = await path_provider.getApplicationDocumentsDirectory();
-
   print('Hive is initialized at: ${appDocumentDirectory.path}');
-  fileLogger.logInfo("Приложение запущено");
   runApp(
-
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ScreenSettingsLeft()),
@@ -124,6 +123,7 @@ class _MyAppState extends State<MyApp> {
   
   @override
   Widget build(BuildContext context) {
+    FileLogger().logInfo("App Started");
     return const OverlaySupport.global(
         child: MaterialApp(
           home: Splash()

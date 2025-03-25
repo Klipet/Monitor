@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:monitor_for_sales/factory/post_get_url.dart';
 import 'package:monitor_for_sales/factory/response_registr_app.dart';
 import 'package:monitor_for_sales/wigets_home_pages/spash_license.dart';
@@ -12,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import '../broker/const.dart';
+import '../broker/log.dart';
 import '../factory/post_register_app.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
@@ -36,6 +38,7 @@ class _SplashState extends State<Splash> {
     fontFamily: 'RobotoBolt',
     fontWeight: FontWeight.bold
   );
+  final fileLogger = FileLogger();
   @override
   void initState() {
     Future.delayed(Duration(seconds: 3), (){
@@ -146,7 +149,7 @@ class _SplashState extends State<Splash> {
           );
         }
         else{
-          print('urlResponse.errorCode ${urlResponse.errorCode}');
+          fileLogger.logError('urlResponse.errorCode ${urlResponse.errorCode}');
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const License()),
@@ -167,8 +170,7 @@ class _SplashState extends State<Splash> {
                 (Route<dynamic> route) => false,
           );
         }
-      }
-      else if(response.statusCode == 404){
+      }else if(response.statusCode == 404){
         if(Platform.isWindows){
           Navigator.pushAndRemoveUntil(
             context,
@@ -196,9 +198,8 @@ class _SplashState extends State<Splash> {
                 (Route<dynamic> route) => false,
           );
         }
-      }
-      else{
-        print('error response.statusCode ${response.statusCode}');
+      }else{
+        fileLogger.logError('error response.statusCode ${response.statusCode}');
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const License()),
@@ -206,8 +207,24 @@ class _SplashState extends State<Splash> {
         );
       }
 
-    }catch(e){
-      print('error Catch ${e.toString()}');
+    }on HttpException{
+      fileLogger.logError('error HttpException');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePagesAndroid()),
+            (Route<dynamic> route) => false,
+      );
+    }
+    on IOException{
+      fileLogger.logError('error IOException');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePagesAndroid()),
+            (Route<dynamic> route) => false,
+      );
+    }
+    catch(e){
+      fileLogger.logError('error Catch: ${e.toString()}');
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const License()),

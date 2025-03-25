@@ -49,7 +49,7 @@ class ScreenSettingsBoxLeft extends ChangeNotifier {
   void _saveSettings() {
     var box = Hive.box('settings');
     box.put('backgroundBoxColorLeft', _backgroundBoxColorLeft);
-    box.put('boxBorderColorLeft', boxBorderColor);
+    box.put('boxBorderColorLeft', _boxBorderColorLeft);
     box.put('textBoxColorLeft', _textBoxColorLeft);
     box.put('styleBoxLeft', _styleBoxLeft);
     box.put('sizeTextLeft', _sizeTextLeft);

@@ -169,7 +169,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     var settingsHeader = Provider.of<ScreenSettingsHeader>(context);
     //var size = MediaQuery.sizeOf(context);
     var size =  WidgetsBinding.instance.window.display.size;
-    print('Size: $size');
      if(settingsHeader.videoPlayer){
       if (ordersListRight.isEmpty && ordersListLeft.isEmpty){
         return  const VideoPlayerSequence();
@@ -507,7 +506,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           setState(() {
             statusState();
             _isFetching = true;
-            fileLogger.logError(response.statusCode.toString());
+          //  fileLogger.logError(response.statusCode.toString());
           });
         } else {
           setState(() {
@@ -535,7 +534,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     for (var status in ordersList) {
       try {
-        if (status.state == 2) {
+        if (status.state == 2 || status.state == 3) {
           // Логика для обработки статуса 2
           tempOrdersListLeft.add(status.number);
         } else if (status.state == 6) {
@@ -585,6 +584,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     } catch (error) {
       print(error);
+      fileLogger.logError(error.toString());
     }
 
   }
@@ -693,10 +693,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           );
         }
       } else if (response.statusCode == 400) {
+        fileLogger.logError(response.body.toString());
       } else if (response.statusCode == 502) {
+        fileLogger.logError(response.body.toString());
       } else if (response.statusCode == 404) {
+        fileLogger.logError(response.body.toString());
       } else {
         print('error response.statusCode ${response.statusCode}');
+        fileLogger.logError(response.body.toString());
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const License()),
@@ -705,11 +709,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       }
     } catch (error) {
       print('error Catch ${error.toString()}');
+      fileLogger.logError(error.toString());
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const License()),
         (Route<dynamic> route) => false,
       );
+      fileLogger.logError(error.toString());
     }
   }
 

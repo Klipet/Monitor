@@ -14,11 +14,12 @@ class ScreenSettingsRight extends ChangeNotifier {
   double _rightSizeText = 15.0;
   double _rightSizeBorder = 0.0;
   String _styleColumnRight = 'Roboto';
-  late bool _borderRight;
-  late bool _borderIsActiveBottomRight;
-  late bool _borderIsActiveTopLeftRight;
-  late bool _borderIsActiveLeftRight;
-  late bool _borderIsActiveRightRight;
+  Alignment _alignment = Alignment.bottomRight;
+//  late bool _borderRight;
+//  late bool _borderIsActiveBottomRight;
+// late bool _borderIsActiveTopLeftRight;
+//  late bool _borderIsActiveLeftRight;
+// late bool _borderIsActiveRightRight;
 
 
 
@@ -30,11 +31,12 @@ class ScreenSettingsRight extends ChangeNotifier {
   double get rightSizeText => _rightSizeText;
   double get rightSizeBorder => _rightSizeBorder;
   String get styleColumnRight => _styleColumnRight;
- bool get borderRight => _borderRight;
- bool get borderIsActiveBottomRight => _borderIsActiveBottomRight;
- bool get borderIsActiveTopRight => _borderIsActiveTopLeftRight;
- bool get borderIsActiveLeftRight => _borderIsActiveLeftRight;
- bool get borderIsActiveRightRight => _borderIsActiveRightRight;
+  Alignment get alignment => _alignment;
+ // bool get borderRight => _borderRight;
+ // bool get borderIsActiveBottomRight => _borderIsActiveBottomRight;
+ // bool get borderIsActiveTopRight => _borderIsActiveTopLeftRight;
+ // bool get borderIsActiveLeftRight => _borderIsActiveLeftRight;
+ // bool get borderIsActiveRightRight => _borderIsActiveRightRight;
 
 
   ScreenSettingsRight() {
@@ -50,11 +52,12 @@ class ScreenSettingsRight extends ChangeNotifier {
     _rightSizeBorder = box.get('rightSizeBorder', defaultValue: 0.0);
     _textRightTitle = box.get('textRightTitle', defaultValue: 'Pregătite:');
     _styleColumnRight = box.get('styleColumnRight', defaultValue: 'Roboto');
-    _borderRight = box.get('borderRight', defaultValue: false);
-    _borderIsActiveBottomRight = box.get('borderIsActiveBottomRight', defaultValue: false);
-    _borderIsActiveTopLeftRight = box.get('borderIsActiveTopRight', defaultValue: false);
-    _borderIsActiveLeftRight = box.get('borderIsActiveLeftRight', defaultValue: false);
-    _borderIsActiveRightRight = box.get('borderIsActiveRightRight', defaultValue: false);
+    _alignment = box.get('alignment', defaultValue: Alignment.bottomRight);
+  //  _borderRight = box.get('borderRight', defaultValue: false);
+  //  _borderIsActiveBottomRight = box.get('borderIsActiveBottomRight', defaultValue: false);
+  //  _borderIsActiveTopLeftRight = box.get('borderIsActiveTopRight', defaultValue: false);
+  //  _borderIsActiveLeftRight = box.get('borderIsActiveLeftRight', defaultValue: false);
+  //  _borderIsActiveRightRight = box.get('borderIsActiveRightRight', defaultValue: false);
 
     notifyListeners();
   }
@@ -62,49 +65,50 @@ class ScreenSettingsRight extends ChangeNotifier {
     var box = Hive.box('settings');
     box.put('rightColorText', _rightColorText);
     box.put('rightColumnColor', _rightColumnColor);
-    box.put('_rightColorTitleBox', _rightColorTitleBox);
+    box.put('rightColorBox', _rightColorTitleBox);
     box.put('rightColorBorder', _rightColorBorder);
     box.put('rightSizeText', _rightSizeText);
     box.put('textRightTitle', _textRightTitle);
     box.put('rightSizeBorder', _rightSizeBorder);
     box.put('styleColumnRight', _styleColumnRight);
-    box.put('borderRight', _borderRight);
-    box.put('borderIsActiveBottomRight', _borderIsActiveBottomRight);
-    box.put('borderIsActiveTopRight', _borderIsActiveTopLeftRight);
-    box.put('borderIsActiveLeftRight', _borderIsActiveLeftRight);
-    box.put('borderIsActiveRightRight', _borderIsActiveRightRight);
+    box.put('alignment', _alignment);
+  //  box.put('borderRight', _borderRight);
+  //  box.put('borderIsActiveBottomRight', _borderIsActiveBottomRight);
+  //  box.put('borderIsActiveTopRight', _borderIsActiveTopLeftRight);
+  //  box.put('borderIsActiveLeftRight', _borderIsActiveLeftRight);
+  //  box.put('borderIsActiveRightRight', _borderIsActiveRightRight);
   }
 
-  void saveRight(){
-    _saveSettings();
-    print( 'save succes ScreenSettingsRight ');
-  }
+//  void saveRight(){
+//    _saveSettings();
+//    print( 'save succes ScreenSettingsRight ');
+//  }
 
-  void updateBorderIsActiveRightRight(bool value) {
-    _borderIsActiveRightRight = value;
-    _saveSettings();
-    notifyListeners();
-  }
-  void updateBorderIsActiveLeftRight(bool value) {
-    _borderIsActiveLeftRight = value;
-    _saveSettings();
-    notifyListeners();
-  }
-  void updateBorderIsActiveTopRight(bool value) {
-    _borderIsActiveTopLeftRight = value;
-    _saveSettings();
-    notifyListeners();
-  }
-  void updateBorderIsActiveBottomRight(bool value) {
-    _borderIsActiveBottomRight = value;
-    _saveSettings();
-    notifyListeners();
-  }
-  void updateBorderRight(bool size) {
-    _borderRight = size;
-    _saveSettings();
-    notifyListeners();
-  }
+//  void updateBorderIsActiveRightRight(bool value) {
+//    _borderIsActiveRightRight = value;
+//    _saveSettings();
+//    notifyListeners();
+//  }
+//  void updateBorderIsActiveLeftRight(bool value) {
+//    _borderIsActiveLeftRight = value;
+//    _saveSettings();
+//    notifyListeners();
+//  }
+//  void updateBorderIsActiveTopRight(bool value) {
+//    _borderIsActiveTopLeftRight = value;
+//    _saveSettings();
+//    notifyListeners();
+//  }
+//  void updateBorderIsActiveBottomRight(bool value) {
+//    _borderIsActiveBottomRight = value;
+//    _saveSettings();
+//    notifyListeners();
+//  }
+//  void updateBorderRight(bool size) {
+//    _borderRight = size;
+//    _saveSettings();
+//    notifyListeners();
+//  }
   void updateRightSizeText(double size) {
     _rightSizeText = size;
     _saveSettings();
@@ -147,6 +151,11 @@ class ScreenSettingsRight extends ChangeNotifier {
     _saveSettings();
     notifyListeners();
   }
+  void updateAligmant(Alignment aligmantRight){
+    _alignment = aligmantRight;
+    _saveSettings();
+    notifyListeners();
+  }
 
 
   void updateFromLeft(ScreenSettingsLeft leftSettings) {
@@ -156,11 +165,11 @@ class ScreenSettingsRight extends ChangeNotifier {
     _rightSizeText = leftSettings.leftSizeText;
     _rightSizeBorder = leftSettings.leftSizeBorder;
     _styleColumnRight = leftSettings.styleColumnLeft;
-    _borderRight = leftSettings.borderLeft;
-    _borderIsActiveBottomRight = leftSettings.borderIsActiveBottomLeft;
-    _borderIsActiveLeftRight = leftSettings.borderIsActiveLeftLeft;
-    _borderIsActiveRightRight = leftSettings.borderIsActiveRightLeft;
-    _borderIsActiveTopLeftRight = leftSettings.borderIsActiveTopLeft;
+  //  _borderRight = leftSettings.borderLeft;
+  //  _borderIsActiveBottomRight = leftSettings.borderIsActiveBottomLeft;
+  //  _borderIsActiveLeftRight = leftSettings.borderIsActiveLeftLeft;
+  //  _borderIsActiveRightRight = leftSettings.borderIsActiveRightLeft;
+  //  _borderIsActiveTopLeftRight = leftSettings.borderIsActiveTopLeft;
 
     _saveSettings();
     notifyListeners();

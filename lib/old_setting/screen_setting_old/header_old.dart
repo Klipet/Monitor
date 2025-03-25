@@ -119,16 +119,16 @@ class _SettingHeaderOldState extends State<SettingHeaderOld> {
   @override
   Widget build(BuildContext context) {
     final settingsHeader = Provider.of<ScreenSettingsHeader>(context);
-    Future<void> _pickImage() async {
-      final fileDialog = OpenFilePicker()
-        ..filterSpecification = {'image (*.jpg)': '*.jpg'};
-      final result = fileDialog.getFile();
-      if (result != null) {
-        final filePath = result.path;
-        final selectedFile = File(filePath);
-        await settingsHeader.updateSelectedImage(selectedFile);
-      }
-    }
+  //  Future<void> _pickImage() async {
+  //    final fileDialog = OpenFilePicker()
+  //      ..filterSpecification = {'image (*.jpg)': '*.jpg'};
+  //    final result = fileDialog.getFile();
+  //    if (result != null) {
+  //     final filePath = result.path;
+  //      final selectedFile = File(filePath);
+  //      await settingsHeader.updateSelectedImage(selectedFile);
+   //   }
+  //  }
     return Column(
       children: [
     //    Container(
@@ -365,11 +365,11 @@ class _SettingHeaderOldState extends State<SettingHeaderOld> {
                   child: const Text('Background Color'),
                 ),
               ),
-              //    Padding(
-              //      padding: const EdgeInsets.only(top: 8.0),
-              //      child: ElevatedButton(
+             //     Padding(
+             //       padding: const EdgeInsets.only(top: 8.0),
+             //       child: ElevatedButton(
               //        onPressed: () {
-              //          _pickImage();
+              //         _pickImage();
               //        },
               //        child: const Text('Select Image'),
               //      ),

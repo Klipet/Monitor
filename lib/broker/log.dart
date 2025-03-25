@@ -1,26 +1,39 @@
 import 'dart:io';
-
 import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FileLogger {
   late Logger _logger;
   late File _logFile;
 
-  FileLogger() {
-    _initializeLogger();
-  }
+  static final FileLogger _instance = FileLogger._internal();
 
-  Future<void> _initializeLogger() async {
-    // Получаем путь к директории для хранения логов
-    Directory? directory = await Directory.current;
-    String logFilePath = '${directory.path}/app_log.txt';
+  factory FileLogger() => _instance;
+
+  FileLogger._internal();
+
+  Future<void> init() async {
+    final exeDirectory = Platform.resolvedExecutable;
+    final exeDir = File(exeDirectory).parent.path;
+    final logFilePath = '$exeDir/app_log.txt';
+
     _logFile = File(logFilePath);
+    await _createFileIfNotExists(_logFile);
 
-    // Инициализируем логгер
     _logger = Logger(
-      printer: PrettyPrinter(), // Оформление вывода логов
-      output: FileOutput(_logFile), // Вывод в файл
+      filter: ProductionFilter(),
+      printer: PrettyPrinter(
+        methodCount: 1,
+        errorMethodCount: 6,
+        lineLength: 120,
+        colors: false,
+        printEmojis: false,
+        printTime: true,
+      ),
+      output: FileOutput(_logFile),
     );
+
+    _logger.i('Logger initialized! Logs will be saved to: $logFilePath');
   }
 
   void logInfo(String message) {
@@ -31,8 +44,13 @@ class FileLogger {
     _logger.e(message);
   }
 
-// Другие методы для логирования (warn, debug и т.д.)
+  Future<void> _createFileIfNotExists(File file) async {
+    if (!await file.exists()) {
+      await file.create(recursive: true);
+    }
+  }
 }
+
 class FileOutput extends LogOutput {
   final File logFile;
 
@@ -41,8 +59,7 @@ class FileOutput extends LogOutput {
   @override
   void output(OutputEvent event) {
     for (var line in event.lines) {
-      logFile.writeAsStringSync('${DateTime.now()}: $line\n',
-          mode: FileMode.append);
+      logFile.writeAsStringSync('${DateTime.now()}: $line\n', mode: FileMode.append);
     }
   }
 }
