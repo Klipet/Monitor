@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:monitor_for_sales/broker/log.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sound_library/sound_library.dart';
 
@@ -182,17 +183,17 @@ class ScreenSettingsHeader extends ChangeNotifier {
       _saveSettings();
       notifyListeners();
     }
-    Future<void> updateSelectedImage(File image) async {
+    Future<void> updateSelectedImage(File? image) async {
       try {
-        final directory = await getApplicationDocumentsDirectory();
-        final imagePath = '${image.path.split('/').last}';
-        final newImage = await image.copy(imagePath);
+      //  final directory = await getApplicationDocumentsDirectory();
+        final imagePath = '${image?.path.split('/').last}';
+        final newImage = await image?.copy(imagePath);
         print('Image copied to: $imagePath');
         _selectedImage = newImage;
         _saveSettings();
         notifyListeners();
       } catch (e) {
-        print('Error copying image: $e');
+        FileLogger().logError('Error copying image: $e');
       }
     }
   }

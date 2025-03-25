@@ -21,6 +21,7 @@ import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
+import 'aligment_adapter/my_aligment_model.dart';
 import 'broker/log.dart';
 
 
@@ -49,8 +50,9 @@ Future<void> main() async {
         SystemUiMode.immersiveSticky, overlays: SystemUiOverlay.values);
   }
   await Hive.initFlutter();
-  await Hive.openBox('settings');
   Hive.registerAdapter(MySoundModelAdapter());
+  Hive.registerAdapter(AlignmentAdapter());
+  await Hive.openBox('settings');
   final appDocumentDirectory = await path_provider.getApplicationDocumentsDirectory();
   print('Hive is initialized at: ${appDocumentDirectory.path}');
   runApp(

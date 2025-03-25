@@ -98,32 +98,6 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
     final settingsLeft = Provider.of<ScreenSettingsLeft>(context);
     return Column(
       children: [
-    //    TextField(
-    //      controller: _rightSizeController,
-    //      keyboardType: TextInputType.number,
-    //      inputFormatters: [
-    //        FilteringTextInputFormatter.allow(
-    //          RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-    //        ),
-    //      ],
-    //      decoration: const InputDecoration(labelText: 'Enter size Right text'),
-    //      onChanged: (value) {
-    //        settingsRight.updateRightSizeText(double.parse(value));
-    //      },
-    //    ),
-    //    TextField(
-    //      controller: _rightSizeBorder,
-    //      keyboardType: TextInputType.number,
-    //      inputFormatters: [
-    //        FilteringTextInputFormatter.allow(
-    //          RegExp(r'^\d*\.?\d*$'), // Разрешает только цифры и одну точку
-    //        ),
-    //      ],
-    //      decoration: const InputDecoration(labelText: 'Enter size Right Border'),
-    //      onChanged: (value) {
-    //        settingsRight.updateRightSizeBorder(double.parse(value));
-    //      },
-    //    ),
         TextField(
           controller: _rightTextController,
           decoration:
@@ -132,93 +106,6 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
             settingsRight.updateRightTitle(value);
           },
         ),
-        Row(
-          children: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-        //     child: GestureDetector(
-        //       child:  Icon(Icons.border_bottom,
-        //         size: 50,
-        //         color: settingsRight.borderIsActiveBottomRight ? Colors.black : Colors.grey ,
-        //       ),
-        //       onTap: (){
-        //         setState(() {
-        //           settingsRight.updateBorderIsActiveBottomRight(!settingsRight.borderIsActiveBottomRight);
-        //         });
-        //       },),
-        //   ),
-        //   Padding(
-        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-        //     child: GestureDetector(child: Icon(Icons.border_top,
-        //       size: 50,
-        //       color:  settingsRight.borderIsActiveTopRight ? Colors.black : Colors.grey ,),
-        //       onTap: (){
-        //         setState(() {
-        //           settingsRight.updateBorderIsActiveTopRight(!settingsRight.borderIsActiveTopRight);
-        //         });
-        //       },),
-        //   ),
-        //   Padding(
-        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-        //     child: GestureDetector(child: Icon(Icons.border_left,
-        //       size: 50,
-        //       color:  settingsRight.borderIsActiveLeftRight ? Colors.black : Colors.grey ,),
-        //       onTap: (){
-        //         setState(() {
-        //           settingsRight.updateBorderIsActiveLeftRight(!settingsRight.borderIsActiveLeftRight);
-        //         });
-        //       },),
-        //   ),
-        //   Padding(
-        //     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0, top: 8.0),
-        //     child: GestureDetector(child: Icon(Icons.border_right,
-        //       size: 50,
-        //       color:  settingsRight.borderIsActiveRightRight ? Colors.black : Colors.grey ,),
-        //       onTap: (){
-        //         setState(() {
-        //           settingsRight.updateBorderIsActiveRightRight(!settingsRight.borderIsActiveRightRight);
-        //         });
-        //       },),
-        //   ),
-        //    GestureDetector(
-        //      onTap: () {
-        //        setState(() {
-        //          settingsRight.updateBorderRight(!settingsRight.borderRight);
-        //        });
-        //      },
-        //      child: Icon(
-        //        settingsRight.borderRight ? Icons.check_box : Icons.check_box_outline_blank,
-        //        size: 35.0,
-        //        color: settingsRight.borderRight ? Colors.green : Colors.black,
-        //      ),
-        //    ),
-        //    const SizedBox(width: 10),
-        //    Text(settingsRight.borderRight? 'Border is activate' : 'Border is dezactivate',
-        //      style: const TextStyle(
-        //          fontSize: 20
-        //      ),
-        //    ),
-          ],
-        ),
-    //    Row(
-    //      children: [
-    //        DropdownButton<String>(
-    //          value: settingsRight.styleColumnRight,
-    //          onChanged: (String? newValue) {
-    //            setState(() {
-    //              _selectedFont = newValue!;
-    //              settingsRight.updateStyleColumnRight(newValue);
-    //            });
-    //          },
-    //          items: _fonts.map<DropdownMenuItem<String>>((String value) {
-    //            return DropdownMenuItem<String>(
-    //              value: value,
-    //              child: Text(value, style: GoogleFonts.getFont(value)),
-    //            );
-    //          }).toList(),
-    //        ),
-    //      ],
-    //    ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: ElevatedButton(
@@ -259,28 +146,34 @@ class _SettingColumnRightState extends State<SettingColumnRight> {
             child: const Text('Change Right Column Text Color'),
           ),
         ),
-    //    Padding(
-    //      padding: const EdgeInsets.only(top: 8.0),
-    //      child: ElevatedButton(
-    //        onPressed: () {
-    //          _openColorPicker(context, settingsRight.rightColorBorder, (color) {
-    //            setState(() {
-    //              settingsRight.updateRightColorBorder(color);
-    //            });
-    //          });
-    //        },
-    //        child: const Text('Change Right Column Border Color'),
-    //      ),
-    //    ),
-    //    Padding(
-    //      padding: const EdgeInsets.only(top: 8.0, bottom: 5.0),
-    //      child: ElevatedButton(
-    //        onPressed: () {
-    //          settingsLeft.updateFromRight(settingsRight);
-    //        },
-    //        child: const Text('Update to left'),
-    //      ),
-    //    ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            OutlinedButton(
+                onPressed: () {settingsRight.updateAligmant(Alignment.topRight);},
+                child: Image.asset('assets/images/up-right.png')
+            ),
+            OutlinedButton(
+                onPressed: () {
+                  settingsRight.updateAligmant(Alignment.topLeft);
+                },
+                child: Image.asset('assets/images/up-left.png')
+            ),
+            OutlinedButton(
+                onPressed: () {
+                  settingsRight.updateAligmant(Alignment.bottomRight);
+                },
+                child: Image.asset('assets/images/down-right.png')
+            ),
+            OutlinedButton(
+                onPressed: () {
+                  settingsRight.updateAligmant(Alignment.bottomLeft);
+                },
+                child: Image.asset('assets/images/down-left.png')
+            ),
+
+          ],
+        ),
       ],
     );
   }

@@ -14,6 +14,7 @@ class ScreenSettingsRight extends ChangeNotifier {
   double _rightSizeText = 15.0;
   double _rightSizeBorder = 0.0;
   String _styleColumnRight = 'Roboto';
+  Alignment _alignment = Alignment.bottomRight;
 //  late bool _borderRight;
 //  late bool _borderIsActiveBottomRight;
 // late bool _borderIsActiveTopLeftRight;
@@ -30,6 +31,7 @@ class ScreenSettingsRight extends ChangeNotifier {
   double get rightSizeText => _rightSizeText;
   double get rightSizeBorder => _rightSizeBorder;
   String get styleColumnRight => _styleColumnRight;
+  Alignment get alignment => _alignment;
  // bool get borderRight => _borderRight;
  // bool get borderIsActiveBottomRight => _borderIsActiveBottomRight;
  // bool get borderIsActiveTopRight => _borderIsActiveTopLeftRight;
@@ -50,6 +52,7 @@ class ScreenSettingsRight extends ChangeNotifier {
     _rightSizeBorder = box.get('rightSizeBorder', defaultValue: 0.0);
     _textRightTitle = box.get('textRightTitle', defaultValue: 'Pregătite:');
     _styleColumnRight = box.get('styleColumnRight', defaultValue: 'Roboto');
+    _alignment = box.get('alignment', defaultValue: Alignment.bottomRight);
   //  _borderRight = box.get('borderRight', defaultValue: false);
   //  _borderIsActiveBottomRight = box.get('borderIsActiveBottomRight', defaultValue: false);
   //  _borderIsActiveTopLeftRight = box.get('borderIsActiveTopRight', defaultValue: false);
@@ -68,6 +71,7 @@ class ScreenSettingsRight extends ChangeNotifier {
     box.put('textRightTitle', _textRightTitle);
     box.put('rightSizeBorder', _rightSizeBorder);
     box.put('styleColumnRight', _styleColumnRight);
+    box.put('alignment', _alignment);
   //  box.put('borderRight', _borderRight);
   //  box.put('borderIsActiveBottomRight', _borderIsActiveBottomRight);
   //  box.put('borderIsActiveTopRight', _borderIsActiveTopLeftRight);
@@ -144,6 +148,11 @@ class ScreenSettingsRight extends ChangeNotifier {
   }
   void updateStyleColumnRight(String text) {
     _styleColumnRight = text;
+    _saveSettings();
+    notifyListeners();
+  }
+  void updateAligmant(Alignment aligmantRight){
+    _alignment = aligmantRight;
     _saveSettings();
     notifyListeners();
   }

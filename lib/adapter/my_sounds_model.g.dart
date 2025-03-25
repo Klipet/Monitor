@@ -8,7 +8,7 @@ part of 'my_sounds_model.dart';
 
 class MySoundModelAdapter extends TypeAdapter<MySoundModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
   MySoundModel read(BinaryReader reader) {

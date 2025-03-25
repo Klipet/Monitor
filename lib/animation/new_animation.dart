@@ -103,216 +103,227 @@ class _NewAnimationState extends State<NewAnimation> with WindowListener {
         builder: (context, child) {
           // Получаем размеры монитора
           return Scaffold(
-            body: Row(
-              children: [
-                //Left
-                Expanded(
-                    flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: HexColor(widget.settingsLeft.leftColumnColor),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 40.w, top: 56.h),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 83.h,
-                              constraints: BoxConstraints(minWidth: 328.w),
-                              color: HexColor(widget.settingsLeft.titleColorBox),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                left: 16.w, bottom: 8.h, right: 16.w, top: 8.h
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.fill,
-                              child:Text(
-                                  widget.settingsLeft.textLeftTitle.toString(),
-                                  style: GoogleFonts.getFont(
-                                    'Roboto',
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 56.sp,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2,  // Высота строки,
-                                    color: HexColor(widget.settingsLeft.leftColorText),
-                                  )),
-                            )
-                          ),
-                            ),
-                            Expanded(
-                                child: widget.ordersListLeft.isNotEmpty
-                                    ? SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                        child: Consumer<ScreenSettingsBoxLeft>(
-                                          builder:
-                                              (context, settingsBox, child) {
-                                            widget.ordersListLeft.sort((a, b) => a.compareTo(b));
-                                            return Padding(
-                                              padding: EdgeInsets.only(top: 26.h),
-                                              child:
-                                              Wrap(
-                                                direction: Axis.vertical,
-                                                  children: List.generate(
-                                                      widget.ordersListLeft.length >= countBox ? countBox : widget.ordersListLeft.length,
-                                                          (index) {
-                                                dynamic order = widget.ordersListLeft[index];
-                                                return Padding(
-                                                  padding: EdgeInsets.only(right: 23.h, top: 24.h),
-                                                  child: Container(
-                                                      alignment: Alignment.center,
-                                                      width: sizewidth.w,
-                                                      height: sizeheight.h,
-                                                      decoration: BoxDecoration(
-                                                        color: HexColor(widget.settingsBoxLeft.backgroundBoxColorLeft),
-                                                        borderRadius:
-                                                            BorderRadius.all(Radius.circular(24.r),
-                                                        ),
-                                                      ),
-                                                      child: Text(
-                                                          maxLines: 1,
-                                                          textAlign: TextAlign.start,
-                                                          order.toString(),
-                                                          style: GoogleFonts.getFont(
-                                                            'Roboto',
-                                                            fontSize: sizeText.sp,
-                                                            fontWeight: FontWeight.w400,
-                                                            color: HexColor(widget.settingsBoxLeft.textBoxColorLeft),
-                                                          ))),
-                                                );
-                                              })),
-                                            );
-                                          },
-                                        ),
-                                      )
-                                    : Container())
-                          ],
+            body: Stack(
+              children:[
+                Row(
+                children: [
+                  //Left
+                  Expanded(
+                      flex: 2,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: HexColor(widget.settingsLeft.leftColumnColor),
                         ),
-                      ),
-                    )),
-                //Right
-                Expanded(
-                    flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: HexColor(widget.settingsRight.rightColumnColor),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 40.w, top: 56.h),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 83.h,
-                              constraints: BoxConstraints(minWidth: 271.w),
-                            //  width: 271.w,
-                              color: HexColor(widget.settingsRight.rightColorTitleBox),
-                              child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 16.w, right: 16.w, bottom: 8.h,top: 8.h
-                                  ),
-                                  child:
-                                  FittedBox(
-                                    fit: BoxFit.fill,
-                                    child:Text(
-                                        widget.settingsRight.textRightTitle.toString(),
-                                       // textAlign: TextAlign.center,
-                                        style: GoogleFonts.getFont(
-                                          'Roboto',
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 56.spMin,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2,  // Высота строки,
-                                          color: HexColor(widget.settingsRight.rightColorText),
-                                        )),
-                                  )
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 40.w, top: 56.h),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 83.h,
+                                constraints: BoxConstraints(minWidth: 328.w),
+                                color: HexColor(widget.settingsLeft.titleColorBox),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 16.w, bottom: 8.h, right: 16.w, top: 8.h
                               ),
+                              child: FittedBox(
+                                fit: BoxFit.fill,
+                                child:Text(
+                                    widget.settingsLeft.textLeftTitle.toString(),
+                                    style: GoogleFonts.getFont(
+                                      'Roboto',
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 56.sp,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2,  // Высота строки,
+                                      color: HexColor(widget.settingsLeft.leftColorText),
+                                    )),
+                              )
                             ),
-                            Expanded(
-                                child: widget.ordersListRight.isNotEmpty
-                                    ? SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                        child: Consumer<ScreenSettingsBoxLeft>(
-                                          builder: (context, settingsBox, child) {
-                                            widget.ordersListRight.sort((a, b) => b.compareTo(a));
-                                            return Padding(padding: EdgeInsets.only(top: 26.h),
-                                                child: Stack(
-                                                  children: [
-
-                                                    Wrap(
-                                                        direction: Axis.vertical,
-                                                        children: List.generate(widget.ordersListRight.length >= 20 ? 20 : widget.ordersListRight.length, (index) {
-                                                          dynamic order = widget.ordersListRight[index];
-                                                          // Остальные строки без смещения
-                                                          return Padding(
-                                                                padding: EdgeInsets.only(right: 23.w, top: 24.h,
-                                                                  //left: leftPadding
-                                                                ),
-                                                                child: Container(
-                                                                    alignment: Alignment.center,
-                                                                    width: sizewidth.w,
-                                                                    height: sizeheight.h,
-                                                                    decoration:
-                                                                    BoxDecoration(color: HexColor(widget.settingsBoxRight.backgroundBoxColorRight),
-                                                                      borderRadius: BorderRadius.all(Radius.circular(24.r),),
-                                                                    ),
-                                                                    child: FittedBox(
-                                                                      fit: BoxFit.fill,
-                                                                      child: Text(
-                                                                          maxLines: 1,
-                                                                          textAlign: TextAlign.start,
-                                                                          order.toString(),
-                                                                          style: GoogleFonts.getFont(
-                                                                            'Roboto',
-                                                                            fontSize: sizeText.sp,
-                                                                            fontWeight: FontWeight.w400,
-                                                                            color: HexColor(widget.settingsBoxRight.textBoxColorRight),
-                                                                          )
-                                                                      ),
-                                                                    )
-                                                                ),
-                                                              );
-                                                        })
-                                                    ),
-                                                    displayedOrders.isNotEmpty ?
-                                                    Padding(
-                                                      padding: EdgeInsets.only(right: 23.w, top: 24.h,),
-                                                      child: Container(
-                                                          alignment: Alignment.center,
-                                                          width: sizewidthBig.w,
-                                                          height: sizeheightBig.h,
-                                                          decoration:
-                                                          BoxDecoration(color: HexColor(widget.settingsBoxRight.backgroundBoxColorRight),
-                                                            borderRadius: BorderRadius.all(Radius.circular(34.r),),
+                              ),
+                              Expanded(
+                                  child: widget.ordersListLeft.isNotEmpty
+                                      ? SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                          child: Consumer<ScreenSettingsBoxLeft>(
+                                            builder:
+                                                (context, settingsBox, child) {
+                                              widget.ordersListLeft.sort((a, b) => a.compareTo(b));
+                                              return Padding(
+                                                padding: EdgeInsets.only(top: 26.h),
+                                                child:
+                                                Wrap(
+                                                  direction: Axis.vertical,
+                                                    children: List.generate(
+                                                        widget.ordersListLeft.length >= countBox ? countBox : widget.ordersListLeft.length,
+                                                            (index) {
+                                                  dynamic order = widget.ordersListLeft[index];
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(right: 23.h, top: 24.h),
+                                                    child: Container(
+                                                        alignment: Alignment.center,
+                                                        width: sizewidth.w,
+                                                        height: sizeheight.h,
+                                                        decoration: BoxDecoration(
+                                                          color: HexColor(widget.settingsBoxLeft.backgroundBoxColorLeft),
+                                                          borderRadius:
+                                                              BorderRadius.all(Radius.circular(24.r),
                                                           ),
-                                                          child: Text(
-                                                              maxLines: 1,
-                                                              textAlign: TextAlign.start,
-                                                              displayedOrders[0].toString(),
-                                                              style: GoogleFonts.getFont(
-                                                                'Roboto',
-                                                                fontSize: sizeTextBig.sp,
-                                                                fontWeight: FontWeight.w400,
-                                                                color: HexColor(widget.settingsBoxRight.textBoxColorRight),
-                                                              )
-                                                          )
-                                                      ),
-                                                    ): Container(color: Colors.transparent,),
-                                                  ],
-                                                ),
+                                                        ),
+                                                        child: Text(
+                                                            maxLines: 1,
+                                                            textAlign: TextAlign.start,
+                                                            order.toString(),
+                                                            style: GoogleFonts.getFont(
+                                                              'Roboto',
+                                                              fontSize: sizeText.sp,
+                                                              fontWeight: FontWeight.w400,
+                                                              color: HexColor(widget.settingsBoxLeft.textBoxColorLeft),
+                                                            ))),
+                                                  );
+                                                })),
                                               );
-                                          },
-                                        ),
-                                      )
-                                    : Container())
-                          ],
+                                            },
+                                          ),
+                                        )
+                                      : Container())
+                            ],
+                          ),
                         ),
-                      ),
-                    ))
-              ],
-            ),
+                      )),
+                  //Right
+                  Expanded(
+                      flex: 2,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: HexColor(widget.settingsRight.rightColumnColor),
+                          image: widget.settingsHeader.selectedImage != null
+                              ? DecorationImage(
+                            image: FileImage(widget.settingsHeader.selectedImage!),
+                            alignment: widget.settingsRight.alignment,
+
+                          )
+                              : null
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 40.w, top: 56.h),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 83.h,
+                                constraints: BoxConstraints(minWidth: 271.w),
+                              //  width: 271.w,
+                                color: HexColor(widget.settingsRight.rightColorTitleBox),
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 16.w, right: 16.w, bottom: 8.h,top: 8.h
+                                    ),
+                                    child:
+                                    FittedBox(
+                                      fit: BoxFit.fill,
+                                      child:Text(
+                                          widget.settingsRight.textRightTitle.toString(),
+                                         // textAlign: TextAlign.center,
+                                          style: GoogleFonts.getFont(
+                                            'Roboto',
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 56.spMin,
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.2,  // Высота строки,
+                                            color: HexColor(widget.settingsRight.rightColorText),
+                                          )),
+                                    )
+                                ),
+                              ),
+                              Expanded(
+                                  child: widget.ordersListRight.isNotEmpty
+                                      ? SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                          child: Consumer<ScreenSettingsBoxLeft>(
+                                            builder: (context, settingsBox, child) {
+                                              widget.ordersListRight.sort((a, b) => b.compareTo(a));
+                                              return Padding(padding: EdgeInsets.only(top: 26.h),
+                                                  child: Stack(
+                                                    children: [
+                                                      Wrap(
+                                                          direction: Axis.vertical,
+                                                          children: List.generate(widget.ordersListRight.length >= 20 ? 20 : widget.ordersListRight.length, (index) {
+                                                            dynamic order = widget.ordersListRight[index];
+                                                            // Остальные строки без смещения
+                                                            return Padding(
+                                                                  padding: EdgeInsets.only(right: 23.w, top: 24.h,
+                                                                    //left: leftPadding
+                                                                  ),
+                                                                  child: Container(
+                                                                      alignment: Alignment.center,
+                                                                      width: sizewidth.w,
+                                                                      height: sizeheight.h,
+                                                                      decoration:
+                                                                      BoxDecoration(color: HexColor(widget.settingsBoxRight.backgroundBoxColorRight),
+                                                                        borderRadius: BorderRadius.all(Radius.circular(24.r),),
+                                                                      ),
+                                                                      child: FittedBox(
+                                                                        fit: BoxFit.fill,
+                                                                        child: Text(
+                                                                            maxLines: 1,
+                                                                            textAlign: TextAlign.start,
+                                                                            order.toString(),
+                                                                            style: GoogleFonts.getFont(
+                                                                              'Roboto',
+                                                                              fontSize: sizeText.sp,
+                                                                              fontWeight: FontWeight.w400,
+                                                                              color: HexColor(widget.settingsBoxRight.textBoxColorRight),
+                                                                            )
+                                                                        ),
+                                                                      )
+                                                                  ),
+                                                                );
+                                                          })
+                                                      ),
+                                                      displayedOrders.isNotEmpty ?
+                                                      Padding(
+                                                        padding: EdgeInsets.only(right: 23.w, top: 24.h,),
+                                                        child: Container(
+                                                            alignment: Alignment.center,
+                                                            width: sizewidthBig.w,
+                                                            height: sizeheightBig.h,
+                                                            decoration:
+                                                            BoxDecoration(color: HexColor(widget.settingsBoxRight.backgroundBoxColorRight),
+                                                              borderRadius: BorderRadius.all(Radius.circular(34.r),),
+                                                            ),
+                                                            child: Text(
+                                                                maxLines: 1,
+                                                                textAlign: TextAlign.start,
+                                                                displayedOrders[0].toString(),
+                                                                style: GoogleFonts.getFont(
+                                                                  'Roboto',
+                                                                  fontSize: sizeTextBig.sp,
+                                                                  fontWeight: FontWeight.w400,
+                                                                  color: HexColor(widget.settingsBoxRight.textBoxColorRight),
+                                                                )
+                                                            )
+                                                        ),
+                                                      ): Container(color: Colors.transparent,),
+                                                    ],
+                                                  ),
+                                                );
+                                            },
+                                          ),
+                                        )
+                                      : Container())
+                            ],
+                          ),
+                        ),
+                      )),
+
+                ],
+              ),
+
+           ] ),
           );
         });
   }
