@@ -679,6 +679,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         if (urlResponse.errorCode == 0) {
           pref.setString('uri', urlResponse.appData.uri);
         } else if (response.statusCode == 134) {
+          print('urlResponse.errorCode ${urlResponse.errorCode}');
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const License()),
@@ -686,11 +687,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           );
         } else {
           print('urlResponse.errorCode ${urlResponse.errorCode}');
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const License()),
-            (Route<dynamic> route) => false,
-          );
+        //  Navigator.pushAndRemoveUntil(
+        //    context,
+        //    MaterialPageRoute(builder: (context) => const License()),
+        //    (Route<dynamic> route) => false,
+        //  );
         }
       } else if (response.statusCode == 400) {
         fileLogger.logError(response.body.toString());
@@ -701,20 +702,23 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       } else {
         print('error response.statusCode ${response.statusCode}');
         fileLogger.logError(response.body.toString());
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const License()),
-          (Route<dynamic> route) => false,
-        );
+      //  Navigator.pushAndRemoveUntil(
+      //    context,
+      //    MaterialPageRoute(builder: (context) => const License()),
+      //    (Route<dynamic> route) => false,
+      //  );
       }
-    } catch (error) {
+    } on IOException{
+      fileLogger.logError('IOException in getApyKeyInfo WidgetWindows');
+    }
+    catch (error) {
       print('error Catch ${error.toString()}');
       fileLogger.logError(error.toString());
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const License()),
-        (Route<dynamic> route) => false,
-      );
+    //  Navigator.pushAndRemoveUntil(
+    //    context,
+    //    MaterialPageRoute(builder: (context) => const License()),
+    //    (Route<dynamic> route) => false,
+    //  );
       fileLogger.logError(error.toString());
     }
   }

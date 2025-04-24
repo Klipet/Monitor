@@ -25,6 +25,7 @@ class License extends StatefulWidget {
 
 class _License extends State<License> {
   bool forceError = false;
+  FileLogger _logger = FileLogger();
 
 
 
@@ -235,7 +236,7 @@ class _License extends State<License> {
         }
       } else {
         print('Failed to send data: ${response.statusCode}');
-        FileLogger().logError(response.body);
+       _logger.logError(response.body);
         setState(() {
           forceError = true;
         });
@@ -243,7 +244,7 @@ class _License extends State<License> {
     }catch(e){
       setState(() {
         print('Failed to send data: ${e.toString()}');
-        FileLogger().logError(e.toString());
+        _logger.logError(e.toString());
         forceError = true;
       });
     }
