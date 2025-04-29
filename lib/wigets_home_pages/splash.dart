@@ -17,6 +17,8 @@ import '../broker/log.dart';
 import '../factory/post_register_app.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
+import '../providers/setting_app.dart';
+
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -26,6 +28,7 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+
   static const colorizeColors = [
     Colors.green,
     Colors.blue,
@@ -74,9 +77,11 @@ class _SplashState extends State<Splash> {
 
   Future<void> getUrl() async {
     Constants constants = Constants();
-    var pref = await SharedPreferences.getInstance();
-    pref.setDouble('ratio', MediaQuery.of(context).devicePixelRatio);
     try{
+  //  var pref = await SharedPreferences.getInstance();
+    await SettingApp.init();
+  //  pref.setDouble('ratio', MediaQuery.of(context).devicePixelRatio);
+
       const String applicationVersion = '1.0.0';
       final String deviceID = SysInfo.kernelArchitecture.name ;
       final String deviceModel = SysInfo.kernelArchitecture.name;
@@ -92,7 +97,7 @@ class _SplashState extends State<Splash> {
       final String serialNumber = SysInfo.kernelArchitecture.name;
       const String workplace = 'Office';
       const String licenseActivationCode = '';
-      final String? licenseID = pref.getString('apiKey');
+      final String? licenseID = await SettingApp.getLicenseID();//pref.getString('apiKey');
 
       // Создаем объект класса PostRegisterApp
 
@@ -131,7 +136,9 @@ class _SplashState extends State<Splash> {
         print(responseJson.toString());
         final urlResponse = ResponseRegistrApp.fromJson(responseJson);
         if(urlResponse.errorCode == 0){
-          pref.setString('uri', urlResponse.appData.uri);
+        //  pref.setString('uri', urlResponse.appData.uri);
+
+          await SettingApp.setURI(urlResponse.appData.uri);
           if(Platform.isWindows){
             fileLogger.logInfo(response.statusCode.toString());
             Navigator.pushAndRemoveUntil(

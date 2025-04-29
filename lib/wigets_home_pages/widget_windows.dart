@@ -17,6 +17,7 @@ import 'package:monitor_for_sales/providers/screen_setting_box_left.dart';
 import 'package:monitor_for_sales/providers/screen_setting_box_right.dart';
 import 'package:monitor_for_sales/providers/screen_setting_header.dart';
 import 'package:monitor_for_sales/providers/screen_setting_right.dart';
+import 'package:monitor_for_sales/providers/setting_app.dart';
 import 'package:monitor_for_sales/screens/settings_home_page.dart';
 import 'package:monitor_for_sales/screens/tab_setting.dart';
 import 'package:monitor_for_sales/screens/video_player_sequence.dart';
@@ -484,8 +485,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Future<void> getState() async {
     var settingsHeader =
         Provider.of<ScreenSettingsHeader>(context, listen: false);
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var url = prefs.getString('uri');
+  //  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //  var url = prefs.getString('uri');
+    var url = await SettingApp.getURI();
+    print( 'getState $url');
     if (url == '' || url == null) {
       Navigator.pushAndRemoveUntil(
         context,
@@ -620,7 +623,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Future<void> getApyKeyInfo() async {
     Constants constants = Constants();
-    var pref = await SharedPreferences.getInstance();
+  //  var pref = await SharedPreferences.getInstance();
+  //  await SettingApp.init();
     final ip = await intranetIpv4();
 
     const String applicationVersion = '1.0.0';
@@ -639,7 +643,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     final String serialNumber = SysInfo.kernelArchitecture.name;
     const String workplace = 'Office';
     const String licenseActivationCode = '';
-    final String? licenseID = pref.getString('apiKey');
+    final String? licenseID = await SettingApp.getLicenseID(); //pref.getString('apiKey');
 
     // Создаем объект класса PostRegisterApp
 
@@ -677,7 +681,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         print(responseJson.toString());
         final urlResponse = ResponseRegistrApp.fromJson(responseJson);
         if (urlResponse.errorCode == 0) {
-          pref.setString('uri', urlResponse.appData.uri);
+          await SettingApp.setURI(urlResponse.appData.uri);
+        //  pref.setString('uri', urlResponse.appData.uri);
         } else if (response.statusCode == 134) {
           print('urlResponse.errorCode ${urlResponse.errorCode}');
           Navigator.pushAndRemoveUntil(

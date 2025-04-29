@@ -53,6 +53,7 @@ Future<void> main() async {
   Hive.registerAdapter(MySoundModelAdapter());
   Hive.registerAdapter(AlignmentAdapter());
   await Hive.openBox('settings');
+  await Hive.openBox('setting_app');
   final appDocumentDirectory = await path_provider.getApplicationDocumentsDirectory();
   print('Hive is initialized at: ${appDocumentDirectory.path}');
   runApp(
