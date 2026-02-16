@@ -20,12 +20,10 @@ import 'package:flutter_autostart/flutter_autostart.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-
 import 'aligment_adapter/my_aligment_model.dart';
 import 'broker/log.dart';
 
 
-//launch_at_startup 0.3.1
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

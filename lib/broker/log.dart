@@ -15,9 +15,23 @@ class FileLogger {
   Future<void> init() async {
     final exeDirectory = Platform.resolvedExecutable;
     final exeDir = File(exeDirectory).parent.path;
-    final logFilePath = '$exeDir/app_log.txt';
+    // 📁 создаём папку logs рядом с exe
+    final logsDir = Directory('$exeDir/logs');
+    if (!await logsDir.exists()) {
+      await logsDir.create(recursive: true);
+    }
+
+    final now = DateTime.now();
+    final dateString =
+        '${now.year}_${now.month.toString().padLeft(2, '0')}_${now.day.toString().padLeft(2, '0')}';
+
+    final logFilePath = '${logsDir.path}/app_log_$dateString.txt';
+
+ //   final logFilePath = '$exeDir/app_log_$dateString.txt';
+   // final logFilePath = '$exeDir/app_log.txt';
 
     _logFile = File(logFilePath);
+  //  await _deleteIfOlderThanWeek(_logFile);
     await _createFileIfNotExists(_logFile);
 
     _logger = Logger(
@@ -47,6 +61,16 @@ class FileLogger {
   Future<void> _createFileIfNotExists(File file) async {
     if (!await file.exists()) {
       await file.create(recursive: true);
+    }
+  }
+  Future<void> _deleteIfOlderThanWeek(File file) async {
+    if (await file.exists()) {
+      final lastModified = await file.lastModified();
+      final difference = DateTime.now().difference(lastModified);
+
+      if (difference.inDays >= 7) {
+        await file.delete();
+      }
     }
   }
 }

@@ -16,7 +16,6 @@ import '../broker/const.dart';
 import '../broker/log.dart';
 import '../factory/post_register_app.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-
 import '../providers/setting_app.dart';
 
 
