@@ -16,6 +16,7 @@ import '../broker/const.dart';
 import '../broker/log.dart';
 import '../factory/post_register_app.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import '../providers/setting_app.dart';
 
 
 class Splash extends StatefulWidget {
@@ -26,6 +27,7 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+
   static const colorizeColors = [
     Colors.green,
     Colors.blue,
@@ -39,12 +41,13 @@ class _SplashState extends State<Splash> {
     fontWeight: FontWeight.bold
   );
   final fileLogger = FileLogger();
+
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 3), (){
+    Future.delayed(const Duration(seconds: 3), (){
       getUrl();
     });
-
+    fileLogger.logInfo('startSpalsh');
     super.initState();
   }
   @override
@@ -73,8 +76,11 @@ class _SplashState extends State<Splash> {
 
   Future<void> getUrl() async {
     Constants constants = Constants();
-    var pref = await SharedPreferences.getInstance();
-    pref.setDouble('ratio', MediaQuery.of(context).devicePixelRatio);
+    try{
+  //  var pref = await SharedPreferences.getInstance();
+    await SettingApp.init();
+  //  pref.setDouble('ratio', MediaQuery.of(context).devicePixelRatio);
+
       const String applicationVersion = '1.0.0';
       final String deviceID = SysInfo.kernelArchitecture.name ;
       final String deviceModel = SysInfo.kernelArchitecture.name;
@@ -90,7 +96,7 @@ class _SplashState extends State<Splash> {
       final String serialNumber = SysInfo.kernelArchitecture.name;
       const String workplace = 'Office';
       const String licenseActivationCode = '';
-      final String? licenseID = pref.getString('apiKey');
+      final String? licenseID = await SettingApp.getLicenseID();//pref.getString('apiKey');
 
       // Создаем объект класса PostRegisterApp
 
@@ -111,7 +117,7 @@ class _SplashState extends State<Splash> {
         licenseID: licenseID ?? '' ,
       );
     // Отправляем POST-запрос
-    try{
+
       final url = Uri.parse('${constants.API_LICENSE}GetURI');
       final String basicAuth = 'Basic ${base64Encode(utf8.encode('${constants.USERNAME}:${constants.PASSWORD}'))}';
       final response = await http.post(
@@ -122,13 +128,18 @@ class _SplashState extends State<Splash> {
         },
         body: jsonEncode(deviceInfoToPost.toJson()),
       );
+      fileLogger.logInfo(response.body);
       if(response.statusCode == 200){
+        fileLogger.logInfo(response.statusCode.toString());
         final responseJson = jsonDecode(response.body);
         print(responseJson.toString());
         final urlResponse = ResponseRegistrApp.fromJson(responseJson);
         if(urlResponse.errorCode == 0){
-          pref.setString('uri', urlResponse.appData.uri);
+        //  pref.setString('uri', urlResponse.appData.uri);
+
+          await SettingApp.setURI(urlResponse.appData.uri);
           if(Platform.isWindows){
+            fileLogger.logInfo(response.statusCode.toString());
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const HomePage()),
@@ -158,6 +169,7 @@ class _SplashState extends State<Splash> {
         }
       }else if(response.statusCode == 502){
         if(Platform.isWindows){
+          fileLogger.logError(response.body);
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const HomePage()),
@@ -172,6 +184,7 @@ class _SplashState extends State<Splash> {
         }
       }else if(response.statusCode == 404){
         if(Platform.isWindows){
+          fileLogger.logError(response.body);
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const HomePage()),
@@ -186,6 +199,7 @@ class _SplashState extends State<Splash> {
         }
       } else if(response.statusCode == 400){
         if(Platform.isWindows){
+          fileLogger.logError(response.body);
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const HomePage()),
@@ -207,11 +221,12 @@ class _SplashState extends State<Splash> {
         );
       }
 
-    }on HttpException{
+    }
+    on HttpException{
       fileLogger.logError('error HttpException');
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const HomePagesAndroid()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
             (Route<dynamic> route) => false,
       );
     }
@@ -219,7 +234,7 @@ class _SplashState extends State<Splash> {
       fileLogger.logError('error IOException');
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const HomePagesAndroid()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
             (Route<dynamic> route) => false,
       );
     }

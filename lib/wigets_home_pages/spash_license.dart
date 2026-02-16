@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:monitor_for_sales/broker/log.dart';
 import 'package:monitor_for_sales/factory/post_register_app.dart';
 import 'package:monitor_for_sales/factory/response_registr_app.dart';
+import 'package:monitor_for_sales/providers/setting_app.dart';
 import 'package:monitor_for_sales/wigets_home_pages/widget_andriod.dart';
 import 'package:monitor_for_sales/wigets_home_pages/widget_windows.dart';
 import 'package:pinput/pinput.dart';
@@ -25,6 +26,7 @@ class License extends StatefulWidget {
 
 class _License extends State<License> {
   bool forceError = false;
+  FileLogger _logger = FileLogger();
 
 
 
@@ -168,7 +170,8 @@ class _License extends State<License> {
 
   Future<void> sendDeviceInfo(String licenseCode) async {
     Constants constants = Constants();
-    var pref = await SharedPreferences.getInstance();
+  //  var pref = await SharedPreferences.getInstance();
+    await SettingApp.init();
     // Получаем информацию об устройстве
     final String applicationVersion = '1.0.0';
     final String deviceID = SysInfo.kernelArchitecture.name;
@@ -218,8 +221,10 @@ class _License extends State<License> {
         final responseJson = jsonDecode(response.body);
         print(responseJson.toString());
         final apiResponse = ResponseRegistrApp.fromJson(responseJson);
-        pref.setString('apiKey', apiResponse.appData.licenseID);
-        pref.setString('uri', apiResponse.appData.uri);
+        await SettingApp.setURI(apiResponse.appData.uri);
+        await SettingApp.setLicenseID(apiResponse.appData.licenseID);
+      //  pref.setString('apiKey', apiResponse.appData.licenseID);
+      //  pref.setString('uri', apiResponse.appData.uri);
         if(Platform.isWindows){
           Navigator.pushAndRemoveUntil(
             context,
@@ -235,7 +240,7 @@ class _License extends State<License> {
         }
       } else {
         print('Failed to send data: ${response.statusCode}');
-        FileLogger().logError(response.body);
+       _logger.logError(response.body);
         setState(() {
           forceError = true;
         });
@@ -243,7 +248,7 @@ class _License extends State<License> {
     }catch(e){
       setState(() {
         print('Failed to send data: ${e.toString()}');
-        FileLogger().logError(e.toString());
+        _logger.logError(e.toString());
         forceError = true;
       });
     }
